@@ -11,8 +11,6 @@ This library is code originally written for and will be used by an [ObservableHQ
 ## Continuous Integration Integration
 
 Further information about the continuous integration for this project can be found at [the template's documntation](https://github.com/BobKerns/npm-typescript-rollup-template#continuous-integration-integration).
-Three free Continuous Integration workflows are configured out of the box.  Remove any you
-you do not need, or disable them in the relevant service.
 
 ## /lib/
 
@@ -52,20 +50,6 @@ A generated directory with documentation. Some content may be installed from [/a
 
 The generated API documentation via [typedoc](https://typedoc.org)
 
-## /node_modules
-
-This directory is created and managed by [npm](https://npmjs.com), via the `npm install` command.
-
-## [/src](/src/README.md)
+### [/src](/src/README.md)
 
 This hierarchy contains the project's source code and related tests.
-
-## Top level files
-
-* .editorconfig
-* .gitignore
-* .npmignore — hides build infrastructure, sources, etc. from the final npm package.
-* travis.yml -- configuration for building automatically on [Travis](https://travis-ci.com/)
-* .circle-ci/ -- configuration for building automatically on [Circle CI](https://circleci.com)
-* .github/workflows -- configuration for building automatically on GitHub Workflows
-* rollup.config.js -- redirects to [/config/rollup.config.ts](/config/rollup.config.ts)
