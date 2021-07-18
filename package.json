@@ -1,7 +1,7 @@
 {
-  "name": "npm-typescript-rollup-template",
+  "name": "retirement-simulator",
   "version": "0.1.0",
-  "description": "Template project for typescript and rollup",
+  "description": "Retirement Simulator",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "browser": "lib/umd/index.js",
@@ -32,20 +32,21 @@
   "bin": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BobKerns/npm-typescript-rollup-template.git"
+    "url": "git+https://github.com/BobKerns/retirement-simulator.git"
   },
   "keywords": [
-    "template",
-    "node",
+    "retirement",
+    "finance",
+    "observablehq",
     "typescript",
-    "rollup"
+    "observablehq"
   ],
   "author": "Bob Kerns",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/BobKerns/npm-typescript-rollup-template/issues"
+    "url": "https://github.com/BobKerns/retirement-simulator/issues"
   },
-  "homepage": "https://github.com/BobKerns/npm-typescript-rollup-template#readme",
+  "homepage": "https://github.com/BobKerns/retirement-simulator#readme",
   "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
