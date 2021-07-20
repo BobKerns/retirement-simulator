@@ -1,6 +1,6 @@
 {
   "exclude": "**/__tests__/**",
-  "name": "NPM Template Project (rename me!)",
+  "name": "Retirement Simulator",
   "readme": "src/README.md",
   "includes": "./"
 }
