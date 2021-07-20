@@ -1,8 +1,7 @@
 /*
- * @module NpmRollupTemplate
  * Copyright 2021 by Bob Kerns. Licensed under MIT license.
  *
- * Github: https://github.com/BobKerns/npm-typescript-rollup-template
+ * Github: https://github.com/BobKerns/retirement-simulator
  */
 
 /**
@@ -12,23 +11,6 @@
  * @module Index
  */
 
-import R from 'ramda';
-
-/**
- * [Typedoc](https://typedoc.org/guides/doccomments/) is supported. It supports:
- *
- * * [MarkDown](https://marked.js.org/)
- * * [PlantUML](http://plantuml.com/) \
- *    UML requires that [GraphViz](https://graphviz.gitlab.io/) be installed. \
- *    <uml>
- *     A: field -> B
- *    </uml>
- * * [Mermaid](https://mermaidjs.github.io/)
- * @mermaid Mermaid diagrams
- * graph TD
- *   A-->B;
- *   B-->C;
- */
-export function hello() {
-    return R.map(a => a.toUpperCase(), "Hello, World!".split(/()/)).filter(a => /[^o,]/i.test(a)).join('');
-}
+export * from './actuary';
+export * from './types';
+export * from './utils';
