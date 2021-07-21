@@ -14,7 +14,8 @@ Further information about the continuous integration for this project can be fou
 
 ## /lib/
 
-This holds the built Javascript files. By default, three versions are built, for compatibility with various module systems. Ultimately, the world is moving toward the ECMAScript module format, but in the meantime,
+This holds the built Javascript files. By default, three versions are built, for compatibility with various module systems.
+Ultimately, the world is moving toward the ECMAScript module format, but in the meantime,
 
 ### /lib/esm
 
@@ -34,7 +35,8 @@ Data files to be used in documentation or runtime in the application.
 
 ## [/config](/config/README.md)
 
-This holds files used to globally configure the project. These are often redirected from the project root, to place them in one place, and to enable the use of typescript rather than javascript.
+This holds files used to globally configure the project. These are often redirected from the project root,
+to place them in one place, and to enable the use of typescript rather than javascript.
 
 ## [/devtools](/devtools/README.md)
 
