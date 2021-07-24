@@ -4,7 +4,6 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Item } from "./item";
 import { Monetary } from "./monetary";
 import { IAsset, Row } from "./types";
 
