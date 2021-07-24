@@ -10,6 +10,7 @@
     // "composite": true
     // "tsBuildInfoFile": "../build/.tsbuild-info-src"
     // Project layout. Changes not recommended.
+    "allowSyntheticDefaultImports": true,
     "outDir": "../build/src",
     "rootDir": "."
   }
