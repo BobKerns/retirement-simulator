@@ -4,14 +4,24 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { Asset } from "./asset";
+import { Expense } from "./expense";
+import { Income } from "./income";
+import { IncomeStream } from "./income-stream";
+import { IncomeTax } from "./income-tax";
+import { Loan } from "./loan";
+import { Person } from "./person";
+import { Scenario } from "./scenario";
+import { StateCode } from "./states";
+import { TextItem } from "./text";
 
-
-export type Name = 'Fred' | 'Bill' | 'Sally';
+export type Name = string;
 export type AssetName = Name;
 export type IncomeName = Name;
 export type LoanName = Name;
 export type ExpenseName = Name;
 export type IncomeStreamName = Name;
+export type ScenarioName = Name;
 
 export interface Named {
     name: Name;
@@ -22,8 +32,40 @@ export interface NamedIndex<T extends Named> {
     [k: string]: T;
 }
 
-export type MonetaryType = 'asset' | 'loan' | 'income' | 'expense';
-export type Type = MonetaryType | 'person' | 'text' | 'incomeStream' | 'incomeTax' | 'scenario';
+export type BalanceType = 'asset' | 'loan';
+export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
+export type MonetaryType = BalanceType | CashFlowType;
+export type Type = MonetaryType | 'person' | 'text' | 'scenario';
+
+type ItemTypes = {
+    asset: Asset;
+    loan: Loan;
+    income: Income;
+    expense: Expense;
+    person: Person;
+    text: TextItem;
+    incomeStream: IncomeStream;
+    incomeTax: IncomeTax;
+    scenario: Scenario;
+};
+
+type RowTypes = {
+    asset: IAsset;
+    loan: ILoan;
+    income: IIncome;
+    expense: IExpense;
+    person: IPerson;
+    text: IText;
+    incomeStream: IIncomeStream;
+    incomeTax: IIncomeTax;
+    scenario: IScenario;
+};
+
+export type ItemType<T extends Type> = (ItemTypes)[T];
+
+export interface IScenario extends IItem<'scenario'> {
+
+}
 
 export type Category = string;
 
@@ -35,30 +77,83 @@ export type Sex = 'male' | 'female';
 /**
  * A basic data item, with a value.
  */
-export interface Item<T extends Type> extends Named {
+export interface IItem<T extends Type = Type> extends Named {
     type: T;
     sort: number,
     start?: Date;
     end?: Date;
     categories: Category[];
+    scenarios: ScenarioName[];
     notes?: string;
 }
 
-export interface IMonetaryItem<T extends MonetaryType> extends Item<T> {
+export interface IMonetaryItem<T extends MonetaryType> extends IItem<T> {
     value: number;
+}
+
+/**
+ * Items which represent pools of money (or negative, i.e. loans).
+ */
+export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
     /**
      * Multiplicative factor. Will need to canonicalize compounding periods (APR vs simple, etc.)
-     * Non interest-bearing assets or loans use a value of `1.0`;
+     * Non interest-bearing assets, or loans use a value of `1.0,`;
      */
     growth: number;
 }
 
 /**
+ * Items which represent flows of money.
+ */
+export interface ICashFlowItem<T extends CashFlowType> extends IMonetaryItem<T> {
+    /**
+     * The fraction of a year this expense item applies to, for expenses which start or end midyear.
+     */
+    fraction: number;
+}
+
+/**
+ * An asset is something with monetary value.
+ */
+export interface IAsset extends IBalanceItem<'asset'> {}
+
+/**
+ * A loan. Repayment will appear as an {@link IExpense}.
+ */
+export interface ILoan extends IBalanceItem<'loan'> {
+    payment?: number;
+    expense?: IExpense;
+}
+
+/**
+ * Income, either ongoing or one-time.
+ */
+export interface IIncome extends ICashFlowItem<'income'> {}
+
+/**
+ * An expense, either ongoing or one-time.
+ */
+export interface IExpense extends ICashFlowItem<'expense'> {
+    fromStream: IncomeStreamName;
+}
+
+/**
+ * Income Tax is an {@Link ICashFlowItem} that is computed from tax tables.
+ * It can only be computed after the taxable income for the previous year is computed.
+ */
+export interface IIncomeTax extends ICashFlowItem<'incomeTax'> {
+    /**
+     * A state postal code or 'US' for federal income tax. This controls what tax tables are used.
+     */
+    state: StateCode;
+}
+
+/**
  * Generally, a spouse. Potentially a dependent.
  */
-export interface IPerson extends Item<'person'> {
+export interface IPerson extends IItem<'person'> {
     /**
-     * For actuarial and Social Security calculationpurposes.
+     * For actuarial and Social Security calculation purposes.
      */
     birth: Date;
 
@@ -68,7 +163,7 @@ export interface IPerson extends Item<'person'> {
     sex: Sex;
 }
 
-export interface IText extends Item<'text'> {
+export interface IText extends IItem<'text'> {
     text: string;
 }
 
@@ -85,8 +180,35 @@ export type Reference<Str extends string> = `@${Str}`;
  */
 export type IncomeStreamSpec = IncomeName | AssetName | LoanName | Array<IncomeStreamSpec> | {[k in Reference<IncomeStreamName>]: number};
 
-export interface IIncomeStream extends Item<'incomeStream'> {
+export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
+    spec: IncomeStreamSpec;
+}
 
+export type AnyRow = Omit<IAsset, 'type'>
+    & Omit<ILoan, 'type'>
+    & Omit<IExpense, 'type'>
+    & Omit<IIncome, 'type'>
+    & Omit<IIncomeStream, 'type'>
+    & Omit<IIncomeTax, 'type'>
+    & Omit<IText, 'type'>
+    & Omit<IPerson, 'type'>
+    & Omit<IScenario, 'type'>
+    & {type: Type};
+
+export type RowLabel = keyof AnyRow;
+export type RowItem<T extends Type = Type> = ItemTypes[T] & {type: T};
+export type Row<T extends Type = Type> = RowTypes[T] & {type: T};
+
+export type InputRow = {
+    [k in Capitalize<RowLabel>]: AnyRow[Uncapitalize<k>]
 }
 
 export type SortFn<T> = (a: T, b: T) => -1 | 0 | 1;
+
+export type TimeLIneAction = "begin" | "end";
+
+export interface TimeLineItem {
+    date: Date;
+    action: TimeLIneAction;
+    item: IItem;
+}
