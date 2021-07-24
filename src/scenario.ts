@@ -191,18 +191,18 @@ export class Scenario extends ScenarioBase {
         if (!item) return null;
         const birth = item.birth ?? Throw(`Birth date for person ${name} is not specified`);
         const age = YEAR - birth.getUTCFullYear();
-        const sex = item.sex ?? Throw("Sex is not specified");
+        const sex = item?.sex ?? Throw("Sex is not specified");
         const years = this.#end_year - YEAR;
-        const categories = item.categories;
-        const scenarios = item.scenarios;
+        const categories = item?.categories ?? [];
+        const scenarios = item?.scenarios ?? ['Default'];
         const row = {
             name,
-            prettyName: item.prettyName ?? name,
+            prettyName: item?.prettyName ?? name,
             type: 'person' as const,
-            start: item.start,
+            start: item?.start ?? TODAY,
             birth,
             sex,
-            sort: item.sort ?? 0,
+            sort: item?.sort ?? 0,
             categories,
             scenarios,
             expectency: SS_2017[age][sex].years,
