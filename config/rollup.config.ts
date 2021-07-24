@@ -66,11 +66,8 @@ export const outputs = (p: Package) => flatMap((e: OutputOptions) => (e.file ? [
             format: 'umd',
             sourcemap: true,
             globals: {
-                katex: "katex",
                 d3: "d3",
                 "@observablehq/stdlib": "observablehq"
-                // "ramda": "ramda",
-                // "gl-matrix": "glMatrix"
             }
         },
         {
@@ -111,10 +108,14 @@ const dbg: any = {name: 'dbg'};
  * @param from
  * @param resolved
  */
-const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =>
-    !/gl-matrix|glMatrix/i.test(id) && (resolved
+const checkExternal = (id: string, from?: string, resolved?: boolean): boolean => {
+    const external = !/genutils|ramda|heap/i.test(id) && (resolved
         ? /node_modules/.test(id)
-        : !/^\./.test(id));
+        : !/^\.|\/src\//.test(id));
+    process.stderr.write(`External ${id} ${from} ${resolved} => ${external}
+`);
+    return external;
+}
 
 const options: RollupOptions = {
     input:'./src/index.ts',
@@ -137,9 +138,10 @@ const options: RollupOptions = {
             extensions: [".js", ".ts"]
         }),
         externalGlobals({
+            'd3': 'd3'
             // 'gl-matrix': "glMatrix",
             //'katex': 'katex',
-            'ramda': 'ramda'
+            //'ramda': 'ramda'
         }),
         ...(!dev && !DISABLE_TERSER) ? [
             terser({
