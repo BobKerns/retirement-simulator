@@ -6,7 +6,9 @@
 
 import * as d3 from 'd3';
 import {uniq} from 'ramda';
+import { Name } from './types';
 import * as raw_color_scheme from './data/color_scheme.json';
+import { Scenario } from './scenario';
 
 
 export const color_scheme: Array<Color> = raw_color_scheme;
@@ -32,12 +34,12 @@ export const compute_colors =
 
 export const default_colors = compute_colors(color_scheme);
 
-export const subcolors = (colors, domain) => {
+export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, domain: Color[]) => {
   const uniq_domain = uniq(domain);
-  const subcolors = (color) => {
+  const subcolors = (color: Color) => {
     return colors(color);
   };
   subcolors.domain = () => uniq_domain;
-  subcolors.range = (color) => domain.map(color);
+  subcolors.range = () => domain.map(colors);
   return subcolors;
 };
