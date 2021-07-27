@@ -109,7 +109,7 @@ const dbg: any = {name: 'dbg'};
  * @param resolved
  */
 const checkExternal = (id: string, from?: string, resolved?: boolean): boolean => {
-    const external = !/genutils|ramda|heap/i.test(id) && (resolved
+    const external = !/genutils|ramda|heap|d3/i.test(id) && (resolved
         ? /node_modules/.test(id)
         : !/^\.|\/src\//.test(id));
     process.stderr.write(`External ${id} ${from} ${resolved} => ${external}
