@@ -4,12 +4,13 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import * as d3 from 'd3';
 import {uniq} from 'ramda';
 import { Name } from './types';
 import * as raw_color_scheme from './data/color_scheme.json';
 import { Scenario } from './scenario';
 
+import { scaleOrdinal } from 'd3-scale';
+import { sort as d3Sort } from 'd3-array';
 
 export const color_scheme: Array<Color> = raw_color_scheme;
 
@@ -18,19 +19,15 @@ export type Color = string;
 export const compute_colors =
     (color_scheme: Array<Color>, unknown = "#000000") =>
     (scenario_list: Scenario[]) =>
-    d3.scaleOrdinal<Name, Color, Name>(
-        d3.sort(
+    colorsFor(color_scheme, unknown)(
             scenario_list.flatMap((s) => [
-            ...s.asset_list.map((d) => d.name),
-            ...s.income_list.map((d) => d.name),
-            ...s.expense_list.map((d) => d.name),
-            ...s.loan_list.map((d) => d.name),
-            ...s.tax_list.map((d) => d.name),
-            ...s.incomeStream_list.map((d) => d.name)
-            ])
-        ),
-        color_scheme
-    ).unknown(unknown);
+                ...s.asset_list.map((d) => d.name),
+                ...s.income_list.map((d) => d.name),
+                ...s.expense_list.map((d) => d.name),
+                ...s.loan_list.map((d) => d.name),
+                ...s.tax_list.map((d) => d.name),
+                ...s.incomeStream_list.map((d) => d.name)
+            ]));
 
 export const default_colors = compute_colors(color_scheme);
 
@@ -43,3 +40,10 @@ export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, domain: Co
   subcolors.range = () => domain.map(colors);
   return subcolors;
 };
+
+export const colorsFor = (color_scheme: Color[], unknown: string = "#000000") => (keys: string[]) => {
+    return scaleOrdinal<Name, Color, Name>(
+        d3Sort(keys),
+        color_scheme
+    ).unknown(unknown);
+}
