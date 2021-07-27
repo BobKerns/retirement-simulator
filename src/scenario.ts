@@ -16,10 +16,13 @@ import { Loan } from "./loan";
 import { Person } from "./person";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { TODAY, year, YEAR } from "./time";
-import { IAsset, ILoan, IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName } from "./types";
+import { TODAY, YEAR } from "./time";
+import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName } from "./types";
 import { assertRow, construct, heapgen, indexByName, Throw } from "./utils";
 
+/**
+ * A particular scenario.
+ */
 export class Scenario extends ScenarioBase {
     data: Array<Row<Type>>;
 
@@ -49,7 +52,7 @@ export class Scenario extends ScenarioBase {
 
     constructor(name: Name, dataset: Array<Row<Type>>, end_year: number) {
         super(assertRow(dataset.find(i => i.name === name && i.type === 'scenario') ?? Throw(`Scenario ${name} not found.`), 'scenario'));
-        this.data = dataset;
+        this.data = dataset.filter(i => i.scenarios.find(s => s === this.name));
         this.#end_year = end_year;
         const spouse1 = this.find_spouse("Spouse1") ?? Throw("No spouse1 specified");
         const spouse2 = this.find_spouse("Spouse2");
@@ -69,7 +72,7 @@ export class Scenario extends ScenarioBase {
         this.expenses = indexByName(this.expense_list);
         this.loan_list = this.find_items("loan");
         this.loan_list.forEach(
-        (l) => (l.payment = (l.expense = this.expenses[l.name]).value)
+            (l) => (l.payment = (l.expense = this.expenses[l.name]).value)
         );
         this.loans = indexByName(this.loan_list);
         this.income_list = this.find_items("income");
@@ -82,25 +85,27 @@ export class Scenario extends ScenarioBase {
         a.date.valueOf() < b.date.valueOf()
             ? -1
             : a.date.valueOf() === b.date.valueOf()
-            ? a.item.type < b.item.type
-            ? -1
-            : a.item.type === b.item.type
-            ? a.item.name < b.item.name
-                ? -1
-                : 0
-            : -1
+                ? a.item.type < b.item.type
+                    ? -1
+                    : a.item.type === b.item.type
+                    ? a.item.name < b.item.name
+                        ? -1
+                        : 0
+                : -1
             : 1;
+
+        // Compute the intial timeline.
         const timeline = new Heap(timelineCmp);
         timeline.push({ date: TODAY, action: "begin", item: this });
         const scan = (list: Array<IItem>) =>
-        list.forEach((item) => {
-            item &&
-            item.start &&
-            timeline.push({ date: item.start, action: "begin", item });
-            item &&
-            item.end &&
-            timeline.push({ date: item.end, action: "end", item });
-        });
+            list.forEach((item) => {
+                if (item && item.start) {
+                    timeline.push({ date: item.start, action: "begin", item });
+                }
+                if (item && item.end) {
+                    timeline.push({ date: item.end, action: "end", item });
+                }
+            });
         this.spouse1 && scan([this.spouse1]);
         this.spouse2 && scan([this.spouse2]);
         scan(this.asset_list);
@@ -112,23 +117,32 @@ export class Scenario extends ScenarioBase {
         this.#timeline = timeline;
     }
 
+    /**
+     * Get the full timeline in sorted order as a generator.
+     */
     get timeline() {
         return heapgen(this.#timeline);
     }
 
+    /**
+     * Get the snapshots for the scenario period.
+     */
     get snapshots() {
         return this.#snapshots || (this.#snapshots = this.run());
     }
 
+    /**
+     * Get the last snapshot for the scenario period.
+     */
     get final() {
         return this.#final || ((ss) => ss[ss.length - 1])(this.snapshots);
     }
 
+    /**
+     * Get the net worth at the final snapshot
+     */
     get total_assets_final() {
-        return Math.round(
-        this.final.asset_list.reduce((acc: number, asset: IAsset) => acc + asset.value, 0) -
-            this.final.loan_list.reduce((acc: number, loan: ILoan) => acc + loan.value, 0)
-        );
+        return this.final.total_assets;
     }
 
     get total_expenses() {
@@ -137,16 +151,16 @@ export class Scenario extends ScenarioBase {
 
     get total_retirement_income() {
         return Math.round(
-        this.asset_list
-            .filter((a) => !a.hasCategory("fixed"))
-            .reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
-            this.income_list.reduce((acc, a) => acc + a.value, 0)
-        );
+            this.asset_list
+                .filter((a) => !a.hasCategory("fixed"))
+                .reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
+                this.income_list.reduce((acc, a) => acc + a.value, 0)
+            );
     }
 
     get total_retirement_income_with_fixed() {
         return Math.round(
-        this.asset_list.reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
+            this.asset_list.reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
             this.income_list.reduce((acc, a) => acc + a.value, 0)
         );
     }
@@ -176,9 +190,9 @@ export class Scenario extends ScenarioBase {
     find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
         const item = this.data.find(
             (r: Row) =>
-            r.name === name &&
-            r.type === type &&
-            (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
+                r.name === name &&
+                r.type === type &&
+                (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
         );
         if (item) {
             return construct(item as Row<T>, type);
@@ -215,6 +229,10 @@ export class Scenario extends ScenarioBase {
         return x;
     }
 
+    /**
+     * Run the simulation for the scenario's period.
+     * @returns
+     */
     run() {
         const previous = this;
         return range(YEAR, this.#end_year + 1).reduce(
@@ -228,13 +246,6 @@ export class Scenario extends ScenarioBase {
         },
         { list: [], previous } as {list: Array<Snapshot>, previous: (Snapshot|Scenario)}
         ).list;
-    }
-
-    get total_assets() {
-        return Math.round(
-        this.asset_list.reduce((a, i) => a + i.value, 0) -
-            this.loan_list.reduce((a, i) => a + i.value, 0)
-        );
     }
 
     #compute_probabilities(spouse: Person) {

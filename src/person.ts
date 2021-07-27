@@ -7,6 +7,10 @@
 import { Item } from "./item";
 import { IPerson, Row, Sex } from "./types";
 
+/**
+ * A person (typically a spouse or domestic partner). Birth date and sex must be specified
+ * for correct actuarial data.
+ */
 export class Person extends Item<'person'> implements IPerson {
     birth: Date;
     sex: Sex;

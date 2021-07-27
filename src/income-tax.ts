@@ -8,6 +8,9 @@ import { CashFlow } from "./cashflow";
 import { StateCode } from "./states";
 import { IIncomeTax, Row } from "./types";
 
+/**
+ * A tax on income, state or federal.
+ */
 export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
     state: StateCode;
     constructor(row: Row<'incomeTax'>) {

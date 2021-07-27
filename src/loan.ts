@@ -7,6 +7,9 @@
 import { IExpense, ILoan, Row } from "./types";
 import {Monetary} from "./monetary";
 
+/**
+ * A loan. If not interest-free, `growth` should be supplied with 1 + the simple annual interest rate.
+ */
 export class Loan extends Monetary<'loan'> implements ILoan {
     growth: number;
     payment?: number;

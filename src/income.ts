@@ -7,6 +7,9 @@
 import { CashFlow } from "./cashflow";
 import { IIncome, Row } from "./types";
 
+/**
+ * An income item. By default, annual, but can be constrained to a particular period of time.
+ */
 export class Income extends CashFlow<'income'> implements IIncome {
     constructor(row: Row<'income'>) {
         super(row);

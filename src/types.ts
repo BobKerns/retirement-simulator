@@ -63,9 +63,6 @@ type RowTypes = {
 
 export type ItemType<T extends Type> = (ItemTypes)[T];
 
-export interface IScenario extends IItem<'scenario'> {
-
-}
 
 export type Category = string;
 
@@ -85,6 +82,27 @@ export interface IItem<T extends Type = Type> extends Named {
     categories: Category[];
     scenarios: ScenarioName[];
     notes?: string;
+}
+
+export interface IScenarioBase extends IItem<'scenario'> {
+    asset_list: Array<Asset>;
+    loan_list: Array<Loan>;
+    income_list: Array<Income>;
+    expense_list: Array<Expense>;
+    tax_list: Array<IncomeTax>;
+    incomeStream_list: Array<IncomeStream>;
+
+    assets: NamedIndex<Asset>;
+    loans: NamedIndex<Loan>;
+    incomes: NamedIndex<Income>;
+    incomeStreams: NamedIndex<IncomeStream>;
+    expenses: NamedIndex<Expense>;
+    taxes: NamedIndex<IncomeTax>;
+}
+
+
+export interface IScenario extends IScenarioBase {
+
 }
 
 export interface IMonetaryItem<T extends MonetaryType> extends IItem<T> {
