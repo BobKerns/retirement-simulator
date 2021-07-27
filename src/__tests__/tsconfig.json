@@ -5,7 +5,10 @@
     "error-handling.ts"
   ],
   "include": ["*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    "../color.ts"
+  ],
 
   "references": [
     // {"path": "../tsconfig.json"}
