@@ -11,11 +11,29 @@ import { Scenario } from './scenario';
 
 import { scaleOrdinal } from 'd3-scale';
 import { sort as d3Sort } from 'd3-array';
+import { Throw } from './utils';
 
-export const color_scheme: Array<Color> = raw_color_scheme;
+/**
+ * Colors are strings in the form _#rrggbb_.
+ */
+export type Color = `#${string}`;
 
-export type Color = string;
+const isColor = (c: string): c is Color => /^#[0-9a-f]{6}$/i.test(c);
+const verifyColor = (c: string) => isColor(c) ? c : Throw(`Invalid color: ${c}`);
 
+/**
+ * The supplied color scheme.
+ */
+export const color_scheme: Array<Color> = raw_color_scheme.map(verifyColor);
+
+/**
+ * Compute a set of color mappings for items in a given set of scenarios.
+ * A higher-order function. Supply _color_scheme_ (and optionally _unknown_), and it will return a
+ * a function that accepts a list of scenarios
+ * @param color_scheme a list of colors in '#rrggbb' format.
+ * @param unknown the color to use for unknown keys
+ * @returns a d3 ordinal interpolator.
+ */
 export const compute_colors =
     (color_scheme: Array<Color>, unknown = "#000000") =>
     (scenario_list: Scenario[]) =>
@@ -29,10 +47,21 @@ export const compute_colors =
                 ...s.incomeStream_list.map((d) => d.name)
             ]));
 
+/**
+ * Accept a list of scenarios, and return the default color scheme to use.
+ * @param scenarios
+ */
 export const default_colors = compute_colors(color_scheme);
 
-export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, domain: Color[]) => {
-  const uniq_domain = uniq(domain);
+/**
+ * Subset a color interpolator to a subdomain. This is used to allow genenrating a swatch for
+ * just the relevant items.
+ * @param colors
+ * @param subdomain
+ * @returns a d3 ordinal interpolator.
+ */
+export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, subdomain: Color[]) => {
+  const uniq_domain = uniq(subdomain);
   const subcolors = (color: Color) => {
     return colors(color);
   };
@@ -41,6 +70,14 @@ export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, domain: Co
   return subcolors;
 };
 
+/**
+ * Compute a set of color mappings for items in a given set of keys.
+ * A higher-order function. Supply _color_scheme_ (and optionally _unknown_), and it will return a
+ * a function that accepts a list of keys
+ * @param color_scheme a list of colors in '#rrggbb' format.
+ * @param unknown the color to use for unknown keys
+ * @returns a d3 ordinal interpolator.
+ */
 export const colorsFor = (color_scheme: Color[], unknown: string = "#000000") => (keys: string[]) => {
     return scaleOrdinal<Name, Color, Name>(
         d3Sort(keys),
