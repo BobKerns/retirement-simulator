@@ -66,7 +66,7 @@ export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, subdomain:
     return colors(color);
   };
   subcolors.domain = () => uniq_domain;
-  subcolors.range = () => domain.map(colors);
+  subcolors.range = () => subdomain.map(colors);
   return subcolors;
 };
 
