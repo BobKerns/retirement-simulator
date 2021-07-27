@@ -2,7 +2,11 @@
   // Inherit the project settings.
   "extends": "../tsconfig.json",
   "files": [
-    "error-handling.ts"
+    "error-handling.ts",
+    "test-actuary.ts",
+    "test-expense.ts",
+    "sample1.ts",
+    "test-item.ts"
   ],
   "include": ["*.ts"],
   "exclude": [
