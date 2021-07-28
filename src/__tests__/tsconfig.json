@@ -1,17 +1,9 @@
 {
   // Inherit the project settings.
   "extends": "../tsconfig.json",
-  "files": [
-    "error-handling.ts",
-    "test-actuary.ts",
-    "test-expense.ts",
-    "sample1.ts",
-    "test-item.ts"
-  ],
-  "include": ["*.ts"],
+  "include": ["*.ts", "data/samples.ts"],
   "exclude": [
-    "node_modules",
-    "../color.ts"
+    "node_modules"
   ],
 
   "references": [
@@ -23,8 +15,8 @@
     "incremental": true,
     "tsBuildInfoFile": "../../build/.tsbuild-info-src-tests",
     // Project layout. Changes not recommended.
-    "outDir": "../../build",
-    "rootDir": "../.."
+    "outDir": "../../build/test",
+    "rootDir": ".."
   }
 }
 

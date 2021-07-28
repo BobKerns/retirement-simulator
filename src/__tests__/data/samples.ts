@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IExpense, IPerson } from "../types";
+import { IExpense, IPerson } from "../../types";
 
 export const expense_1: IExpense = {
     name: 'Expense',

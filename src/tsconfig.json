@@ -4,7 +4,7 @@
   "include": [
     "*.ts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "build", "__test__"],
 
   "compilerOptions": {
     // "composite": true
