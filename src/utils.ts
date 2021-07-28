@@ -40,6 +40,11 @@ export const heapgen = <T>(heap: Heap<T>) => {
   return Sync.enhance(heapgen(heap));
 }
 
+/**
+ * Produce an index to a list of {@link Named objects.
+ * @param list A list of {@link Named} objects
+ * @returns An index of the objects by name.
+ */
 export const indexByName = <T extends Named>(list: Array<T>) =>
   list.reduce((acc: NamedIndex<T>, item) => ((acc[item.name] = item), acc), {});
 
@@ -82,9 +87,29 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
   export const fmt_date = (date: Date) =>
     `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}`;
 
+/**
+ * Assert that the call in the argument cannot return.
+ * @param x
+ * @param msg
+ * @returns
+ */
   export const assertNever = (x: never, msg: string = `Unexpected ${x}`): never => Throw(msg);
 
+/**
+ * Check that the supplied {@link Row} is of the specified {@link Type}
+ * @param row The {@link Row} to check
+ * @param type the {@link Type} the row should be.
+ * @returns
+ */
   export const checkRow = <T extends Type>(row: Row, type: T): row is Row<T> => row.type === type;
+
+  /**
+   * Check that the supplied {@link Row} is of the desired {@link Type}, returning it as that type,
+   * or throwing an exception if it is not.
+   * @param row The {@link Row} to check
+   * @param type
+   * @returns
+   */
   export const assertRow = <T extends Type>(row: Row, type: T): Row<T> => checkRow(row, type) ? row : Throw(`Row not of type ${type}.`);
 
   export const construct = <T extends Type>(item: Row<T>, type: T = item.type): ItemType<T> => {
@@ -109,4 +134,62 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
   }
 };
 
+/**
+ * Returns the unique values, as compared by ===
+ * @param l a list of strings or other values to be compared by ===
+ * @returns
+ */
+export const uniq = <T>(l: Array<T>) =>
+    [
+        ...l.reduce((acc: Set<T>, e: T) =>
+            (acc.add(e), acc), new Set<T>())
+        .keys()
+];
 
+export const comparator = Symbol.for('compare');
+
+/**
+ * A comparator that sorts according to the "natural" order. First by type, then by string or numerical
+ * ordering if a string, number, boolean, or symbol.
+ */
+export const naturalCMP = <T>(a: T, b: T): -1 | 0 | 1 => {
+    const typea = typeof a;
+    const typeb = typeof b;
+    if (typea < typeb) return -1;
+    if (typeb < typea) return 1;
+    switch (typea) {
+        case 'number':
+        case 'string':
+        case 'boolean':
+            if (a < b) return -1;
+            if (a > b) return 1;
+            break;
+        case 'symbol':
+            return naturalCMP((a as unknown as Symbol).description, (b as unknown as Symbol).description)
+        case 'object':
+            if (!a && b) return -1;
+            if (!b && a) return 1;
+            if (b === a) return 0;
+            const aCnst = (a as Object).constructor;
+            const bCnst = (b as Object).constructor;
+            if (aCnst === bCnst) {
+                const cmp = (aCnst as any)[comparator] ?? nullCMP as SortFn<T>;
+                return cmp(a, b);
+            }
+            return naturalCMP(aCnst.name, bCnst.name)
+    }
+    return 0;
+}
+
+/**
+ * A comparator that does not alter the sort order. It regards everything as equal, and thus Javascript's
+ * stable sort leaves the ordering unchanged.
+ * @param a
+ * @param b
+ * @returns 0
+ */
+export const nullCMP = <T>(a: T, b: T): -1 | 0 | 1 => 0;
+
+export const sort = <T>(cmp: SortFn<T> = naturalCMP) => <I extends T>(l: Iterable<I>) => [...l].sort(cmp);
+
+export const naturalSort = sort();
