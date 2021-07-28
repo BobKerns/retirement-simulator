@@ -16,6 +16,7 @@ import {OutputOptions, RollupOptions} from "rollup";
 import {chain as flatMap} from 'ramda';
 import externalGlobals from "rollup-plugin-external-globals";
 import serve from "rollup-plugin-serve";
+import json from '@rollup/plugin-json'
 
 const SERVE_PORT = Number.parseInt(process.env.SERVE_PORT ?? '5555');
 
@@ -109,7 +110,7 @@ const dbg: any = {name: 'dbg'};
  * @param resolved
  */
 const checkExternal = (id: string, from?: string, resolved?: boolean): boolean => {
-    const external = !/genutils|ramda|heap|d3/i.test(id) && (resolved
+    const external = !/genutils|heap/i.test(id) && (resolved
         ? /node_modules/.test(id)
         : !/^\.|\/src\//.test(id));
     process.stderr.write(`External ${id} ${from} ${resolved} => ${external}
@@ -126,6 +127,10 @@ const options: RollupOptions = {
             // Check for these in package.json
             mainFields: mainFields(pkg, ['module', 'main', 'browser'])
         }),
+        json({
+            compact: true,
+            namedExports: false,
+            }),
         typescript({
              tsconfig: 'src/tsconfig.json',
              include: "**/*.ts",
@@ -138,10 +143,6 @@ const options: RollupOptions = {
             extensions: [".js", ".ts"]
         }),
         externalGlobals({
-            'd3': 'd3'
-            // 'gl-matrix': "glMatrix",
-            //'katex': 'katex',
-            //'ramda': 'ramda'
         }),
         ...(!dev && !DISABLE_TERSER) ? [
             terser({

@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import * as SS_2017_raw from './data/SS_2017.json';
+import SS_2017_raw from './data/SS_2017.json';
 import { calculate_age } from './time';
 import { IPerson, Sex } from './types';
 import { Throw } from './utils';

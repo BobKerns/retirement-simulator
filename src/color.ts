@@ -4,9 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import {uniq} from 'ramda';
 import { Name } from './types';
-import * as raw_color_scheme from './data/color_scheme.json';
+import raw_color_scheme from './data/color_scheme.json';
 import { Scenario } from './scenario';
 
 import { scaleOrdinal } from 'd3-scale';
