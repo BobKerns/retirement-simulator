@@ -5,7 +5,7 @@
  */
 
 import { actuary, ActuaryDatum } from "../actuary";
-import { person_1, person_2 } from "./samples";
+import { person_1, person_2 } from "./data/samples";
 
 describe("Actuary", () => {
     test("age male", () => expect(actuary(1, 'male')).toEqual({n: 99370, p: 0.000426, years: 75.45}));

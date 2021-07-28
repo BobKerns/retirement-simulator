@@ -6,7 +6,7 @@
 
 import {Expense} from '../expense';
 import { construct } from '../utils';
-import { expense_1 } from './samples';
+import { expense_1 } from './data/samples';
 
 describe("Expense", () => {
     test("Create", () => expect(new Expense(expense_1).fromStream).toEqual(expense_1.fromStream));
