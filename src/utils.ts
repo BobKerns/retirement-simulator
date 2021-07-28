@@ -26,6 +26,9 @@ export const Throw = (s: string | Error) => {
   throw new Error(s);
 }
 
+export const nyi = (s?: string) =>
+    Throw(s ? `Not yet implemented: ${s}` : `Not yet implemented.`);
+
 /**
  * Given a `Heap`, give a generator to the (sorted) values in the heap.
  * @param heap
