@@ -119,7 +119,7 @@ const globalsChecked: {[k:string]: string | false} = {};
  */
 const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =>
     {
-        const isExternal = !/\/build\/src\/(?:[^/]+.js|data\/[^/]+.json)$/.test(id) && (resolved
+        const isExternal = !/\/build\/src\/.+\.(?:js|json)$/.test(id) && (resolved
             ? /\/node_modules\//.test(id)
             : !/^\./.test(id));
         const ext = globals[id] ?? '(missing)';
