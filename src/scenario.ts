@@ -18,7 +18,8 @@ import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./time";
 import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName } from "./types";
-import { assertRow, construct, heapgen, indexByName, Throw } from "./utils";
+import { assertRow, heapgen, indexByName, Throw } from "./utils";
+import { construct } from "./construct";
 
 /**
  * A particular scenario.

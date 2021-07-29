@@ -5,7 +5,7 @@
  */
 
 import {Expense} from '../expense';
-import { construct } from '../utils';
+import { construct } from '../construct';
 import { expense_1 } from './data/samples';
 
 describe("Items", () => {

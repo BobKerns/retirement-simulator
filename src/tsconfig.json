@@ -2,16 +2,15 @@
   // Inherit the project settings.
   "extends": "../tsconfig",
   "include": [
-    "*.ts"
+    "*.ts",
+    "data/*.json"
   ],
   "exclude": ["node_modules", "build", "__test__"],
 
   "compilerOptions": {
-    // "composite": true
+    "composite": true,
     "incremental": true,
-    "tsBuildInfoFile": "../build/tsbuild-info-src",
-    // Project layout. Changes not recommended.
-    "allowSyntheticDefaultImports": true,
+    "tsBuildInfoFile": "../build/.tsbuild-info-src",
     "outDir": "../build/src",
     "rootDir": "."
   }

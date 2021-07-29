@@ -1,16 +1,20 @@
 {
   // Inherit the project settings.
   "extends": "../tsconfig.json",
-  "include": ["*.ts", "data/samples.ts"],
+  "include": [
+      "*.ts",
+      "data/samples.ts"
+    ],
   "exclude": [
     "node_modules"
   ],
 
   "references": [
-    // {"path": "../tsconfig.json"}
+    {"path": "../tsconfig.json"}
   ],
 
   "compilerOptions": {
+      "composite": true,
     "allowSyntheticDefaultImports": true,
     "incremental": true,
     "tsBuildInfoFile": "../../build/.tsbuild-info-src-tests",

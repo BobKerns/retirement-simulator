@@ -1,5 +1,5 @@
 {
-  "include": ["src/*.ts", "src/**/*.ts"],
+  "include": ["src/*.ts", "src/**/*.ts", "src/**/*.json"],
   "exclude": ["config", "devtools", "lib", "build", ".idea", ".rpt2-cache"],
   "compilerOptions": {
     /* Basic Options */
@@ -21,10 +21,10 @@
     /* Redirect output structure to the directory. */
     "rootDir": "./src",
     /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    "composite": false,                     /* Enable project compilation */
-    "incremental": false,
+    "composite": true,                     /* Enable project compilation */
+    "incremental": true,
     /* Enable incremental compilation */
-    // "tsBuildInfoFile": "./build/.tsbuild-info",
+     "tsBuildInfoFile": "./build/.tsbuild-info",
     /* Specify file to store incremental compilation information */
     // "removeComments": true,                /* Do not emit comments to output. */
     // "noEmit": true,                        /* Do not emit outputs. */
