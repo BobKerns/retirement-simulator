@@ -14,9 +14,7 @@
     "allowSyntheticDefaultImports": true,
     "incremental": true,
     "tsBuildInfoFile": "../../build/.tsbuild-info-src-tests",
-    // Project layout. Changes not recommended.
     "outDir": "../../build/test",
     "rootDir": ".."
   }
 }
-
