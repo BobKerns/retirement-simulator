@@ -39,10 +39,9 @@ export class Item<T extends Type> implements IItem<T> {
      */
     get [Symbol.toStringTag]() {
       return (
-        this.#tag ?? (this.#tag = `${this.constructor.name}[${this.name} ${this.name}]`)
+        this.#tag ?? (this.#tag = `${this.constructor.name}[${this.name}]`)
       );
     }
-
     /**
      * Determine if an item is in a specified category.
      * @param category
