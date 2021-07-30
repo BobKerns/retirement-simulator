@@ -4,9 +4,11 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import {default as Heap} from 'heap';
+import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import { MonetaryType, IMonetaryItem, IItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, Row } from './types';
+import { MonetaryType, IMonetaryItem, IItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, Row, IMonetary } from './types';
+
+export const Heap = HeapIn;
 
 /**
  * Function that throws its argument.
@@ -164,6 +166,42 @@ export const naturalCMP = <T>(a: T, b: T): -1 | 0 | 1 => {
  */
 export const nullCMP = <T>(a: T, b: T): -1 | 0 | 1 => 0;
 
+
+/**
+ * A higher-order function that returs a sort function.
+ * @param cmp a comparator
+ * @returns a sort function that sorts a list according to _cmp_
+ * @param list
+ * @returns a copy of _list_ in sorted order.
+ */
 export const sort = <T>(cmp: SortFn<T> = naturalCMP) => <I extends T>(l: Iterable<I>) => [...l].sort(cmp);
 
+/**
+ * A function that sorts according to natural order. See {@link naturalCMP}.
+ * @param list
+ * @returns a copy of _list_ in sorted order.
+ */
 export const naturalSort = sort();
+
+/**
+ * Higher-order function, that creates summing functions.
+ *
+ * @param f a function that takes an item and returns a number.
+ * @returns a function that takes a list of items and returns the sum of the values returned by applying _f_.
+ */
+export const summer = <T, V extends number>(f: (item: T) => V) =>
+    (l: T[]) =>
+        l.reduce((acc, a: T) => (acc + f(a)) as V, 0 as V);
+
+/**
+ * Get the monetary value of an item.
+ * @param i a {@link IMonetaryItem}
+ * @returns
+ */
+export const monetaryValue = (i: IMonetary) => i.value;
+
+/**
+ * Get the total value of a list of monetary items.
+ * @param l a list of {@link IMonetaryItem} items.
+ */
+export const total = summer(monetaryValue);

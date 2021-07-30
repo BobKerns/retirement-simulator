@@ -5,6 +5,7 @@
  */
 
 import { Monetary } from "./monetary";
+import { asRate, Rate } from "./tagged";
 import { day_of_year, TODAY, YEAR } from "./time";
 import { CashFlowType, ICashFlowItem, Row } from "./types";
 
@@ -12,7 +13,7 @@ import { CashFlowType, ICashFlowItem, Row } from "./types";
  * An expense or income; that is, money flowing in or out.
  */
 export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> implements ICashFlowItem<T> {
-    fraction: number;
+    fraction: Rate;
     constructor(row: Row<T>) {
         super(row);
         this.fraction = this.#item_fraction();
@@ -29,7 +30,7 @@ export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> imple
         const start_year = start.getUTCFullYear();
         const end = this.end;
         const end_year = end?.getUTCFullYear();
-        return (
+        return asRate(
             (start.getUTCFullYear() > next_year
             ? 0
             : start_year < this_year

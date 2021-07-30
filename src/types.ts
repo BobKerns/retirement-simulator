@@ -13,6 +13,7 @@ import { Loan } from "./loan";
 import { Person } from "./person";
 import { Scenario } from "./scenario";
 import { StateCode } from "./states";
+import { Money, Rate, Unit } from "./tagged";
 import { TextItem } from "./text";
 
 export type Name = string;
@@ -105,8 +106,11 @@ export interface IScenario extends IScenarioBase {
 
 }
 
-export interface IMonetaryItem<T extends MonetaryType> extends IItem<T> {
-    value: number;
+export interface IMonetary {
+    value: Money;
+}
+
+export interface IMonetaryItem<T extends MonetaryType> extends IItem<T>, IMonetary {
 }
 
 /**
@@ -117,7 +121,7 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
      * Multiplicative factor. Will need to canonicalize compounding periods (APR vs simple, etc.)
      * Non interest-bearing assets, or loans use a value of `1.0,`;
      */
-    growth: number;
+    growth: Rate;
 }
 
 /**
@@ -127,7 +131,7 @@ export interface ICashFlowItem<T extends CashFlowType> extends IMonetaryItem<T> 
     /**
      * The fraction of a year this expense item applies to, for expenses which start or end midyear.
      */
-    fraction: number;
+    fraction: Rate;
 }
 
 /**
@@ -139,7 +143,7 @@ export interface IAsset extends IBalanceItem<'asset'> {}
  * A loan. Repayment will appear as an {@link IExpense}.
  */
 export interface ILoan extends IBalanceItem<'loan'> {
-    payment?: number;
+    payment?: Money;
     expense?: IExpense;
 }
 

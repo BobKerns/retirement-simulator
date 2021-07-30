@@ -6,13 +6,14 @@
 
 import { IExpense, ILoan, Row } from "./types";
 import {Monetary} from "./monetary";
+import { Money, Rate } from "./tagged";
 
 /**
  * A loan. If not interest-free, `growth` should be supplied with 1 + the simple annual interest rate.
  */
 export class Loan extends Monetary<'loan'> implements ILoan {
-    growth: number;
-    payment?: number;
+    growth: Rate;
+    payment?: Money;
     expense?: IExpense;
     constructor(row: Row<'loan'>) {
         super(row);

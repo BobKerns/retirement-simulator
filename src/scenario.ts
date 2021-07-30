@@ -18,7 +18,7 @@ import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./time";
 import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName } from "./types";
-import { assertRow, heapgen, indexByName, Throw } from "./utils";
+import { assertRow, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";
 
 /**
@@ -55,8 +55,8 @@ export class Scenario extends ScenarioBase {
         super(assertRow(dataset.find(i => i.name === name && i.type === 'scenario') ?? Throw(`Scenario ${name} not found.`), 'scenario'));
         this.data = dataset.filter(i => i.scenarios.find(s => s === this.name));
         this.#end_year = end_year;
-        const spouse1 = this.find_spouse("Spouse1") ?? Throw("No spouse1 specified");
-        const spouse2 = this.find_spouse("Spouse2");
+        const spouse1 = this.#find_spouse("Spouse1") ?? Throw("No spouse1 specified");
+        const spouse2 = this.#find_spouse("Spouse2");
         this.spouse1 = spouse1;
         this.spouse2 = spouse2;
         this.people = {
@@ -67,20 +67,20 @@ export class Scenario extends ScenarioBase {
                 [spouse2?.name]: spouse2
             },
         };
-        this.asset_list = this.find_items("asset");
+        this.asset_list = this.#find_items("asset");
         this.assets = indexByName(this.asset_list);
-        this.expense_list = this.find_items("expense");
+        this.expense_list = this.#find_items("expense");
         this.expenses = indexByName(this.expense_list);
-        this.loan_list = this.find_items("loan");
+        this.loan_list = this.#find_items("loan");
         this.loan_list.forEach(
             (l) => (l.payment = (l.expense = this.expenses[l.name]).value)
         );
         this.loans = indexByName(this.loan_list);
-        this.income_list = this.find_items("income");
+        this.income_list = this.#find_items("income");
         this.incomes = indexByName(this.income_list);
-        this.tax_list = this.find_items("incomeTax");
+        this.tax_list = this.#find_items("incomeTax");
         this.taxes = indexByName(this.tax_list);
-        this.incomeStream_list = this.find_items("incomeStream");
+        this.incomeStream_list = this.#find_items("incomeStream");
         this.incomeStreams = indexByName(this.incomeStream_list);
         const timelineCmp = (a: TimeLineItem, b: TimeLineItem) =>
         a.date.valueOf() < b.date.valueOf()
@@ -139,15 +139,15 @@ export class Scenario extends ScenarioBase {
         return this.#final || ((ss) => ss[ss.length - 1])(this.snapshots);
     }
 
+    get sourcesFlat() {
+        return this.snapshots.flatMap((s) => [...s.asset_list, ...s.income_list]);
+    }
+
     /**
      * Get the net worth at the final snapshot
      */
-    get total_assets_final() {
-        return this.final.total_assets;
-    }
-
-    get total_expenses() {
-        return Math.round(this.expense_list.reduce((a, i) => a + i.value, 0));
+    get net_assets_final() {
+        return this.final.net_assets;
     }
 
     get total_retirement_income() {
@@ -155,7 +155,7 @@ export class Scenario extends ScenarioBase {
             this.asset_list
                 .filter((a) => !a.hasCategory("fixed"))
                 .reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
-                this.income_list.reduce((acc, a) => acc + a.value, 0)
+                total(this.income_list)
             );
     }
 
@@ -166,19 +166,11 @@ export class Scenario extends ScenarioBase {
         );
     }
 
-    get sourcesFlat() {
-        return this.snapshots.flatMap((s) => [...s.asset_list, ...s.income_list]);
-    }
-
-    get sources() {
-        return [...this.asset_list, ...this.income_list];
-    }
-
     get [Symbol.toStringTag]() {
         return `Scenario[${this.name}]`;
     }
 
-    find_items<T extends Type>(type: T, all: boolean = false): Array<ItemType<T>> {
+    #find_items<T extends Type>(type: T, all: boolean = false): Array<ItemType<T>> {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
@@ -188,7 +180,7 @@ export class Scenario extends ScenarioBase {
         return items;
     }
 
-    find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
+    #find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
         const item = this.data.find(
             (r: Row) =>
                 r.name === name &&
@@ -201,8 +193,8 @@ export class Scenario extends ScenarioBase {
         return null;
     }
 
-    find_spouse(name: Name): Person | null {
-        const item = this.find_item(name, 'person');
+    #find_spouse(name: Name): Person | null {
+        const item = this.#find_item(name, 'person');
         if (!item) return null;
         const birth = item.birth ?? Throw(`Birth date for person ${name} is not specified`);
         const age = YEAR - birth.getUTCFullYear();

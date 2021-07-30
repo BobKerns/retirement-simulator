@@ -11,7 +11,7 @@ import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Item } from "./item";
 import { Loan } from "./loan";
-import { IScenarioBase, NamedIndex, Row } from "./types";
+import { IScenarioBase, ItemType, NamedIndex, Row, Type } from "./types";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -24,28 +24,90 @@ import { IScenarioBase, NamedIndex, Row } from "./types";
  * with their values during that snapshot period.
  */
 export abstract class ScenarioBase extends Item<'scenario'> implements IScenarioBase {
-    abstract asset_list: Array<Asset>;
-    abstract loan_list: Array<Loan>;
+    /**
+     * A list of {@link Asset}. See also {@link assets}.
+     */
+    abstract asset_list: Asset[];
+    /**
+     * A list of {@link Loan}. See also {@link loans}.
+     */
+    abstract loan_list: Loan[];
+    /**
+     * A list of {@link Income}. See also {@link incomes}.
+     */
     abstract income_list: Income[];
+    /**
+     * A list of {@link Expense}. See also {@link expenses}.
+     */
     abstract expense_list: Expense[];
+    /**
+     * A list of {@link IncomeTax}. See also {@link taxes}.
+     */
     abstract tax_list: IncomeTax[];
+    /**
+     * A list of {@link IncomeStream}. See also {@link incomeStreams}.
+     */
     abstract incomeStream_list: IncomeStream[];
+
+    /**
+     * A lookup table of {@link Asset} for convenient lookup by name.
+     * See also {@link asset_list}.
+     */
     abstract assets: NamedIndex<Asset>;
+
+    /**
+     * A lookup table of {@link Loan} for convenient lookup by name.
+     * See also {@link loan_list}.
+     */
     abstract loans: NamedIndex<Loan>;
+
+    /**
+     * A lookup table of {@link Income} for convenient lookup by name.
+     * See also {@link income_list}.
+     */
     abstract incomes: NamedIndex<Income>;
+
+    /**
+     * A lookup table of {@link IncomeStream} for convenient lookup by name.
+     * See also {@link incomeStream_list}.
+     */
     abstract incomeStreams: NamedIndex<IncomeStream>;
+
+    /**
+     * A lookup table of {@link Expense} for convenient lookup by name.
+     * See also {@link expense_list}.
+     */
     abstract expenses: NamedIndex<Expense>;
+
+    /**
+     * A lookup table of {@link IncomeTax} for convenient lookup by name.
+     * See also {@link tax_list}.
+     */
     abstract taxes: NamedIndex<IncomeTax>;
-    
+
     constructor(row: Row<'scenario'>) {
         super(row);
     }
 
-    get total_assets() {
+    get sources() {
+        return [...this.asset_list, ...this.income_list];
+    }
+
+    /**
+     * Calculate the total net value of assets.
+     */
+    get net_assets() {
         return Math.round(
             this.asset_list.reduce((a, i) => a + i.value, 0) -
             this.loan_list.reduce((a, i) => a + i.value, 0)
         );
+    }
+
+    /**
+     * Get the total expenses
+     */
+    get total_expenses() {
+        return Math.round(this.expense_list.reduce((a, i) => a + i.value, 0));
     }
 
 }

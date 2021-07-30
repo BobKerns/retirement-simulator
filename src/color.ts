@@ -7,14 +7,12 @@
 import { Name } from './types';
 import raw_color_scheme from './data/color_scheme.json';
 import { Scenario } from './scenario';
-import { Throw, uniq, naturalSort, assertNever, nyi } from './utils';
-
-const typetag = Symbol.for("typetag");
-export type Tag<T extends string> = {[typetag]: T};
+import { Throw, uniq, naturalSort} from './utils';
+import { asByte, asDegrees, asUnit, Byte, Degrees, isByte, isDegrees, isUnit, Tag, Tagged, Unit } from './tagged';
 /**
  * Colors are strings in the form _#rrggbb_.
  */
-export type Color = `#${string}` & Tag<'Color'>;
+export type Color = Tagged<'Color', `#${string}`>;
 
 /**
  * Typecheck that a string is a valid {@link Color} value.
@@ -25,104 +23,6 @@ export const asColor = (c: string): Color =>
     isColor(c)
         ? c
         : Throw(`${c} is not a Color.`);
-/**
- * A number between 0 and 360, inclusive of 0, exclusive of 360.
- *
- * Other values are mathematically valid, but are constrained here for
- * implementation convenience and reliability. Use {@link mod360} to coerce
- * to this range.
- */
-export type Degrees = number & Tag<'Degrees'>;
-
-export const isDegrees = (n: number): n is Degrees =>
-    (typeof n === 'number')
-    && (n < 360 && n >= 0);
-/**
- * Typecheck that a number is a valid {@link Degrees} value.
- * @param n
- * @returns
- */
-export const asDegrees = (n: number): Degrees =>
-    (n < 360 && n >= 0)
-        ? n as Degrees
-        : Throw(`${n} is not a valid number of degrees.`);
-
-/**
- * Coerce a number to the range between 0 and 360, inclusive of 0, exclusive of 360.
- * @param n
- * @returns the number, coerced to the range (0,360], typed as {@link Degrees}
- */
-export const mod360 = (n: number) => {
-    if (isNaN(n)) throw `${n} is not a valid number of degrees.`;
-    const remainder = n % 360;
-    return remainder < 0
-        ? remainder + 360 as Degrees
-        : remainder as Degrees;
-}
-/**
- * A number between 0 and 1, inclusive.
- */
-export type Unit = number & Tag<'Unit'>;
-
-const isUnit = (n: number): n is Unit =>
-    typeof n === 'number' && (n <= 1 && n >= 0);
-
-/**
- * Typecheck that a number is a valid {@link Unit} value.
- * @param n
- * @returns a {@link Unit}
- */
-export const asUnit = (n: number): Unit =>
-    isUnit(n)
-        ? n
-        : Throw(`${n} is not a number between 0 and 1.`);
-
-/**
- * An integer.
- */
-export type Integer = number & Tag<'Integer'>;
-
-/**
- * Test that a number is an integer
- * @param n
- * @returns
- */
-export const isInteger = (n: number): n is Integer => typeof n === 'number' && (n % 1) === 0;
-
-/**
- * Typecheck that a number is a valid {@link Integer} value.
- * @param n
- * @returns a {@link Byte}
- */
-export const asInteger = (n: number) =>
-    isInteger(n)
-        ? n as Integer
-        : Throw(`${n} is not an Integer.`);
-
-/**
- * An integer between 0 and 255, inclusive.
- */
-export type Byte = Integer & Tag<'Byte'>;
-
-/**
- * Test that a number is a byte value
- * @param n
- * @returns
- */
-export const isByte = (n: number): n is Byte =>
-    typeof n === 'number'
-    && n >= 0 && n < 256
-    && isInteger(n);
-
-/**
- * Typecheck that a number is a valid {@link Byte} value.
- * @param n
- * @returns a {@link Byte}
- */
-export const asByte = (n: number): Byte =>
-    isByte(n)
-        ? n
-        : Throw(`${n} is not an integer between 0 and 255`)
 
 
 export type RGBSpec = {r: number, g: number, b: number};

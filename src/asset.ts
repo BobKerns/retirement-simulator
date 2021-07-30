@@ -5,6 +5,7 @@
  */
 
 import { Monetary } from "./monetary";
+import { Rate } from "./tagged";
 import { IAsset, Row } from "./types";
 
 /**
@@ -12,7 +13,7 @@ import { IAsset, Row } from "./types";
  * will change by that factor each period (currently, always annually, pro-rated).
  */
 export class Asset extends Monetary<'asset'> implements IAsset {
-    growth: number;
+    growth: Rate;
     constructor(row: Row<'asset'>) {
         super(row);
         this.growth = row.growth ?? 1;

@@ -15,7 +15,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
     constructor(row: Row<'incomeStream'>) {
         super(row);
         let spec = row.spec;
-        this.spec = spec;
+        this.spec = this.#parse(spec);
     }
 
     #parse(spec: string | IncomeStreamSpec): IncomeStreamSpec {

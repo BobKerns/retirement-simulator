@@ -4,6 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { asMoney, asRate, asUnit } from "../../tagged";
 import { IExpense, IPerson } from "../../types";
 
 export const expense_1: IExpense = {
@@ -11,10 +12,10 @@ export const expense_1: IExpense = {
     type: 'expense' as const,
     fromStream: 'from',
     sort: 1,
-    value: 100.00,
+    value: asMoney(100.00),
     categories: ['fred'],
     scenarios: [],
-    fraction: 1
+    fraction: asRate(1)
 };
 
 export const person_1: IPerson = {
