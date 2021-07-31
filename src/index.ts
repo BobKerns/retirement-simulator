@@ -32,3 +32,15 @@ export * from './text';
 export * from './time';
 export * from './types';
 export * from './utils';
+
+/**
+ * This is substituted at build time.
+ */
+const REPLACE_VERSION = {
+    version: '0.0.0',
+    mode: 'development'
+};
+/**
+ * Information about this version.
+ */
+export const VERSION = Object.freeze(REPLACE_VERSION);
