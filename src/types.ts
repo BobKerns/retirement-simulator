@@ -13,7 +13,7 @@ import { Liability } from "./liability";
 import { Person } from "./person";
 import { Scenario } from "./scenario";
 import { StateCode } from "./states";
-import { Money, Rate, Unit } from "./tagged";
+import { Money, Rate } from "./tagged";
 import { TextItem } from "./text";
 
 export type Name = string;
@@ -228,6 +228,8 @@ export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
 export type RowLabel = keyof AnyRow;
 export type RowItem<T extends Type = Type> = ItemTypes[T] & {type: T};
 export type Row<T extends Type = Type> = RowTypes[T] & {type: T};
+
+export type InputColumns = Capitalize<RowLabel>;
 
 export type InputRow = {
     [k in Capitalize<RowLabel>]: AnyRow[Uncapitalize<k>]
