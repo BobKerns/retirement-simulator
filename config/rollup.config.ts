@@ -14,8 +14,10 @@ import visualizerNoName, {VisualizerOptions} from 'rollup-plugin-visualizer';
 import {OutputOptions, RollupOptions} from "rollup";
 import {chain as flatMap} from 'ramda';
 import json from '@rollup/plugin-json'
+import replace from '@rollup/plugin-replace';
 
 import {relative} from 'path';
+import child_process from 'child_process';
 
 /**
  * The visualizer plugin fails to set the plugin name. We wrap it to remedy that.
@@ -29,7 +31,7 @@ const visualizer = (opts?: Partial<VisualizerOptions>) => {
     };
 }
 
-const mode = process.env.NODE_ENV;
+const mode = process.env.NODE_ENV ?? 'development';
 // noinspection JSUnusedLocalSymbols
 const dev = mode === 'development';
 
@@ -134,11 +136,48 @@ const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =
         return isExternal;
     }
 
+
+function getCommitId() {
+    return child_process.spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf-8' }).stdout.trim();
+}
+
+function getBranch() {
+    return child_process.spawnSync('git', ['symbolic-ref', '--short', 'HEAD'], { encoding: 'utf-8' }).stdout.trim();
+}
+
+/**
+ * Compute the version information to embed in the package.
+ */
+const replaceVersion = () =>
+    JSON.stringify({
+        version: pkg.version,
+        name: pkg.name,
+        description: pkg.description,
+        repository: pkg.repository,
+        bugs: pkg.bugs,
+        license: pkg.license,
+        homepage: pkg.homepage,
+        keywords: pkg.keywords,
+        commit: getCommitId(),
+        branch: getBranch(),
+        mode,
+        author: pkg.author,
+        built: new Date().toISOString(),
+        builtBy: process.env.USER
+    });
+
+/**
+ * The complete rollup options we use.
+ */
 const options: RollupOptions = {
     input:'./build/src/index.js',
     output: outputs(pkg),
     external: checkExternal,
     plugins: [
+        replace({
+            REPLACE_VERSION: replaceVersion,
+            preventAssignment: true
+        }),
         resolve({
             // Check for these in package.json
             mainFields: mainFields(pkg, ['module', 'main', 'browser'])
