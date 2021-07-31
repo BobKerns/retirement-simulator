@@ -16,6 +16,10 @@ import { indexByName } from "./utils";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.
+ *
+ * A snapshot captures the time, together with the state of vhe various monetary
+ * factors. A series of snapshots give a bulk time series of the financial state,
+ * from which graphs, tables, and interactive tools can be constructed.
  */
 export class Snapshot extends ScenarioBase {
     year: number;
