@@ -26,6 +26,8 @@ export * from './person';
 export * from './scenario';
 export * from './snapshot';
 export * from './states';
+export * from './tagged';
+export * from './tax/index';
 export * from './text';
 export * from './time';
 export * from './types';
