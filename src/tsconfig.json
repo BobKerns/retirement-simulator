@@ -3,7 +3,11 @@
   "extends": "../tsconfig",
   "include": [
     "*.ts",
+    "tax/*.ts",
     "data/*.json"
+  ],
+  "files": [
+      "./tax/tax-util.ts"
   ],
   "exclude": ["node_modules", "build", "__test__"],
 
