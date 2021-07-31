@@ -14,6 +14,9 @@ import { ScenarioBase } from "./scenario-base";
 import { NamedIndex } from "./types";
 import { indexByName } from "./utils";
 
+/**
+ * A snapshot at a point in time of a {@link Scenario}.
+ */
 export class Snapshot extends ScenarioBase {
     year: number;
     asset_list: Asset[];

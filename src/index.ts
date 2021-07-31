@@ -5,7 +5,8 @@
  */
 
 /**
- * Load the full system with a single import.
+ * [[include:src/README.md]]
+ *
  * @packageDocumentation
  * @preferred
  * @module Index

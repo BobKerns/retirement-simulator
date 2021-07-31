@@ -37,7 +37,7 @@ export type ActuaryAnnualData = {
 /**
  * Actuary data from the Social Security Administration based on mortality in calendar year 2017.
  *
- * Source: [Actuarial Life Table](https://www.ssa.gov/oact/STATS/table4c6.html) [Archive](https://web.archive.org/web/20210719152530/https://www.ssa.gov/oact/STATS/table4c6.html)
+ * Source: [Actuarial Life Table](https://www.ssa.gov/oact/STATS/table4c6.html) ([Archive](https://web.archive.org/web/20210719152530/https://www.ssa.gov/oact/STATS/table4c6.html))
  */
 export const SS_2017: Array<ActuaryAnnualData> = SS_2017_raw;
 

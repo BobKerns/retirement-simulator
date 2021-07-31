@@ -2,5 +2,6 @@
   "exclude": "**/__tests__/**",
   "name": "Retirement Simulator",
   "readme": "src/README.md",
-  "includes": "./"
+  "includes": "./",
+  "includeVersion": true
 }
