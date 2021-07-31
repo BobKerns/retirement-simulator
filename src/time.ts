@@ -5,6 +5,7 @@
  */
 
 import { range } from "genutils";
+import { Age, asAge } from "./tagged";
 
 /**
  * Obtain the day number of a given `Date`
@@ -109,7 +110,7 @@ export const THIS_YEAR = year(TODAY);
 /**
  * Calculate the difference between two dates, in fractional years.
  */
-export const calculate_age = (birth: Date, thisDate: Date) => {
+export const calculate_age = (birth: Date, thisDate: Date): Age => {
     const bday = day_of_year(birth);
     const tday = day_of_year(thisDate);
     const bleap = isLeapYear(birth.getUTCFullYear());
@@ -128,5 +129,5 @@ export const calculate_age = (birth: Date, thisDate: Date) => {
     const diff = year - birth.getUTCFullYear();
     const days = yearDays(bday < 60 ? year - 1 : year);
     const frac = (tday - bday) / days;
-    return diff + frac;
+    return asAge(diff + frac);
 };
