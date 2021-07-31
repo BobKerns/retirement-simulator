@@ -156,7 +156,7 @@ export const compute_colors =
                 ...s.asset_list.map((d) => d.name),
                 ...s.income_list.map((d) => d.name),
                 ...s.expense_list.map((d) => d.name),
-                ...s.loan_list.map((d) => d.name),
+                ...s.liability_list.map((d) => d.name),
                 ...s.tax_list.map((d) => d.name),
                 ...s.incomeStream_list.map((d) => d.name)
             ]));

@@ -7,7 +7,7 @@
 import { Type, Row, ItemType } from './types';
 import { Asset } from './asset';
 import { Expense } from './expense';
-import { Loan } from './loan';
+import { Liability } from './liability';
 import { Income } from './income';
 import { IncomeStream } from './income-stream';
 import { IncomeTax } from './income-tax';
@@ -29,7 +29,7 @@ export const construct = <T extends Type>(item: Row<T>, type: T = item.type): It
         case "expense":
             return new Expense(assertRow(item, 'expense')) as unknown as ItemType<T>;
         case "loan":
-            return new Loan(assertRow(item, 'loan')) as unknown as ItemType<T>;
+            return new Liability(assertRow(item, 'liability')) as unknown as ItemType<T>;
         case "income":
             return new Income(assertRow(item, 'income')) as unknown as ItemType<T>;
         case "incomeStream":

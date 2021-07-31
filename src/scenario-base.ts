@@ -10,7 +10,7 @@ import { Income } from "./income";
 import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Item } from "./item";
-import { Loan } from "./loan";
+import { Liability } from "./liability";
 import { IScenarioBase, ItemType, NamedIndex, Row, Type } from "./types";
 
 /**
@@ -31,7 +31,7 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
     /**
      * A list of {@link Loan}. See also {@link loans}.
      */
-    abstract loan_list: Loan[];
+    abstract liability_list: Liability[];
     /**
      * A list of {@link Income}. See also {@link incomes}.
      */
@@ -59,7 +59,7 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
      * A lookup table of {@link Loan} for convenient lookup by name.
      * See also {@link loan_list}.
      */
-    abstract loans: NamedIndex<Loan>;
+    abstract liabilities: NamedIndex<Liability>;
 
     /**
      * A lookup table of {@link Income} for convenient lookup by name.
@@ -99,7 +99,7 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
     get net_assets() {
         return Math.round(
             this.asset_list.reduce((a, i) => a + i.value, 0) -
-            this.loan_list.reduce((a, i) => a + i.value, 0)
+            this.liability_list.reduce((a, i) => a + i.value, 0)
         );
     }
 

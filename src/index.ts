@@ -20,7 +20,7 @@ export * from './income';
 export * from './income-stream';
 export * from './income-tax';
 export * from './item';
-export * from './loan';
+export * from './liability';
 export * from './monetary';
 export * from './person';
 export * from './scenario';

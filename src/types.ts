@@ -9,7 +9,7 @@ import { Expense } from "./expense";
 import { Income } from "./income";
 import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
-import { Loan } from "./loan";
+import { Liability } from "./liability";
 import { Person } from "./person";
 import { Scenario } from "./scenario";
 import { StateCode } from "./states";
@@ -19,7 +19,7 @@ import { TextItem } from "./text";
 export type Name = string;
 export type AssetName = Name;
 export type IncomeName = Name;
-export type LoanName = Name;
+export type LiabilityName = Name;
 export type ExpenseName = Name;
 export type IncomeStreamName = Name;
 export type ScenarioName = Name;
@@ -33,14 +33,14 @@ export interface NamedIndex<T extends Named> {
     [k: string]: T;
 }
 
-export type BalanceType = 'asset' | 'loan';
+export type BalanceType = 'asset' | 'liability';
 export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
 export type Type = MonetaryType | 'person' | 'text' | 'scenario';
 
 type ItemTypes = {
     asset: Asset;
-    loan: Loan;
+    liability: Liability;
     income: Income;
     expense: Expense;
     person: Person;
@@ -52,7 +52,7 @@ type ItemTypes = {
 
 type RowTypes = {
     asset: IAsset;
-    loan: ILoan;
+    liability: ILiability;
     income: IIncome;
     expense: IExpense;
     person: IPerson;
@@ -87,14 +87,14 @@ export interface IItem<T extends Type = Type> extends Named {
 
 export interface IScenarioBase extends IItem<'scenario'> {
     asset_list: Array<Asset>;
-    loan_list: Array<Loan>;
+    liability_list: Array<Liability>;
     income_list: Array<Income>;
     expense_list: Array<Expense>;
     tax_list: Array<IncomeTax>;
     incomeStream_list: Array<IncomeStream>;
 
     assets: NamedIndex<Asset>;
-    loans: NamedIndex<Loan>;
+    liabilities: NamedIndex<Liability>;
     incomes: NamedIndex<Income>;
     incomeStreams: NamedIndex<IncomeStream>;
     expenses: NamedIndex<Expense>;
@@ -106,10 +106,16 @@ export interface IScenario extends IScenarioBase {
 
 }
 
+/**
+ * An object with monetary value.
+ */
 export interface IMonetary {
     value: Money;
 }
 
+/**
+ * An item of {@link MonetaryType} with monetary value.
+ */
 export interface IMonetaryItem<T extends MonetaryType> extends IItem<T>, IMonetary {
 }
 
@@ -142,9 +148,9 @@ export interface IAsset extends IBalanceItem<'asset'> {}
 /**
  * A loan. Repayment will appear as an {@link IExpense}.
  */
-export interface ILoan extends IBalanceItem<'loan'> {
+export interface ILiability extends IBalanceItem<'liability'> {
     payment?: Money;
-    expense?: IExpense;
+    expense?: ExpenseName;
 }
 
 /**
@@ -200,22 +206,24 @@ export type Reference<Str extends string> = `@${Str}`;
 /**
  * Specs are prrovided as JSON.
  */
-export type IncomeStreamSpec = IncomeName | AssetName | LoanName | Array<IncomeStreamSpec> | {[k in Reference<IncomeStreamName>]: number};
+export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName | Array<IncomeStreamSpec> | {[k in Reference<IncomeStreamName>]: number};
 
 export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
     spec: IncomeStreamSpec;
 }
 
-export type AnyRow = Omit<IAsset, 'type'>
-    & Omit<ILoan, 'type'>
-    & Omit<IExpense, 'type'>
-    & Omit<IIncome, 'type'>
-    & Omit<IIncomeStream, 'type'>
-    & Omit<IIncomeTax, 'type'>
-    & Omit<IText, 'type'>
-    & Omit<IPerson, 'type'>
-    & Omit<IScenario, 'type'>
-    & {type: Type};
+type IItemKeys = keyof IItem;
+
+export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
+    & Partial<Omit<ILiability, IItemKeys>>
+    & Partial<Omit<IExpense, IItemKeys>>
+    & Partial<Omit<IIncome, IItemKeys>>
+    & Partial<Omit<IIncomeStream, IItemKeys>>
+    & Partial<Omit<IIncomeTax, IItemKeys>>
+    & Partial<Omit<IText, IItemKeys>>
+    & Partial<Omit<IPerson, IItemKeys>>
+    & Partial<Omit<IScenario, IItemKeys>>
+    & IItem;
 
 export type RowLabel = keyof AnyRow;
 export type RowItem<T extends Type = Type> = ItemTypes[T] & {type: T};

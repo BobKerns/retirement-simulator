@@ -14,7 +14,7 @@ let net_worth = assets - liabilities
 ```
 
 * [[Asset]]: What you own
-* [[Loan]]: What you owe. Loans, mortages, debts.
+* [[Liability]]: What you owe. Loans, mortages, debts.
 
 ### Cash Flow
 
@@ -28,7 +28,10 @@ let net_income = income - expense
 * [[Income]]
 
 While technically, asset growth is reinvested investment income, we do not need to model it
-that way, as it would complicate the picture with details. With investments in a protected tax-deferred retirement account, with dividends and interest automatically reinvested, it is simpler to model as compound growth. However, nothing prevents you from modeling it as an income stream adding to the asset.
+that way, as it would complicate the picture with details. With investments in a protected tax-deferred retirement account,
+with dividends and interest automatically reinvested, it is simpler to model as compound growth. However, nothing prevents
+you from modeling it as an income stream adding to the asset.
+
 ### Other
 
 * [[IncomeStream]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]
@@ -42,7 +45,7 @@ The key modeling classes have corresponding interface types, to facilitate worki
 as a class instance.
 
 * [[IAsset]]
-* [[ILoan]]
+* [[ILiability]]
 * [[IExpense]]
 * [[IIncome]]
 * [[IIncomeStream]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]

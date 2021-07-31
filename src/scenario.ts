@@ -12,7 +12,7 @@ import { Expense } from "./expense";
 import { Income } from "./income";
 import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
-import { Loan } from "./loan";
+import { Liability } from "./liability";
 import { Person } from "./person";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
@@ -32,14 +32,14 @@ export class Scenario extends ScenarioBase {
     people: NamedIndex<Person>;
 
     asset_list: Array<Asset>;
-    loan_list: Array<Loan>;
+    liability_list: Array<Liability>;
     income_list: Array<Income>;
     expense_list: Array<Expense>;
     tax_list: Array<IncomeTax>;
     incomeStream_list: Array<IncomeStream>;
 
     assets: NamedIndex<Asset>;
-    loans: NamedIndex<Loan>;
+    liabilities: NamedIndex<Liability>;
     incomes: NamedIndex<Income>;
     incomeStreams: NamedIndex<IncomeStream>;
     expenses: NamedIndex<Expense>;
@@ -71,11 +71,11 @@ export class Scenario extends ScenarioBase {
         this.assets = indexByName(this.asset_list);
         this.expense_list = this.#find_items("expense");
         this.expenses = indexByName(this.expense_list);
-        this.loan_list = this.#find_items("loan");
-        this.loan_list.forEach(
-            (l) => (l.payment = (l.expense = this.expenses[l.name]).value)
+        this.liability_list = this.#find_items("liability");
+        this.liability_list.forEach(
+            (l) => (l.payment = this.expenses[l.name]?.value)
         );
-        this.loans = indexByName(this.loan_list);
+        this.liabilities = indexByName(this.liability_list);
         this.income_list = this.#find_items("income");
         this.incomes = indexByName(this.income_list);
         this.tax_list = this.#find_items("incomeTax");
@@ -111,7 +111,7 @@ export class Scenario extends ScenarioBase {
         this.spouse2 && scan([this.spouse2]);
         scan(this.asset_list);
         scan(this.expense_list);
-        scan(this.loan_list);
+        scan(this.liability_list);
         scan(this.income_list);
         scan(this.tax_list);
         scan(this.incomeStream_list);
