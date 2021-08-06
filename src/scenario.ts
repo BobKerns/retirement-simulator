@@ -46,9 +46,21 @@ export class Scenario extends ScenarioBase {
     taxes: NamedIndex<IncomeTax>;
 
 
+    /**
+     * @internal
+     */
     #timeline: Heap<TimeLineItem>;
+    /**
+     * @internal
+     */
     #snapshots?: Array<Snapshot>;
+    /**
+     * @internal
+     */
     #final?: Snapshot;
+    /**
+     * @internal
+     */
     #end_year: number;
 
     constructor(name: Name, dataset: Array<Row<Type>>, end_year: number) {

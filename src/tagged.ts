@@ -121,6 +121,10 @@ export interface NumberDomain {
 /**
  * Functions for testing and asserting membership in a tagged number range.
  * See {@link Tagged}.
+ *
+ * @typeParam T a string-literal type to tag this with.
+ * @typeParam B the base type being tagged. This becomes the argument type for the {@link as} function
+ *              which should only be passed objects of the base.
  */
 export interface DomainFns<T extends string, B> {
     /**

@@ -18,6 +18,11 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         this.spec = this.#parse(spec);
     }
 
+    /**
+     * @internal
+     * @param spec
+     * @returns
+     */
     #parse(spec: string | IncomeStreamSpec): IncomeStreamSpec {
         if (typeof spec === 'string') {
             // Fix curly-quotes

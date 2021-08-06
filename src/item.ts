@@ -19,6 +19,9 @@ export class Item<T extends Type> implements IItem<T> {
     scenarios: ScenarioName[];
     notes?: string;
     prettyName: string;
+    /**
+     * @internal
+     */
     #tag?: string;
     sort: number;
 
@@ -36,6 +39,7 @@ export class Item<T extends Type> implements IItem<T> {
 
     /**
      * Tag instances with the type and name for easy recognition.
+     * @internal
      */
     get [Symbol.toStringTag]() {
       return (

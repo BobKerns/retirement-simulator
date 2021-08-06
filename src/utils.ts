@@ -21,6 +21,12 @@ export const Throw = (s: string | Error) => {
   throw new Error(s);
 }
 
+/**
+ * Throws with a message that something is not yet implemented.
+ * @internal
+ * @param s
+ * @returns
+ */
 export const nyi = (s?: string) =>
     Throw(s ? `Not yet implemented: ${s}` : `Not yet implemented.`);
 

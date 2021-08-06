@@ -89,6 +89,11 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
         super(row);
     }
 
+    /**
+     * Get the sources of income for potential income streams. This does not include loans;
+     * if borrowing is part of the strategy, as in a revolving line of credit or a reverse mortgage,
+     * use an {@link Asset} with negative balance.
+     */
     get sources() {
         return [...this.asset_list, ...this.income_list];
     }

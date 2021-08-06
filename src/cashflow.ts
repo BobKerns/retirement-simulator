@@ -20,7 +20,7 @@ export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> imple
     }
 
     /**
-     *
+     * @internal
      * @returns The fraction of the year this applies to.
      */
     #item_fraction() {

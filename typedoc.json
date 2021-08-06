@@ -3,5 +3,6 @@
   "name": "Retirement Simulator",
   "readme": "src/README.md",
   "includes": "./",
-  "includeVersion": true
+  "includeVersion": true,
+  "excludeInternal": true
 }
