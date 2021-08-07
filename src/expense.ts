@@ -7,6 +7,7 @@
 import { IExpense, IncomeStreamName, Row } from "./types";
 import { CashFlow } from "./cashflow";
 import { Throw } from "./utils";
+import { StateMixin } from "./state-mixin";
 
 /**
  * A flow of money out.
@@ -21,3 +22,5 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
         this.fromStream = row.fromStream ?? Throw(`fromStream must be specified for ${this.name}.`);
     }
 }
+
+export const ExpenseState = StateMixin(Expense);

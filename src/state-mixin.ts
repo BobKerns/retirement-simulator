@@ -4,9 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Asset, Type } from ".";
-import { Item } from "./item";
-import { ItemKey } from "./types";
+import { IItem, IState, Type } from "./types";
+import { TimeLength, TimeStep } from "./time";
+import { Scenario } from "./scenario";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -14,17 +14,39 @@ import { ItemKey } from "./types";
  */
 
 
-type AConstructor<T extends {}> = abstract new (...args: any[]) => T;
+export type AConstructor<T extends {}> = abstract new (...args: any[]) => T;
+export type Constructor<T extends {}> = new (...args: any[]) => T;
+
+export type State<T extends Type> = IItem<T> & IState<T>;
+
+export type StateMixin<T extends Type> = Constructor<State<T>>;
 
 
-export function StateMixin<SBase extends AConstructor<Item<Type>>>(Base: SBase): SBase {
-    abstract class StateMixin extends Base {
-        readonly frobule: number;
+export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixin<T> {
+    class StateMixinX extends Base implements IState<T> {
+        readonly period: TimeStep;
+        readonly interval: TimeLength;
+        readonly scenario: Scenario;
+        readonly item: IItem<T>;
+        #tag?: string = undefined;
         constructor(...args: any[]) {
             super(...args)
-            this.frobule = 3;
+            this.item = args[0];
+            this.scenario = args[1] as Scenario
+            this.period = args[2] as TimeStep;
+            this.interval = args[3] as TimeLength;
+        }
+
+        /**
+         * Tag instances with the type and name for easy recognition.
+         * @internal
+         */
+        get [Symbol.toStringTag]() {
+            return this.#tag
+                ?? (this.#tag = `#${this.period.step}: ${this.constructor.name}[${this.name}]`);
         }
 
     }
-    return StateMixin;
+    return StateMixinX;
 }
+

@@ -5,6 +5,7 @@
  */
 
 import { CashFlow } from "./cashflow";
+import { StateMixin } from "./state-mixin";
 import { IIncome, Row } from "./types";
 
 /**
@@ -15,3 +16,6 @@ export class Income extends CashFlow<'income'> implements IIncome {
         super(row);
     }
 }
+
+
+export const IncomeState = StateMixin(Income);

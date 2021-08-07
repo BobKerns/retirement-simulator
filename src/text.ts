@@ -5,6 +5,7 @@
  */
 
 import { Item } from "./item";
+import { StateMixin } from "./state-mixin";
 import { IText, Row } from "./types";
 
 export class TextItem extends Item<'text'> implements IText {
@@ -14,3 +15,5 @@ export class TextItem extends Item<'text'> implements IText {
         this.text = row.text;
     }
 }
+
+export const TextItemState = StateMixin(TextItem);

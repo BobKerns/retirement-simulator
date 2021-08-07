@@ -5,6 +5,7 @@
  */
 
 import { Monetary } from "./monetary";
+import { StateMixin } from "./state-mixin";
 import { Rate } from "./tagged";
 import { IAsset, Row } from "./types";
 
@@ -19,3 +20,5 @@ export class Asset extends Monetary<'asset'> implements IAsset {
         this.growth = row.growth ?? 1;
     }
 }
+
+export const AssetState = StateMixin(Asset);

@@ -116,6 +116,12 @@ export interface IScenario extends IScenarioBase {
 
 }
 
+
+
+export interface ISnapshot extends IScenarioBase {
+
+}
+
 /**
  * An object with monetary value.
  */
@@ -260,8 +266,7 @@ export interface TimeLineItem {
     readonly item: IItem;
 }
 
-export interface IState<T extends IItem> {
+export interface IState<T extends Type> {
     readonly scenario: Scenario;
-    readonly item: T;
-    readonly value: Money;
+    readonly item: IItem<T>;
 }

@@ -7,6 +7,7 @@
 import { ExpenseName, ILiability, Row } from "./types";
 import {Monetary} from "./monetary";
 import { Money, Rate } from "./tagged";
+import { StateMixin } from "./state-mixin";
 
 /**
  * A liability (generally, a loan or mortgage). If not interest-free, `growth` should be supplied with
@@ -21,3 +22,5 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         this.growth = row.growth ?? 1;
     }
 }
+
+export const LiabilityState = StateMixin(Liability);

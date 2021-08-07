@@ -160,6 +160,10 @@ export type TimeLength = {
     totalDays: Integer
 };
 
+export type TimeStep = TimeLength & {
+    step: Integer
+};
+
 export class TimePeriod {
     readonly start: Date;
     readonly end: Date;
