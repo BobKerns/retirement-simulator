@@ -13,7 +13,7 @@ import { Liability } from "./liability";
 import { Person } from "./person";
 import { Scenario } from "./scenario";
 import { StateCode } from "./states";
-import { Money, Rate } from "./tagged";
+import { Money, Rate, Tagged } from "./tagged";
 import { TextItem } from "./text";
 
 export type Name = string;
@@ -64,8 +64,16 @@ type RowTypes = {
 
 export type ItemType<T extends Type> = (ItemTypes)[T];
 
+/**
+ * Extract the {@link Type} keyword from an IITem-based type.
+ */
+export type ItemKey<I extends IItem<Type>> = I extends IItem<infer T> ? T : never;
 
-export type Category = string;
+
+/**
+ * {link @Tagged} type for category names.
+ */
+export type Category = Tagged<'Category', string>;
 
 /**
  * Sex for actuarial purposes.
@@ -100,7 +108,7 @@ export interface IScenarioBase extends IItem<'scenario'> {
     readonly expenses: NamedIndex<Expense>;
     readonly taxes: NamedIndex<IncomeTax>;
 
-    readonly scenario: IScenario;
+    readonly scenario: Scenario;
 }
 
 

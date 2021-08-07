@@ -17,9 +17,16 @@ import { Person } from "./person";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./time";
-import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName } from "./types";
+import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName, Category } from "./types";
 import { assertRow, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";
+import { as } from "./tagged";
+
+
+/**
+ * Category of assets that do not contribute to retirement income streams.
+ */
+const NON_INCOME_ASSET: Category = as("non-income");
 
 /**
  * A particular scenario.
@@ -167,7 +174,7 @@ export class Scenario extends ScenarioBase {
     get total_retirement_income() {
         return Math.round(
             this.asset_list
-                .filter((a) => !a.hasCategory("fixed"))
+                .filter((a) => !a.hasCategory(NON_INCOME_ASSET))
                 .reduce((acc, a) => acc + a.value * (a.growth - 1), 0) +
                 total(this.income_list)
             );
