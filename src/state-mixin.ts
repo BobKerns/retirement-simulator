@@ -17,16 +17,14 @@ import { ItemKey } from "./types";
 type AConstructor<T extends {}> = abstract new (...args: any[]) => T;
 
 
-function State<SBase extends AConstructor<Item<Type>>>(Base: SBase) {
-    abstract class GState {
+export function StateMixin<SBase extends AConstructor<Item<Type>>>(Base: SBase): SBase {
+    abstract class StateMixin extends Base {
         readonly frobule: number;
         constructor(...args: any[]) {
-            //super(...args)
+            super(...args)
             this.frobule = 3;
         }
 
     }
-    return GState;
+    return StateMixin;
 }
-
-// export const SAsset = State(Asset);
