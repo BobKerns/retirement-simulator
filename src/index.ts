@@ -25,6 +25,7 @@ export * from './monetary';
 export * from './person';
 export * from './scenario';
 export * from './snapshot';
+export * from './state-mixin';
 export * from './states';
 export * from './tagged';
 export * from './tax/index';
