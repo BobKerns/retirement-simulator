@@ -88,8 +88,8 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
  * @param date
  * @returns
  */
-  export const fmt_date = (date: Date) =>
-    `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}`;
+export const fmt_date = (date: Date) =>
+    `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
 
 /**
  * Assert that the call in the argument cannot return.
