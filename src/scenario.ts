@@ -72,10 +72,10 @@ export class Scenario extends ScenarioBase {
 
     constructor(name: Name, dataset: Array<Row<Type>>, end_year: number) {
         super(assertRow(dataset.find(i => i.name === name && i.type === 'scenario') ?? Throw(`Scenario ${name} not found.`), 'scenario'));
-        this.data = dataset.filter(i => i.scenarios.find(s => s === this.name));
+        this.data = dataset.filter(i => i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
-        const spouse1 = this.#find_spouse("Spouse1") ?? Throw("No spouse1 specified");
-        const spouse2 = this.#find_spouse("Spouse2");
+        const spouse1 = this.#find_spouse("spouse1") ?? Throw("No spouse1 specified");
+        const spouse2 = this.#find_spouse("spouse2");
         this.spouse1 = spouse1;
         this.spouse2 = spouse2;
         this.people = {
