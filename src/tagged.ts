@@ -369,3 +369,20 @@ export const widenAs = <T>(guard: TypeGuard<T>): TypeGuard<T|undefined> =>
 export const widenTo = <T>(coerce: TypeCoercion<T>): TypeCoercion<T|undefined> =>
     (n: any): (T | undefined) =>
         (n === undefined) ? undefined : coerce(n);
+
+/**
+ * A type-inferred cast to a {@link Tagged} type. This is primarily intended for use with constants, where
+ * supplying the correct type can be determined by inspection
+ *
+ * Generally the type parameters will be inferred.
+ *
+ * ```typescript
+ * let foo: Integer = as(1);
+ * ```
+ *
+ * @typeParam T the tag type
+ * @typeParam B the base (untagged) type.
+ * @param n a value in the base type
+ * @returns `n` cast to be of the expected {@link Tagged|Tagged<T,B>} type.
+ */
+export const as = <T extends string,B>(n: B) => n as Tagged<T,B>;
