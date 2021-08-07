@@ -14,24 +14,24 @@ export type ActuaryDatum = {
     /**
      * Probability of surviving one year (birthday to next birthday).
      */
-    p: number,
+    readonly p: number,
     /**
      * Number of people surviving to this age.
      */
-    n: number,
+    readonly n: number,
     /**
      * Life expectency from this birthday.
      */
-    years: number
+    readonly years: number
 };
 
 /**
  * Actuary data for one age, for both sexes.
  */
 export type ActuaryAnnualData = {
-    age: number,
-    male: ActuaryDatum,
-    female: ActuaryDatum
+    readonly age: number,
+    readonly male: ActuaryDatum,
+    readonly female: ActuaryDatum
 };
 
 /**

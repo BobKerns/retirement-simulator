@@ -25,7 +25,7 @@ export type IncomeStreamName = Name;
 export type ScenarioName = Name;
 
 export interface Named {
-    name: Name;
+    readonly name: Name;
     prettyName?: string;
 }
 
@@ -86,19 +86,21 @@ export interface IItem<T extends Type = Type> extends Named {
 }
 
 export interface IScenarioBase extends IItem<'scenario'> {
-    asset_list: Array<Asset>;
-    liability_list: Array<Liability>;
-    income_list: Array<Income>;
-    expense_list: Array<Expense>;
-    tax_list: Array<IncomeTax>;
-    incomeStream_list: Array<IncomeStream>;
+    readonly asset_list: Array<Asset>;
+    readonly liability_list: Array<Liability>;
+    readonly income_list: Array<Income>;
+    readonly expense_list: Array<Expense>;
+    readonly tax_list: Array<IncomeTax>;
+    readonly incomeStream_list: Array<IncomeStream>;
 
-    assets: NamedIndex<Asset>;
-    liabilities: NamedIndex<Liability>;
-    incomes: NamedIndex<Income>;
-    incomeStreams: NamedIndex<IncomeStream>;
-    expenses: NamedIndex<Expense>;
-    taxes: NamedIndex<IncomeTax>;
+    readonly assets: NamedIndex<Asset>;
+    readonly liabilities: NamedIndex<Liability>;
+    readonly incomes: NamedIndex<Income>;
+    readonly incomeStreams: NamedIndex<IncomeStream>;
+    readonly expenses: NamedIndex<Expense>;
+    readonly taxes: NamedIndex<IncomeTax>;
+
+    readonly scenario: IScenario;
 }
 
 
@@ -110,7 +112,7 @@ export interface IScenario extends IScenarioBase {
  * An object with monetary value.
  */
 export interface IMonetary {
-    value: Money;
+    readonly value: Money;
 }
 
 /**
@@ -127,7 +129,7 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
      * Multiplicative factor. Will need to canonicalize compounding periods (APR vs simple, etc.)
      * Non interest-bearing assets, or loans use a value of `1.0,`;
      */
-    growth: Rate;
+    readonly growth: Rate;
 }
 
 /**
@@ -137,7 +139,7 @@ export interface ICashFlowItem<T extends CashFlowType> extends IMonetaryItem<T> 
     /**
      * The fraction of a year this expense item applies to, for expenses which start or end midyear.
      */
-    fraction: Rate;
+    readonly fraction: Rate;
 }
 
 /**
@@ -149,8 +151,8 @@ export interface IAsset extends IBalanceItem<'asset'> {}
  * A loan. Repayment will appear as an {@link IExpense}.
  */
 export interface ILiability extends IBalanceItem<'liability'> {
-    payment?: Money;
-    expense?: ExpenseName;
+    readonly payment?: Money;
+    readonly expense?: ExpenseName;
 }
 
 /**
@@ -162,7 +164,7 @@ export interface IIncome extends ICashFlowItem<'income'> {}
  * An expense, either ongoing or one-time.
  */
 export interface IExpense extends ICashFlowItem<'expense'> {
-    fromStream: IncomeStreamName;
+    readonly fromStream: IncomeStreamName;
 }
 
 /**
@@ -173,7 +175,7 @@ export interface IIncomeTax extends ICashFlowItem<'incomeTax'> {
     /**
      * A state postal code or 'US' for federal income tax. This controls what tax tables are used.
      */
-    state: StateCode;
+    readonly state: StateCode;
 }
 
 /**
@@ -183,7 +185,7 @@ export interface IPerson extends IItem<'person'> {
     /**
      * For actuarial and Social Security calculation purposes.
      */
-    birth: Date;
+    readonly birth: Date;
 
     /**
      * For actuarial purposes.
@@ -191,6 +193,11 @@ export interface IPerson extends IItem<'person'> {
     sex: Sex;
 }
 
+/**
+ * Text provides the ability to provide specific text for a scenario. Because it is part of the data, it does not become
+ * part of the displaying page, so more sensitive data can be dsiplayed from a text row, and referenced from the scenario.
+ * It can also be varied by scenario.
+ */
 export interface IText extends IItem<'text'> {
     text: string;
 }
@@ -209,7 +216,7 @@ export type Reference<Str extends string> = `@${Str}`;
 export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName | Array<IncomeStreamSpec> | {[k in Reference<IncomeStreamName>]: number};
 
 export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
-    spec: IncomeStreamSpec;
+    readonly spec: IncomeStreamSpec;
 }
 
 type IItemKeys = keyof IItem;
@@ -240,7 +247,13 @@ export type SortFn<T> = (a: T, b: T) => -1 | 0 | 1;
 export type TimeLIneAction = "begin" | "end";
 
 export interface TimeLineItem {
-    date: Date;
-    action: TimeLIneAction;
-    item: IItem;
+    readonly date: Date;
+    readonly action: TimeLIneAction;
+    readonly item: IItem;
+}
+
+export interface IState<T extends IItem> {
+    readonly scenario: Scenario;
+    readonly item: T;
+    readonly value: Money;
 }

@@ -11,12 +11,12 @@ import { TODAY } from "./time";
  * Base class for all items. Holds all the common fields.
  */
 export class Item<T extends Type> implements IItem<T> {
-    name: Name;
-    type: T;
-    start: Date;
-    end?: Date;
-    categories: Category[];
-    scenarios: ScenarioName[];
+    readonly name: Name;
+    readonly type: T;
+    readonly start: Date;
+    readonly end?: Date;
+    readonly categories: Category[];
+    readonly scenarios: ScenarioName[];
     notes?: string;
     prettyName: string;
     /**

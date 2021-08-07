@@ -13,10 +13,9 @@ import { Row } from "./types";
  * An item with a monetary value, supplied as `value`.
  */
 export class Monetary<T extends MonetaryType> extends Item<T> implements IMonetaryItem<T> {
-    value: Money;
+    readonly value: Money;
     constructor(row: Row<T>) {
         super(row);
-        this.type = row.type;
         this.value = row.value;
     }
 }

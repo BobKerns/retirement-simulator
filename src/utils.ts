@@ -97,7 +97,7 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
  * @param msg
  * @returns
  */
-  export const assertNever = (x: never, msg: string = `Unexpected ${x}`): never => Throw(msg);
+export const assertNever = (x: never, msg: string = `Unexpected ${x}`): never => Throw(msg);
 
 /**
  * Check that the supplied {@link Row} is of the specified {@link Type}
@@ -105,16 +105,37 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
  * @param type the {@link Type} the row should be.
  * @returns
  */
-  export const checkRow = <T extends Type>(row: Row, type: T): row is Row<T> => row.type === type;
+export const checkRow = <T extends Type>(row: Row, type: T): row is Row<T> => row.type === type;
 
-  /**
-   * Check that the supplied {@link Row} is of the desired {@link Type}, returning it as that type,
-   * or throwing an exception if it is not.
-   * @param row The {@link Row} to check
-   * @param type
-   * @returns
-   */
-  export const assertRow = <T extends Type>(row: Row, type: T): Row<T> => checkRow(row, type) ? row : Throw(`Row not of type ${type}.`);
+/**
+ * Check that the supplied {@link Row} is of the desired {@link Type}, returning it as that type,
+ * or throwing an exception if it is not.
+ * @param row The {@link Row} to check
+ * @param type
+ * @returns
+ */
+export const assertRow = <T extends Type>(row: Row, type: T): Row<T> =>
+    checkRow(row, type) ? row : Throw(`Row not of type ${type}.`);
+
+/**
+ * Freeze an object and all its object descendants.
+ * @internal
+ * @param obj The object to be deep-frozen.
+ * @returns
+ */
+export const deepFreeze = (obj: any) => {
+    if (obj instanceof Object) {
+        for (const v of Object.values(obj)) {
+            try {
+                Object.freeze(obj);
+            } catch {
+                // ignore
+            }
+            deepFreeze(v);
+        }
+    }
+    return obj;
+  };
 
 /**
  * Returns the unique values, as compared by ===

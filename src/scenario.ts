@@ -25,11 +25,11 @@ import { construct } from "./construct";
  * A particular scenario.
  */
 export class Scenario extends ScenarioBase {
-    data: Array<Row<Type>>;
+    readonly data: Array<Row<Type>>;
 
     spouse1: Person;
     spouse2: Person | null;
-    people: NamedIndex<Person>;
+    readonly people: NamedIndex<Person>;
 
     asset_list: Array<Asset>;
     liability_list: Array<Liability>;
