@@ -15,6 +15,7 @@
 export * from './actuary';
 export * from './asset';
 export * from './color';
+export * from './construct';
 export * from './expense';
 export * from './income';
 export * from './income-stream';
