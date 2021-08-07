@@ -10,6 +10,7 @@ import { Income } from "./income";
 import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Liability } from "./liability";
+import { Scenario } from "./scenario";
 import { ScenarioBase } from "./scenario-base";
 import { NamedIndex } from "./types";
 import { indexByName } from "./utils";
@@ -17,7 +18,7 @@ import { indexByName } from "./utils";
 /**
  * A snapshot at a point in time of a {@link Scenario}.
  *
- * A snapshot captures the time, together with the state of vhe various monetary
+ * A snapshot captures the time, together with the {@link State|StateMixin} of vhe various monetary
  * factors. A series of snapshots give a bulk time series of the financial state,
  * from which graphs, tables, and interactive tools can be constructed.
  */
@@ -35,9 +36,11 @@ export class Snapshot extends ScenarioBase {
     expenses: NamedIndex<Expense>;
     incomeStreams: NamedIndex<IncomeStream>;
     taxes: NamedIndex<IncomeTax>;
+    readonly scenario: Scenario;
 
-    constructor(scenario: ScenarioBase, year: number, previous: ScenarioBase) {
+    constructor(scenario: Scenario, year: number, previous: ScenarioBase) {
         super(scenario);
+        this.scenario = scenario;
         this.year = year;
         this.asset_list = scenario.asset_list.map(a => new Asset(a));
         this.liability_list = scenario.liability_list.map(a => new Liability(a));

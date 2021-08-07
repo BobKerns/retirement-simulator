@@ -130,6 +130,8 @@ export class Scenario extends ScenarioBase {
         this.#timeline = timeline;
     }
 
+    get scenario(): this { return this; }
+
     /**
      * Get the full timeline in sorted order as a generator.
      */

@@ -11,7 +11,8 @@ import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Item } from "./item";
 import { Liability } from "./liability";
-import { IScenarioBase, ItemType, NamedIndex, Row, Type } from "./types";
+import { Scenario } from "./scenario";
+import { IScenarioBase, NamedIndex, Row } from "./types";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -84,6 +85,11 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
      * See also {@link tax_list}.
      */
     abstract taxes: NamedIndex<IncomeTax>;
+
+    /**
+     * Get the associated {@link Scenario}
+     */
+    abstract readonly scenario: Scenario;
 
     constructor(row: Row<'scenario'>) {
         super(row);
