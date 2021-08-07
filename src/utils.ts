@@ -201,14 +201,14 @@ export const nullCMP = <T>(a: T, b: T): -1 | 0 | 1 => 0;
  * @param list
  * @returns a copy of _list_ in sorted order.
  */
-export const sort = <T>(cmp: SortFn<T> = naturalCMP) => <I extends T>(l: Iterable<I>) => [...l].sort(cmp);
+export const makeSort = <T>(cmp: SortFn<T> = naturalCMP) => <I extends T>(l: Iterable<I>) => [...l].sort(cmp);
 
 /**
  * A function that sorts according to natural order. See {@link naturalCMP}.
  * @param list
  * @returns a copy of _list_ in sorted order.
  */
-export const naturalSort = sort();
+export const naturalSort = makeSort();
 
 /**
  * Higher-order function, that creates summing functions.
@@ -216,7 +216,7 @@ export const naturalSort = sort();
  * @param f a function that takes an item and returns a number.
  * @returns a function that takes a list of items and returns the sum of the values returned by applying _f_.
  */
-export const summer = <T, V extends number>(f: (item: T) => V) =>
+export const makeSummer = <T, V extends number>(f: (item: T) => V) =>
     (l: T[]) =>
         l.reduce((acc, a: T) => (acc + f(a)) as V, 0 as V);
 
@@ -231,4 +231,4 @@ export const monetaryValue = (i: IMonetary) => i.value;
  * Get the total value of a list of monetary items.
  * @param l a list of {@link IMonetaryItem} items.
  */
-export const total = summer(monetaryValue);
+export const total = makeSummer(monetaryValue);
