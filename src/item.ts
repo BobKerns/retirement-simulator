@@ -34,7 +34,8 @@ export class Item<T extends Type> implements IItem<T> {
         this.categories = row.categories ?? [];
         this.scenarios = row.scenarios?.length ? row.scenarios : ['Default'];
         this.notes = row.notes;
-        this.sort = Number(row.sort) ?? 0
+        this.sort = Number(row.sort || 0)
+
     }
 
     /**
