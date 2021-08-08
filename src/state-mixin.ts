@@ -42,8 +42,14 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
          * @internal
          */
         get [Symbol.toStringTag]() {
-            return this.#tag
-                ?? (this.#tag = `#${this.period?.step ?? '??'}: ${Base.name}[${this.name}]`);
+            try {
+                return this.#tag
+                    ?? (this.#tag = `${Base.name}State[${this.name} #${this.period?.step ?? '??'}]`);
+            } catch {
+                // This can happen when viewing the prototype, because #tag isn't declared
+                // on the prototype
+                return `${Base.name}State.<prototype>`;
+            }
         }
 
     }
