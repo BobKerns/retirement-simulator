@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { isInteger, isUnit } from "../tagged";
+import { as, isInteger, isum, isUnit } from "../tagged";
 
 describe('Tagged', () => {
     describe('Unit', () => {
@@ -27,6 +27,10 @@ describe('Tagged', () => {
             expect(isInteger(1)).toBe(true));
         test('0.5', () =>
             expect(isInteger(0.5)).toBe(false));
-        
+
+
+        test('isum', () =>
+            expect(isum(as(3),as(5), as(8))).toBe(16));
+
     });
 });

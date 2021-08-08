@@ -5,6 +5,7 @@
  */
 
 import SS_2017_raw from './data/SS_2017.json';
+import { floor } from './tagged';
 import { calculate_age } from './time';
 import { IPerson, Sex } from './types';
 import { Throw } from './utils';
@@ -59,7 +60,7 @@ export function actuary(spouse: IPerson, date: Date): ActuaryDatum;
 export function actuary(age: number, sex: Sex): ActuaryDatum;
 export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): ActuaryDatum {
     if (typeof spouseOrAge == 'number') {
-        const idx = Math.floor(spouseOrAge);
+        const idx = floor(spouseOrAge);
         const frac = spouseOrAge - idx;
         const sex = dateOrSex as Sex;
         const base = SS_2017[idx]?.[sex] ?? Throw(`No data for age ${idx}.`);

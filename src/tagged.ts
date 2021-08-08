@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Throw } from "./utils";
+import { makeSummer, Throw } from "./utils";
 
 
 const typetag = Symbol("typetag");
@@ -386,3 +386,15 @@ export const widenTo = <T>(coerce: TypeCoercion<T>): TypeCoercion<T|undefined> =
  * @returns `n` cast to be of the expected {@link Tagged|Tagged<T,B>} type.
  */
 export const as = <T extends string,B>(n: B) => n as Tagged<T,B>;
+
+export const floor = Math.floor as (n: number) => Integer;
+export const ceil = Math.ceil as (n: number) => Integer;
+export const round = Math.round as (n: number) => Integer;
+export const trunc = Math.trunc as (n: number) => Integer;
+export const imod = (n: Integer, m: Integer) => trunc(n % m);
+export const idiv = (n: Integer, d: Integer) => trunc(n / d);
+
+export const incr = (n: Integer) => asInteger(n + 1);
+export const decr = (n: Integer) => asInteger(n - 1);
+const isummer2 = makeSummer<Integer, Integer>(asInteger, asInteger);
+export const isum = (...n: Integer[]) => isummer2(n);

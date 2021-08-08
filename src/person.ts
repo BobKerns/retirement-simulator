@@ -5,7 +5,7 @@
  */
 
 import { Item } from "./item";
-import { Age, asAge, asIAge, IAge, Year } from "./tagged";
+import { Age, asAge, asIAge, floor, IAge, Year } from "./tagged";
 import { calculate_age } from "./time";
 import { IPerson, Row, Sex } from "./types";
 
@@ -52,7 +52,7 @@ export class Person extends Item<'person'> implements IPerson {
     iage(year: Year): IAge;
     iage(date: Date | Year): IAge {
         if (date instanceof Date) {
-           return asIAge(Math.floor(calculate_age(this.birth, date)));
+           return asIAge(floor(calculate_age(this.birth, date)));
         }
         return asIAge(date - this.birth.getUTCFullYear());
     }

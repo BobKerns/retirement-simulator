@@ -6,7 +6,7 @@
 
 import { range } from "genutils";
 import { fmt_date } from "./utils";
-import { Age, as, asAge, Integer, isString, Year } from "./tagged";
+import { Age, as, asAge, floor, Integer, isString, Year } from "./tagged";
 
 /**
  * Obtain the day number of a given `Date`
@@ -190,14 +190,14 @@ export class TimePeriod {
         const [kyears, kmonths] = imonths < 0
             ? [years - 1, imonths + 1]
             : [years, imonths];
-        const iweeks = Math.floor(days / 7);
+        const iweeks = floor(days / 7);
         const fdays = idays - iweeks * 7;
         return {
             ...(years && {year: as(kyears)}),
             ...(months && {month: as(kmonths)}),
-            ...(iweeks && {week: as(iweeks)}),
+            ...(iweeks && {week: iweeks}),
             ...(fdays && {day: as(fdays)}),
-            totalDays: as(Math.floor((this.end.getTime() - this.start.getTime()) / (24 * 60 * 60 * 1000)))
+            totalDays: floor((this.end.getTime() - this.start.getTime()) / (24 * 60 * 60 * 1000))
         };
 
     }
@@ -219,7 +219,7 @@ export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) =>
     const step = () => {
         const nmonths = (n: number) => {
                 const nm = month + n;
-                const y = Math.floor(nm / 12);
+                const y = floor(nm / 12);
                 const m = nm % 12;
                 return [y, m, 0];
             };
