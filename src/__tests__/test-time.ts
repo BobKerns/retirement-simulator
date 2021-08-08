@@ -4,8 +4,10 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { asInteger } from "../tagged";
-import { incrementDate, TimePeriod, TimeUnit } from "../time";
+import { range } from "genutils";
+import { fmt_date } from "..";
+import { as, asInteger } from "../tagged";
+import { incrementDate, TimePeriod, timeSteps, TimeUnit } from "../time";
 
 describe('Time', () => {
     describe('TimePeriod', () => {
@@ -22,7 +24,13 @@ describe('Time', () => {
 
     describe('incrementDate', () => {
         const date = new Date(2021, 7); // August 2021
-        const dates = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+        test('1 day', () =>
+            expect(incrementDate(date, TimeUnit.day, as(1)).getUTCDate()).toBe(2));
+
+        test('1 week', () =>
+            expect(incrementDate(date, TimeUnit.week, as(1)).getUTCDate()).toBe(8));
+
         test('0 month', () =>
             expect(incrementDate(date, TimeUnit.month, asInteger(0)).getUTCMonth()).toBe(7));
         test('1 month', () =>
@@ -77,8 +85,14 @@ describe('Time', () => {
             expect(incrementDate(date, TimeUnit.month, asInteger(11)).getUTCFullYear()).toBe(2022));
         test('12 month->year', () =>
             expect(incrementDate(date, TimeUnit.month, asInteger(12)).getUTCFullYear()).toBe(2022));
-
-
     });
-
+    describe('timeSeries', () => {
+        const start = new Date(2021, 7);
+        const end = new Date(2021, 8);
+        test('days', () =>
+            expect(timeSteps(start, end, TimeUnit.day, as(1))
+                .map(d => d.date)
+                .map(fmt_date).asArray())
+                .toEqual([...range(1, 32).map(d => `${2021}-08-${String(d).padStart(2, '0')}`), '2021-09-01']));
+    });
 });

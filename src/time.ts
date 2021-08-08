@@ -6,6 +6,7 @@
 
 import { range } from "genutils";
 import { Age, as, asAge, floor, Integer, isString, Year } from "./tagged";
+import { Sync } from "genutils";
 
 /**
  * Obtain the day number of a given `Date`
@@ -253,6 +254,22 @@ Reflect.defineProperty(TimePeriod.prototype, Symbol.toStringTag, {
     value: "TimePeriod",
     enumerable: false
 });
+
+export const timeSteps = (start: Date, end: Date, timeUnit: TimeUnit, n: Integer) => {
+    const startTime = start.getTime();
+    const day = (24 * 60 * 60 * 1000);
+    function *timeSeries(): Generator<TimeStep, void, void> {
+        let step: Integer = as(0);
+        let date = start;
+        while (date <= end) {
+            const totalDays: Integer = floor((date.getTime() - startTime)/day);
+            yield {step, date, [timeUnit]: n,  totalDays};
+            step++;
+            date = incrementDate(date, timeUnit, n);
+        }
+    }
+    return Sync.enhance(timeSeries());
+}
 
 /**
  *  Left-pad with '0'  to 2 digits.
