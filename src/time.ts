@@ -235,7 +235,7 @@ export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) =>
 
     const [iYear, iMonth, iDay] = step();
     if (iDay) {
-        return new Date(date.getTime() + iDay * 7 * 24 * 60 * 60 * 1000);
+        return new Date(date.getTime() + iDay * 24 * 60 * 60 * 1000);
     } else {
         return new Date(
             date.getUTCFullYear() + iYear,
