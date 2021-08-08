@@ -161,7 +161,8 @@ export type TimeLength = {
 };
 
 export type TimeStep = TimeLength & {
-    step: Integer
+    date: Date;
+    step: Integer;
 };
 
 export class TimePeriod {
