@@ -5,7 +5,6 @@
  */
 
 import { range } from "genutils";
-import { fmt_date } from "./utils";
 import { Age, as, asAge, floor, Integer, isString, Year } from "./tagged";
 
 /**
@@ -254,3 +253,44 @@ Reflect.defineProperty(TimePeriod.prototype, Symbol.toStringTag, {
     value: "TimePeriod",
     enumerable: false
 });
+
+/**
+ *  Left-pad with '0'  to 2 digits.
+ * @param n A number or a string representation of a number
+ * @returns
+ */
+const p2 = (n: any) => String(n).padStart(2, '0');
+
+/**
+ * Format the date as year-mo
+ * @param date
+ * @returns
+ */
+export const fmt_month = (date: Date) =>
+    `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}`;
+
+
+/**
+ * Format the date as year-mo-dd
+ * @param date
+ * @returns
+ */
+export const fmt_date = (date: Date) =>
+    `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}-${p2(date.getUTCDate())}`;
+
+
+/**
+ * Format the time as HH:MM:SS
+ * @param date
+ * @returns
+ */
+export const fmt_time = (date: Date) =>
+    `${p2(date.getUTCHours())}-${p2(date.getUTCMinutes() + 1)}-${p2(date.getUTCSeconds())}`;
+
+/**
+ * Format the time as year-mo-dd HH:MM:SS
+ * @param date
+ * @returns
+ */
+export const fmt_datetime = (date: Date) =>
+    `${fmt_date(date)} ${fmt_time(date)}`;
