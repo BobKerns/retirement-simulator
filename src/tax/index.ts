@@ -19,13 +19,30 @@ import { TaxData } from './tax-util';
 export * from './tax-util';
 export * from './tax-tables';
 
-type ComputerTaxParams = {
+/**
+ * Parameters to pass to {@link computeTax}.
+ */
+export type ComputeTaxParams = {
+    /**
+     * The state to compute
+     */
     state: StateCode;
+    /**
+     * The tax year to estimate.
+     */
     year: Year;
+    /**
+     * Other options.
+     */
     [k: string]: any
-}
+} & TaxData;
 
-export const computeTax = ({ state = "US", year, ...options }: {state: StateCode, year: Year} & TaxData) => {
+/**
+ *
+ * @param param A {@link ComputeTaxParams}
+ * @returns
+ */
+export const computeTax = ({ state = "US", year, ...options }: ComputeTaxParams) => {
     const state_tables = TAX_TABLES[state] ?? Throw(`No tax tables are entererd for state ${state}.`)
     const tables =
         state_tables[year]

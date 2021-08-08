@@ -4,8 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import states from './data/states.json';
-
+/**
+ * US State postal codes, plus US = Federal
+ */
 export const STATES = {
     "US": "Federal" as const,
     "AL": "Alabama" as const,

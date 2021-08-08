@@ -32,6 +32,9 @@ type Deductions = {
     [k in TaxStatus]?: AgeGroups;
 };
 
+/**
+ * The basic categories of income.
+ */
 interface TaxIncome {
     regular?: Money;
     socialSecurity?: Money;
@@ -40,6 +43,9 @@ interface TaxIncome {
 
 export type TaxIncomeCategory = keyof TaxIncome;
 
+/**
+ * Data for computing taxes.
+ */
 export interface TaxData  {
     income: TaxIncome;
     deductions: Money;
@@ -50,6 +56,9 @@ export interface TaxData  {
     dependents?: number
 }
 
+/**
+ * Detailed results of computing taxes.
+ */
 export interface TaxResult {
     year: Year;
     income: Money;
@@ -67,6 +76,9 @@ export interface TaxResult {
  */
 export type TaxCalculation = (data: TaxData) => TaxResult;
 
+/**
+ * Tax table data for a particular year.
+ */
 export interface TaxYearTable {
     year: Year;
     table: TaxTableItem[];
@@ -77,6 +89,9 @@ export interface TaxYearTable {
     calculate: TaxCalculation;
 }
 
+/**
+ * Tax table data for multiple years.
+ */
 export interface TaxYearTables {
     [year: number]: TaxYearTable;
     default: Year;
