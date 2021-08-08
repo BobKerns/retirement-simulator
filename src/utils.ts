@@ -214,11 +214,15 @@ export const naturalSort = makeSort();
  * Higher-order function, that creates summing functions.
  *
  * @param f a function that takes an item and returns a number.
+ * @param v a function that validates that the result is of type `V`.
  * @returns a function that takes a list of items and returns the sum of the values returned by applying _f_.
  */
-export const makeSummer = <T, V extends number>(f: (item: T) => V) =>
-    (l: T[]) =>
-        l.reduce((acc, a: T) => (acc + f(a)) as V, 0 as V);
+export const makeSummer = <T, V extends number>(f: (item: T) => V, v?: (n: V) => V) =>
+    v
+        ? (l: T[]) =>
+            v(l.reduce((acc, a: T) => (acc + f(a)) as V, 0 as V))
+        : (l: T[]) =>
+            l.reduce((acc, a: T) => (acc + f(a)) as V, 0 as V);
 
 /**
  * Get the monetary value of an item.
