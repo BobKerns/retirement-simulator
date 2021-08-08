@@ -23,7 +23,7 @@ export type StateMixin<T extends Type> = Constructor<State<T>>;
 
 
 export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixin<T> {
-    class StateMixinX extends Base implements IState<T> {
+    class StateMixinImpl extends Base implements IState<T> {
         readonly period: TimeStep;
         readonly interval: TimeLength;
         readonly scenario: Scenario;
@@ -43,10 +43,10 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
          */
         get [Symbol.toStringTag]() {
             return this.#tag
-                ?? (this.#tag = `#${this.period.step}: ${this.constructor.name}[${this.name}]`);
+                ?? (this.#tag = `#${this.period?.step ?? '??'}: ${Base.name}[${this.name}]`);
         }
 
     }
-    return StateMixinX;
+    return StateMixinImpl;
 }
 
