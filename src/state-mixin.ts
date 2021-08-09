@@ -49,7 +49,7 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
                 // on the prototype. That screws up ObservableHQ's inspector, which gets an unhandled
                 // failed promise and never completes if you try to expand the real instance, because
                 // it died on the prototype.
-                return `${Base.name}State.<prototype>`;
+                return `${Base.name}State.prototype`;
             }
         }
 
