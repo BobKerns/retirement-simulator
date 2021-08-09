@@ -6,7 +6,7 @@
 
 import { asAge, asIAge, asMoney, asTaxRate, asYear } from "../tagged";
 import { Throw } from "../utils";
-import { lookupTax, TaxYearTable, TaxYearTables } from "./tax-util";
+import { lookupTax, TaxYearTables } from "./tax-util";
 
 export const CALIFORNIA_TAX: TaxYearTables = ({
   2020: {

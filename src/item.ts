@@ -23,6 +23,10 @@ export class Item<T extends Type> implements IItem<T> {
      * @internal
      */
     #tag?: string;
+    
+    /**
+     * Sort order
+     */
     sort: number;
 
     constructor(row: RowType<T>) {
@@ -51,6 +55,7 @@ export class Item<T extends Type> implements IItem<T> {
             return `${this.constructor.name}.prototype`;
         }
     }
+
     /**
      * Determine if an item is in a specified category.
      * @param category
