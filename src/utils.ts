@@ -228,3 +228,55 @@ export const monetaryValue = (i: IMonetary) => i.value;
  * @param l a list of {@link IMonetaryItem} items.
  */
 export const total = makeSummer(monetaryValue);
+
+/**
+ * Construct a family of type functions: a type guard, a coersion, and a checked cast.
+ *
+ * * The type guard ("is") tests membership and lets the compiler know the type. Same as an instanceof check,
+ *   but can be passed as a function.
+ * * The coercion ("to") checks to see if it is already of the type. If not, and a coercion function was supplied,
+ *   the suplied coercion function will be applied, and the test retried with a checked cast.
+ * * The checked cast ("as") checks the object, returning it as being the right type, or throwing an exception if not.
+ * @param cls A class constructor
+ * @param coerce an optional coercion function to be tried in the to* (coercion) variant
+ * @returns [is, to, as]
+ */
+export const classChecks = <T>(cls: new (...args: any[]) => T, coerce?: (a: any) => T):
+  [(a: any) => a is T, (a: any) => T, (a: any) => T] => {
+    const is = (a: any): a is T => a instanceof cls;
+    const as = (a: any): T => a instanceof cls
+        ? a
+        : Throw(`${a} is not an instance of ${a.name}`);
+    const c = coerce
+        ? (a: any): T => a instanceof cls
+            ? a
+            : as(coerce(a))
+        : as;
+    return [is, c, as];
+};
+
+/**
+ * Construct a family of type functions: a type guard, a coersion, and a checked cast.
+ *
+ * * The type guard ("is") tests membership and lets the compiler know the type. Same as an instanceof check,
+ *   but can be passed as a function.
+ * * The coercion ("to") checks to see if it is already of the type. If not, and a coercion function was supplied,
+ *   the suplied coercion function will be applied, and the test retried with a checked cast.
+ * * The checked cast ("as") checks the object, returning it as being the right type, or throwing an exception if not.
+ * @param is A type guard.
+ * @param isNot A string for error messages, when the type guard fails
+ * @param coerce an optional coercion function to be tried in the to* (coercion) variant
+ * @returns [is, to, as]
+ */
+export const typeChecks = <T>(is: (a: any) => a is T, isNot: string, coerce?: (a: any) => T):
+  [(a: any) => T, (a: any) => T] => {
+    const as = (a: any) => is(a)
+        ? a
+        : Throw(`${a} is not ${isNot}`);
+    const c = coerce
+        ? (a: any): T => is(a)
+            ? a
+            : as(coerce(a))
+        : as;
+    return [c, as];
+  };
