@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, IItem, Name, Row, ScenarioName, Type } from "./types";
+import { Category, IItem, Name, RowType, ScenarioName, Type } from "./types";
 import { TODAY } from "./time";
 
 /**
@@ -25,7 +25,7 @@ export class Item<T extends Type> implements IItem<T> {
     #tag?: string;
     sort: number;
 
-    constructor(row: Row<T>) {
+    constructor(row: RowType<T>) {
         this.type = row.type;
         this.name = row.name;
         this.prettyName = row.prettyName ?? row.name;

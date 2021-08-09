@@ -4,9 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type } from "./types";
-import { TimeLength, TimeStep } from "./time";
-import { Scenario } from "./scenario";
+import { IItem, IState, Type , IFScenario} from "./types";
+import { asTimeStep, TimeStep } from "./time";
+import { as } from "./tagged";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -21,20 +21,19 @@ export type State<T extends Type> = IItem<T> & IState<T>;
 
 export type StateMixin<T extends Type> = Constructor<State<T>>;
 
-
 export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixin<T> {
+    // If we import asScenario directly, we get multiple circular dependencies.
+    const asScenario: (s: any) => IFScenario = (StateMixin as any).asScenario ?? as;
     class StateMixinImpl extends Base implements IState<T> {
         readonly period: TimeStep;
-        readonly interval: TimeLength;
-        readonly scenario: Scenario;
+        readonly scenario: IFScenario;
         readonly item: IItem<T>;
         #tag?: string = undefined;
         constructor(...args: any[]) {
             super(...args)
             this.item = args[0];
-            this.scenario = args[1] as Scenario
-            this.period = args[2] as TimeStep;
-            this.interval = args[3] as TimeLength;
+            this.scenario = as(args[1])
+            this.period = asTimeStep(args[2]);
         }
 
         /**
@@ -47,7 +46,9 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
                     ?? (this.#tag = `${Base.name}State[${this.name} #${this.period?.step ?? '??'}]`);
             } catch {
                 // This can happen when viewing the prototype, because #tag isn't declared
-                // on the prototype
+                // on the prototype. That screws up ObservableHQ's inspector, which gets an unhandled
+                // failed promise and never completes if you try to expand the real instance, because
+                // it died on the prototype.
                 return `${Base.name}State.<prototype>`;
             }
         }
@@ -55,4 +56,3 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
     }
     return StateMixinImpl;
 }
-

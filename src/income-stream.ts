@@ -5,14 +5,16 @@
  */
 
 import { CashFlow } from "./cashflow";
-import { IIncomeStream, IncomeStreamSpec, Row } from "./types";
+import { StateMixin } from "./state-mixin";
+import { IIncomeStream, IncomeStreamSpec, RowType } from "./types";
+import { classChecks } from "./utils";
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
  */
 export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStream {
     spec: IncomeStreamSpec;
-    constructor(row: Row<'incomeStream'>) {
+    constructor(row: RowType<'incomeStream'>) {
         super(row);
         let spec = row.spec;
         this.spec = this.#parse(spec);
@@ -38,3 +40,6 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return spec;
     }
 }
+
+export const IncomeStreamState = StateMixin(IncomeStream);
+export const [isIncomeStream, toIncomeStream, asIncomeStream] = classChecks(IncomeStream);

@@ -7,20 +7,14 @@
 import { range } from "genutils";
 import Heap from "heap";
 import { actuary, SS_2017 } from "./actuary";
-import { Asset } from "./asset";
-import { Expense } from "./expense";
-import { Income } from "./income";
-import { IncomeStream } from "./income-stream";
-import { IncomeTax } from "./income-tax";
-import { Liability } from "./liability";
-import { Person } from "./person";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./time";
-import { IItem, Name, NamedIndex, Type, TimeLineItem, Row, ItemType, ScenarioName, Category } from "./types";
-import { assertRow, heapgen, indexByName, Throw, total } from "./utils";
+import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson } from "./types";
+import { assertRow, classChecks, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";
-import { as } from "./tagged";
+import { as, Year } from "./tagged";
+import { StateMixin } from "./state-mixin";
 
 
 /**
@@ -32,26 +26,25 @@ const NON_INCOME_ASSET: Category = as("non-income");
  * A particular scenario.
  */
 export class Scenario extends ScenarioBase {
-    readonly data: Array<Row<Type>>;
+    readonly data: Array<RowType<Type>>;
 
-    spouse1: Person;
-    spouse2: Person | null;
-    readonly people: NamedIndex<Person>;
+    spouse1: IFPerson;
+    spouse2: IFPerson | null;
+    readonly people: NamedIndex<IFPerson>;
 
-    asset_list: Array<Asset>;
-    liability_list: Array<Liability>;
-    income_list: Array<Income>;
-    expense_list: Array<Expense>;
-    tax_list: Array<IncomeTax>;
-    incomeStream_list: Array<IncomeStream>;
+    asset_list: IFAsset[];
+    liability_list: IFLiability[];
+    income_list: IFIncome[];
+    expense_list: IFExpense[];
+    tax_list: IFIncomeTax[];
+    incomeStream_list: IFIncomeStream[];
 
-    assets: NamedIndex<Asset>;
-    liabilities: NamedIndex<Liability>;
-    incomes: NamedIndex<Income>;
-    incomeStreams: NamedIndex<IncomeStream>;
-    expenses: NamedIndex<Expense>;
-    taxes: NamedIndex<IncomeTax>;
-
+    assets: NamedIndex<IFAsset>;
+    liabilities: NamedIndex<IFLiability>;
+    incomes: NamedIndex<IFIncome>;
+    incomeStreams: NamedIndex<IFIncomeStream>;
+    expenses: NamedIndex<IFExpense>;
+    taxes: NamedIndex<IFIncomeTax>;
 
     /**
      * @internal
@@ -68,9 +61,11 @@ export class Scenario extends ScenarioBase {
     /**
      * @internal
      */
-    #end_year: number;
+    #end_year: Year;
 
-    constructor(name: Name, dataset: Array<Row<Type>>, end_year: number) {
+    static scenarios: NamedIndex<Scenario> = {};
+
+    constructor(name: Name, dataset: Array<RowType<Type>>, end_year: Year) {
         super(assertRow(dataset.find(i => i.name === name && i.type === 'scenario') ?? Throw(`Scenario ${name} not found.`), 'scenario'));
         this.data = dataset.filter(i => i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
@@ -91,9 +86,11 @@ export class Scenario extends ScenarioBase {
         this.expense_list = this.#find_items("expense");
         this.expenses = indexByName(this.expense_list);
         this.liability_list = this.#find_items("liability");
+        /*
         this.liability_list.forEach(
             (l) => (l.payment = this.expenses[l.name]?.value)
         );
+        */
         this.liabilities = indexByName(this.liability_list);
         this.income_list = this.#find_items("income");
         this.incomes = indexByName(this.income_list);
@@ -195,7 +192,7 @@ export class Scenario extends ScenarioBase {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
-                items.push(construct(r as Row<T>, type));
+                items.push(construct(r as RowType<T>, type, this.data, this.#end_year));
             }
         });
         return items;
@@ -203,18 +200,18 @@ export class Scenario extends ScenarioBase {
 
     #find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
         const item = this.data.find(
-            (r: Row) =>
+            (r: RowType) =>
                 r.name === name &&
                 r.type === type &&
                 (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
         );
         if (item) {
-            return construct(item as Row<T>, type);
+            return construct(item as RowType<T>, type, this.data, this.#end_year);
         }
         return null;
     }
 
-    #find_spouse(name: Name): Person | null {
+    #find_spouse(name: Name): IFPerson | null {
         const item = this.#find_item(name, 'person');
         if (!item) return null;
         const birth = item.birth ?? Throw(`Birth date for person ${name} is not specified`);
@@ -239,7 +236,7 @@ export class Scenario extends ScenarioBase {
                 .asArray(),
             probabilities: this.#compute_probabilities(item)
         };
-        const x =  construct(row, "person");
+        const x =  construct(row, "person", this.data, this.#end_year);
         return x;
     }
 
@@ -262,7 +259,7 @@ export class Scenario extends ScenarioBase {
         ).list;
     }
 
-    #compute_probabilities(spouse: Person) {
+    #compute_probabilities(spouse: IFPerson) {
         if (!spouse) return undefined;
         const { birth, sex } = spouse;
         const age = TODAY.getUTCFullYear() - birth.getUTCFullYear();
@@ -277,3 +274,10 @@ export class Scenario extends ScenarioBase {
             .asArray();
     }
 }
+
+
+export const [isScenario, toScenario, asScenario] = classChecks(Scenario);
+// Passed this way to avoid circular loading dependencies.
+(StateMixin as any).asScenario = asScenario;
+// And a simpler circular dependency:
+(construct as any).Scenario = Scenario;

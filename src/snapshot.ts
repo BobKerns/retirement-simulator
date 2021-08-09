@@ -10,10 +10,9 @@ import { Income } from "./income";
 import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Liability } from "./liability";
-import { Scenario } from "./scenario";
 import { ScenarioBase } from "./scenario-base";
-import { NamedIndex } from "./types";
-import { indexByName } from "./utils";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, NamedIndex } from "./types";
+import { classChecks, indexByName } from "./utils";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.
@@ -24,21 +23,21 @@ import { indexByName } from "./utils";
  */
 export class Snapshot extends ScenarioBase {
     year: number;
-    asset_list: Asset[];
-    liability_list: Liability[];
-    income_list: Income[];
-    expense_list: Expense[];
-    tax_list: IncomeTax[];
-    incomeStream_list: IncomeStream[];
-    assets: NamedIndex<Asset>;
-    liabilities: NamedIndex<Liability>;
-    incomes: NamedIndex<Income>;
-    expenses: NamedIndex<Expense>;
-    incomeStreams: NamedIndex<IncomeStream>;
-    taxes: NamedIndex<IncomeTax>;
-    readonly scenario: Scenario;
+    asset_list: IFAsset[];
+    liability_list: IFLiability[];
+    income_list: IFIncome[];
+    expense_list: IFExpense[];
+    tax_list: IFIncomeTax[];
+    incomeStream_list: IFIncomeStream[];
+    assets: NamedIndex<IFAsset>;
+    liabilities: NamedIndex<IFLiability>;
+    incomes: NamedIndex<IFIncome>;
+    expenses: NamedIndex<IFExpense>;
+    incomeStreams: NamedIndex<IFIncomeStream>;
+    taxes: NamedIndex<IFIncomeTax>;
+    readonly scenario: IFScenario;
 
-    constructor(scenario: Scenario, year: number, previous: ScenarioBase) {
+    constructor(scenario: IFScenario, year: number, previous: ScenarioBase) {
         super(scenario);
         this.scenario = scenario;
         this.year = year;
@@ -56,3 +55,5 @@ export class Snapshot extends ScenarioBase {
         this.taxes = indexByName(this.tax_list);
     }
 }
+
+export const [isSnapshot, toSnapshot, asSnapshot] = classChecks(Snapshot);

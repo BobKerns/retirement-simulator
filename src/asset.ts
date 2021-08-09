@@ -7,7 +7,8 @@
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { Rate } from "./tagged";
-import { IAsset, Row } from "./types";
+import { IAsset, RowType } from "./types";
+import { classChecks } from "./utils";
 
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value
@@ -15,10 +16,11 @@ import { IAsset, Row } from "./types";
  */
 export class Asset extends Monetary<'asset'> implements IAsset {
     growth: Rate;
-    constructor(row: Row<'asset'>) {
+    constructor(row: RowType<'asset'>) {
         super(row);
         this.growth = row.growth ?? 1;
     }
 }
 
 export const AssetState = StateMixin(Asset);
+export const [isAsset, toAsset, asAsset] = classChecks(Asset);

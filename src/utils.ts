@@ -6,7 +6,7 @@
 
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import { MonetaryType, IMonetaryItem, IItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, Row, IMonetary } from './types';
+import { MonetaryType, IMonetaryItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary } from './types';
 
 export const Heap = HeapIn;
 
@@ -97,7 +97,7 @@ export const assertNever = (x: never, msg: string = `Unexpected ${x}`): never =>
  * @param type the {@link Type} the row should be.
  * @returns
  */
-export const checkRow = <T extends Type>(row: Row, type: T): row is Row<T> => row.type === type;
+export const checkRow = <T extends Type>(row: RowType, type: T): row is RowType<T> => row.type === type;
 
 /**
  * Check that the supplied {@link Row} is of the desired {@link Type}, returning it as that type,
@@ -106,7 +106,7 @@ export const checkRow = <T extends Type>(row: Row, type: T): row is Row<T> => ro
  * @param type
  * @returns
  */
-export const assertRow = <T extends Type>(row: Row, type: T): Row<T> =>
+export const assertRow = <T extends Type>(row: RowType, type: T): RowType<T> =>
     checkRow(row, type) ? row : Throw(`Row not of type ${type}.`);
 
 /**

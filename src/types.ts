@@ -4,17 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Asset } from "./asset";
-import { Expense } from "./expense";
-import { Income } from "./income";
-import { IncomeStream } from "./income-stream";
-import { IncomeTax } from "./income-tax";
-import { Liability } from "./liability";
-import { Person } from "./person";
-import { Scenario } from "./scenario";
 import { StateCode } from "./states";
 import { Money, Rate, Tagged } from "./tagged";
-import { TextItem } from "./text";
 
 export type Name = string;
 export type AssetName = Name;
@@ -38,16 +29,15 @@ export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
 export type Type = MonetaryType | 'person' | 'text' | 'scenario';
 
+export interface ItemMethods {
+    hasCategory(category: Category): boolean;
+    inScenario(scenario: ScenarioName): boolean;
+};
+
+type ItemImpl<T extends Type> = RowType<T> & ItemMethods;
+
 type ItemTypes = {
-    asset: Asset;
-    liability: Liability;
-    income: Income;
-    expense: Expense;
-    person: Person;
-    text: TextItem;
-    incomeStream: IncomeStream;
-    incomeTax: IncomeTax;
-    scenario: Scenario;
+    [T in keyof RowTypes]: ItemImpl<T>;
 };
 
 type RowTypes = {
@@ -62,13 +52,10 @@ type RowTypes = {
     scenario: IScenario;
 };
 
-export type ItemType<T extends Type> = (ItemTypes)[T];
-
 /**
  * Extract the {@link Type} keyword from an IITem-based type.
  */
 export type ItemKey<I extends IItem<Type>> = I extends IItem<infer T> ? T : never;
-
 
 /**
  * {link @Tagged} type for category names.
@@ -94,21 +81,21 @@ export interface IItem<T extends Type = Type> extends Named {
 }
 
 export interface IScenarioBase extends IItem<'scenario'> {
-    readonly asset_list: Array<Asset>;
-    readonly liability_list: Array<Liability>;
-    readonly income_list: Array<Income>;
-    readonly expense_list: Array<Expense>;
-    readonly tax_list: Array<IncomeTax>;
-    readonly incomeStream_list: Array<IncomeStream>;
+    readonly asset_list: IFAsset[];
+    readonly liability_list: IFLiability[];
+    readonly income_list: IFIncome[];
+    readonly expense_list: IFExpense[];
+    readonly tax_list: IFIncomeTax[];
+    readonly incomeStream_list: IFIncomeStream[];
 
-    readonly assets: NamedIndex<Asset>;
-    readonly liabilities: NamedIndex<Liability>;
-    readonly incomes: NamedIndex<Income>;
-    readonly incomeStreams: NamedIndex<IncomeStream>;
-    readonly expenses: NamedIndex<Expense>;
-    readonly taxes: NamedIndex<IncomeTax>;
+    readonly assets: NamedIndex<IFAsset>;
+    readonly liabilities: NamedIndex<IFLiability>;
+    readonly incomes: NamedIndex<IFIncome>;
+    readonly incomeStreams: NamedIndex<IFIncomeStream>;
+    readonly expenses: NamedIndex<IFExpense>;
+    readonly taxes: NamedIndex<IFIncomeTax>;
 
-    readonly scenario: Scenario;
+    readonly scenario: IFScenario;
 }
 
 
@@ -247,8 +234,8 @@ export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
     & IItem;
 
 export type RowLabel = keyof AnyRow;
-export type RowItem<T extends Type = Type> = ItemTypes[T] & {type: T};
-export type Row<T extends Type = Type> = RowTypes[T] & {type: T};
+export type ItemType<T extends Type = Type> = ItemTypes[T] & {type: T};
+export type RowType<T extends Type = Type> = RowTypes[T] & {type: T};
 
 export type InputColumns = Capitalize<RowLabel>;
 
@@ -267,6 +254,16 @@ export interface TimeLineItem {
 }
 
 export interface IState<T extends Type> {
-    readonly scenario: Scenario;
+    readonly scenario: IFScenario;
     readonly item: IItem<T>;
 }
+
+export type IFAsset = ItemImpl<'asset'>;
+export type IFLiability = ItemImpl<'liability'>;
+export type IFIncome = ItemImpl<'income'>
+export type IFExpense = ItemImpl<'expense'>;
+export type IFIncomeStream = ItemImpl<'incomeStream'>;
+export type IFIncomeTax = ItemImpl<'incomeTax'>;
+export type IFPerson = ItemImpl<'person'>;
+export type IFText = ItemImpl<'text'>;
+export type IFScenario = ItemImpl<'scenario'>;

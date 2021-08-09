@@ -6,14 +6,16 @@
 
 import { Item } from "./item";
 import { StateMixin } from "./state-mixin";
-import { IText, Row } from "./types";
+import { IText, RowType } from "./types";
+import { classChecks } from "./utils";
 
 export class TextItem extends Item<'text'> implements IText {
     text: string;
-    constructor(row: Row<'text'>) {
+    constructor(row: RowType<'text'>) {
         super(row);
         this.text = row.text;
     }
 }
 
 export const TextItemState = StateMixin(TextItem);
+export const [isTextItem, toTextItem, asTextItem] = classChecks(TextItem);

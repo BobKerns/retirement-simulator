@@ -7,7 +7,8 @@
 import { Item } from "./item";
 import { Age, asAge, asIAge, floor, IAge, Year } from "./tagged";
 import { calculate_age } from "./time";
-import { IPerson, Row, Sex } from "./types";
+import { IPerson, RowType, Sex } from "./types";
+import { classChecks } from "./utils";
 
 /**
  * A person (typically a spouse or domestic partner). Birth date and sex must be specified
@@ -16,7 +17,7 @@ import { IPerson, Row, Sex } from "./types";
 export class Person extends Item<'person'> implements IPerson {
     birth: Date;
     sex: Sex;
-    constructor(row: Row<'person'>) {
+    constructor(row: RowType<'person'>) {
         super(row);
         this.birth = row.birth;
         this.sex = row.sex;
@@ -57,3 +58,5 @@ export class Person extends Item<'person'> implements IPerson {
         return asIAge(date - this.birth.getUTCFullYear());
     }
 }
+
+export const [isPerson, toPerson, asPerson] = classChecks(Person);

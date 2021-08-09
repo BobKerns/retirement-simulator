@@ -4,9 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { range } from "genutils";
-import { Age, as, asAge, floor, Integer, isString, Year } from "./tagged";
-import { Sync } from "genutils";
+import { Sync, range } from "genutils";
+import { Age, as, asAge, floor, Integer, isInteger, isString, Year } from "./tagged";
+import { classChecks, typeChecks } from "./utils";
 
 /**
  * Obtain the day number of a given `Date`
@@ -160,10 +160,30 @@ export type TimeLength = {
     totalDays: Integer
 };
 
+export const isTimeLength = (a: any): a is TimeLength => {
+    if (typeof a === 'object' && isDate(a.date) && isInteger(a.totalDays)) {
+        for (const tu in TimeUnit) {
+            if (isInteger(a[tu])) return true;
+        }
+    }
+    return false;
+}
+
+export const [toTimeLength, asTimeLength] = typeChecks(isTimeLength, 'a valid TimeLength')
+
 export type TimeStep = TimeLength & {
     date: Date;
     step: Integer;
 };
+
+export const isTimeStep = (a: any): a is TimeStep =>
+        isTimeLength(a)
+        && isDate((a as any).date)
+        && isInteger((a as any).step);
+
+export const [toTimeStep, asTimeStep] = typeChecks(isTimeStep, 'a TimeStep');
+
+export const [isDate, toDate, asDate] = classChecks(Date, d => new Date(d));
 
 export class TimePeriod {
     readonly start: Date;
@@ -172,11 +192,11 @@ export class TimePeriod {
     constructor(start: Date, end: Date);
     constructor(start: Date, interval: TimeUnit, n: Integer);
     constructor(start: Date, endOrInterval: Date | TimeUnit, n?: Integer) {
-        this.start = start;
+        this.start = asDate(start);
         if (isString(endOrInterval)) {
             this.end = incrementDate(start, endOrInterval, n ?? as(1));
         } else {
-            this.end = endOrInterval;
+            this.end = asDate(endOrInterval);
         }
     }
 
@@ -207,6 +227,8 @@ export class TimePeriod {
         return `${fmt_date(this.start)} to ${fmt_date(this.end)}`;
     }
 }
+
+export const [isTimePeriod, toTimePeriod, asTimePeriod] = classChecks(TimePeriod);
 
 /**
  * Increment a time by a specified period of time.

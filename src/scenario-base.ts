@@ -4,15 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Asset } from "./asset";
-import { Expense } from "./expense";
-import { Income } from "./income";
-import { IncomeStream } from "./income-stream";
-import { IncomeTax } from "./income-tax";
 import { Item } from "./item";
-import { Liability } from "./liability";
-import { Scenario } from "./scenario";
-import { IScenarioBase, NamedIndex, Row } from "./types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IScenario, IScenarioBase, NamedIndex } from "./types";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -28,70 +21,70 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
     /**
      * A list of {@link Asset}. See also {@link assets}.
      */
-    abstract asset_list: Asset[];
+    abstract asset_list: IFAsset[];
     /**
      * A list of {@link Loan}. See also {@link loans}.
      */
-    abstract liability_list: Liability[];
+    abstract liability_list: IFLiability[];
     /**
      * A list of {@link Income}. See also {@link incomes}.
      */
-    abstract income_list: Income[];
+    abstract income_list: IFIncome[];
     /**
      * A list of {@link Expense}. See also {@link expenses}.
      */
-    abstract expense_list: Expense[];
+    abstract expense_list: IFExpense[];
     /**
      * A list of {@link IncomeTax}. See also {@link taxes}.
      */
-    abstract tax_list: IncomeTax[];
+    abstract tax_list: IFIncomeTax[];
     /**
      * A list of {@link IncomeStream}. See also {@link incomeStreams}.
      */
-    abstract incomeStream_list: IncomeStream[];
+    abstract incomeStream_list: IFIncomeStream[];
 
     /**
      * A lookup table of {@link Asset} for convenient lookup by name.
      * See also {@link asset_list}.
      */
-    abstract assets: NamedIndex<Asset>;
+    abstract assets: NamedIndex<IFAsset>;
 
     /**
      * A lookup table of {@link Loan} for convenient lookup by name.
      * See also {@link loan_list}.
      */
-    abstract liabilities: NamedIndex<Liability>;
+    abstract liabilities: NamedIndex<IFLiability>;
 
     /**
      * A lookup table of {@link Income} for convenient lookup by name.
      * See also {@link income_list}.
      */
-    abstract incomes: NamedIndex<Income>;
+    abstract incomes: NamedIndex<IFIncome>;
 
     /**
      * A lookup table of {@link IncomeStream} for convenient lookup by name.
      * See also {@link incomeStream_list}.
      */
-    abstract incomeStreams: NamedIndex<IncomeStream>;
+    abstract incomeStreams: NamedIndex<IFIncomeStream>;
 
     /**
      * A lookup table of {@link Expense} for convenient lookup by name.
      * See also {@link expense_list}.
      */
-    abstract expenses: NamedIndex<Expense>;
+    abstract expenses: NamedIndex<IFExpense>;
 
     /**
      * A lookup table of {@link IncomeTax} for convenient lookup by name.
      * See also {@link tax_list}.
      */
-    abstract taxes: NamedIndex<IncomeTax>;
+    abstract taxes: NamedIndex<IFIncomeTax>;
 
     /**
      * Get the associated {@link Scenario}
      */
-    abstract readonly scenario: Scenario;
+    abstract readonly scenario: IFScenario;
 
-    constructor(row: Row<'scenario'>) {
+    constructor(row: IScenario) {
         super(row);
     }
 
@@ -120,5 +113,4 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
     get total_expenses() {
         return Math.round(this.expense_list.reduce((a, i) => a + i.value, 0));
     }
-
 }

@@ -5,8 +5,11 @@
  */
 
 import {Expense} from '../expense';
-import { construct } from '../construct';
+import { construct as bareConstruct } from '../construct';
 import { expense_1 } from './data/samples';
+import { as } from '../tagged';
+
+const construct = (row: any) => bareConstruct(row, row.type, [], as(2021));
 
 describe("Expense", () => {
     test("Create", () => expect(new Expense(expense_1).fromStream).toEqual(expense_1.fromStream));

@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Type, Row, ItemType } from './types';
+import { Type, RowType, ItemType } from './types';
 import { Asset } from './asset';
 import { Expense } from './expense';
 import { Liability } from './liability';
@@ -13,6 +13,9 @@ import { IncomeStream } from './income-stream';
 import { IncomeTax } from './income-tax';
 import { Person } from './person';
 import { assertRow } from './utils';
+import { Scenario } from './scenario';
+import { TextItem } from './text';
+import { Year } from './tagged';
 
 /**
  * Construct an item from a row object
@@ -20,7 +23,7 @@ import { assertRow } from './utils';
  * @param type The type of item (defaulted from the item)
  * @returns the constructed instance.
  */
-export const construct = <T extends Type>(item: Row<T>, type: T = item.type): ItemType<T> => {
+export const construct = <T extends Type>(item: RowType<T>, type: T = item.type, dataset: Array<RowType<Type>>, end_year: Year): ItemType<T> => {
     if (!item)
         return item;
     switch (type) {
@@ -38,6 +41,10 @@ export const construct = <T extends Type>(item: Row<T>, type: T = item.type): It
             return new IncomeTax(assertRow(item, 'incomeTax')) as unknown as ItemType<T>;
         case "person":
             return new Person(assertRow(item, 'person')) as unknown as ItemType<T>;
+        case "text":
+            return new TextItem(assertRow(item, 'text')) as unknown as ItemType<T>;
+        case "scenario":
+            return new (construct as any).Scenario(assertRow(item, 'scenario').name, dataset, end_year) as unknown as ItemType<T>;
         default:
             throw new Error(`Unrecognized item type: ${item.type}`);
     }
