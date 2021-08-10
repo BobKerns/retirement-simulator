@@ -59,6 +59,7 @@ const globals: {[k: string]: string} = {
     // Some default mappings
     katex: "katex",
     d3: "d3",
+    "d3-dsv": "d3",
     "genutils": "genutils",
     "heap": "heap",
     "@observablehq/stdlib": "observablehq",

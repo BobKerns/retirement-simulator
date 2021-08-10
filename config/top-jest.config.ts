@@ -8,6 +8,9 @@ export default {
     testMatch: [
         "**/__tests__/*.ts"
     ],
+    "transformIgnorePatterns": [
+        "/node_modules/(?!d3-[^/]+)/"
+    ],
     testPathIgnorePatterns: [
         "/node_modules/",
         "/build/"

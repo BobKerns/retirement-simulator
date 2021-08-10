@@ -230,7 +230,6 @@ export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
     & Partial<Omit<IIncomeTax, IItemKeys>>
     & Partial<Omit<IText, IItemKeys>>
     & Partial<Omit<IPerson, IItemKeys>>
-    & Partial<Omit<IScenario, IItemKeys>>
     & IItem;
 
 export type RowLabel = keyof AnyRow;

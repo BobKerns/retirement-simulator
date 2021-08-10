@@ -280,3 +280,10 @@ export const typeChecks = <T>(is: (a: any) => a is T, isNot: string, coerce?: (a
         : as;
     return [c, as];
   };
+
+/**
+ * Simple type-aware identity function.
+ * @param a
+ * @returns a
+ */
+export const identity = <T>(a: T): T => a;

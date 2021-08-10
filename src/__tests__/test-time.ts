@@ -5,9 +5,8 @@
  */
 
 import { range } from "genutils";
-import { fmt_date } from "..";
 import { as, asInteger } from "../tagged";
-import { incrementDate, TimePeriod, timeSteps, TimeUnit } from "../time";
+import { incrementDate, TimePeriod, timeSteps, TimeUnit, fmt_date } from "../time";
 
 describe('Time', () => {
     describe('TimePeriod', () => {
