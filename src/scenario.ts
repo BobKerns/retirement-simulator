@@ -9,7 +9,7 @@ import Heap from "heap";
 import { actuary, SS_2017 } from "./actuary";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { TODAY, YEAR } from "./time";
+import { TODAY, YEAR } from "./calendar";
 import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson, IFText } from "./types";
 import { assertRow, classChecks, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";

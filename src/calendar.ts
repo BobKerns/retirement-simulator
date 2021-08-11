@@ -4,6 +4,11 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+/**
+ * A set of utilities for working with calendar time.
+ * @module
+ */
+
 import { Sync, range } from "genutils";
 import { Age, as, asAge, floor, Integer, isInteger, isString, Year } from "./tagged";
 import { classChecks, typeChecks } from "./utils";
@@ -146,7 +151,7 @@ export const calculate_age = (birth: Date, thisDate: Date): Age => {
 /**
  * Units of time intervals.
  */
-export enum TimeUnit {
+export enum CalendarUnit {
     year = 'year',
     quarter = 'quarter',
     month = 'month',
@@ -154,44 +159,44 @@ export enum TimeUnit {
     day = 'day'
 };
 
-export type TimeLength = {
-    [k in keyof typeof TimeUnit]?: Integer
+export type CalendarLength = {
+    [k in keyof typeof CalendarUnit]?: Integer
 } & {
     totalDays: Integer
 };
 
-export const isTimeLength = (a: any): a is TimeLength => {
+export const isCalendarLength = (a: any): a is CalendarLength => {
     if (typeof a === 'object' && isDate(a.date) && isInteger(a.totalDays)) {
-        for (const tu in TimeUnit) {
+        for (const tu in CalendarUnit) {
             if (isInteger(a[tu])) return true;
         }
     }
     return false;
 }
 
-export const [toTimeLength, asTimeLength] = typeChecks(isTimeLength, 'a valid TimeLength')
+export const [toCalendarLength, asCalendarLength] = typeChecks(isCalendarLength, 'a valid CalendarLength')
 
-export type TimeStep = TimeLength & {
+export type CalendarStep = CalendarLength & {
     date: Date;
     step: Integer;
 };
 
-export const isTimeStep = (a: any): a is TimeStep =>
-        isTimeLength(a)
+export const isCalendarStep = (a: any): a is CalendarStep =>
+        isCalendarLength(a)
         && isDate((a as any).date)
         && isInteger((a as any).step);
 
-export const [toTimeStep, asTimeStep] = typeChecks(isTimeStep, 'a TimeStep');
+export const [toCalendarStep, asCalendarStep] = typeChecks(isCalendarStep, 'a CalendarStep');
 
 export const [isDate, toDate, asDate] = classChecks(Date, d => new Date(d));
 
-export class TimePeriod {
+export class CalendarPeriod {
     readonly start: Date;
     readonly end: Date;
 
     constructor(start: Date, end: Date);
-    constructor(start: Date, interval: TimeUnit, n: Integer);
-    constructor(start: Date, endOrInterval: Date | TimeUnit, n?: Integer) {
+    constructor(start: Date, interval: CalendarUnit, n: Integer);
+    constructor(start: Date, endOrInterval: Date | CalendarUnit, n?: Integer) {
         this.start = asDate(start);
         if (isString(endOrInterval)) {
             this.end = incrementDate(start, endOrInterval, n ?? as(1));
@@ -200,7 +205,10 @@ export class TimePeriod {
         }
     }
 
-    get length(): TimeLength {
+    /**
+     * Get the length of this {@link CalendarPeriod} as a {@link CalendarLength}.
+     */
+    get length(): CalendarLength {
         const years = this.end.getUTCFullYear() - this.start.getUTCFullYear();
         const months = this.end.getUTCMonth() - this.start.getUTCMonth();
         const days = this.end.getUTCDate() - this.start.getUTCDate();
@@ -228,7 +236,7 @@ export class TimePeriod {
     }
 }
 
-export const [isTimePeriod, toTimePeriod, asTimePeriod] = classChecks(TimePeriod);
+export const [isCalendarPeriod, toCalendarPeriod, asCalendarPeriod] = classChecks(CalendarPeriod);
 
 /**
  * Increment a time by a specified period of time.
@@ -239,7 +247,7 @@ export const [isTimePeriod, toTimePeriod, asTimePeriod] = classChecks(TimePeriod
  * @param n The number of units to increment by
  * @returns
  */
-export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) => {
+export const incrementDate = (date: Date, unit: CalendarUnit, n: Integer = as(1)) => {
     const month = date.getUTCMonth();
     const step = () => {
         const nmonths = (n: number) => {
@@ -249,11 +257,11 @@ export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) =>
                 return [y, m, 0];
             };
         switch (unit) {
-            case TimeUnit.year: return [n, 0, 0];
-            case TimeUnit.quarter: return nmonths(n * 3);
-            case TimeUnit.month: return nmonths(n);
-            case TimeUnit.week: return [0, 0, 7 * n];
-            case TimeUnit.day: return [0, 0, n];
+            case CalendarUnit.year: return [n, 0, 0];
+            case CalendarUnit.quarter: return nmonths(n * 3);
+            case CalendarUnit.month: return nmonths(n);
+            case CalendarUnit.week: return [0, 0, 7 * n];
+            case CalendarUnit.day: return [0, 0, n];
         }
         throw new Error(`Unknown TimeInterval: ${unit}`);
     }
@@ -277,24 +285,24 @@ export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) =>
  * @param unit Unit of time to truncate to (must not be 'week').
  * @returns (date: {@link Date}) => {@link Date}
  */
-export const truncateDate = (unit: TimeUnit) => {
+export const truncateDate = (unit: CalendarUnit) => {
     switch (unit) {
-        case TimeUnit.year: return (date: Date) =>
+        case CalendarUnit.year: return (date: Date) =>
             new Date(date.getUTCFullYear(), 0, 0, 0, 0, 0, 0);
-        case TimeUnit.quarter: return (date: Date) =>
+        case CalendarUnit.quarter: return (date: Date) =>
             new Date(
                 date.getUTCFullYear(),
                 floor(date.getUTCMonth()/3) * 3,
                 0, 0, 0, 0, 0
             );
-        case TimeUnit.month: return (date: Date) =>
+        case CalendarUnit.month: return (date: Date) =>
             new Date(
                 date.getUTCFullYear(),
                 date.getUTCMonth(),
                 0, 0, 0, 0, 0
             );
-        case TimeUnit.week: throw new Error(`'week' is not a meaningful unit to truncate a date to.`);
-        case TimeUnit.day: return (date: Date) =>
+        case CalendarUnit.week: throw new Error(`'week' is not a meaningful unit to truncate a date to.`);
+        case CalendarUnit.day: return (date: Date) =>
             new Date(
                 date.getUTCFullYear(),
                 date.getUTCMonth(),
@@ -305,15 +313,15 @@ export const truncateDate = (unit: TimeUnit) => {
     throw new Error(`Unknown TimeInterval: ${unit}`);
 };
 
-Reflect.defineProperty(TimePeriod.prototype, Symbol.toStringTag, {
-    value: "TimePeriod",
+Reflect.defineProperty(CalendarPeriod.prototype, Symbol.toStringTag, {
+    value: "CalendarPeriod",
     enumerable: false
 });
 
-export const timeSteps = (start: Date, end: Date, timeUnit: TimeUnit, n: Integer) => {
+export const calendarSteps = (start: Date, end: Date, timeUnit: CalendarUnit, n: Integer) => {
     const startTime = start.getTime();
     const day = (24 * 60 * 60 * 1000);
-    function *timeSeries(): Generator<TimeStep, void, void> {
+    function *calendarSteps(): Generator<CalendarStep, void, void> {
         let step: Integer = as(0);
         let date = start;
         while (date <= end) {
@@ -323,7 +331,7 @@ export const timeSteps = (start: Date, end: Date, timeUnit: TimeUnit, n: Integer
             date = incrementDate(date, timeUnit, n);
         }
     }
-    return Sync.enhance(timeSeries());
+    return Sync.enhance(calendarSteps());
 }
 
 /**

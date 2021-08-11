@@ -5,7 +5,7 @@
  */
 
 import { Category, IItem, Name, RowType, ScenarioName, Type } from "./types";
-import { TODAY } from "./time";
+import { TODAY } from "./calendar";
 
 /**
  * Base class for all items. Holds all the common fields.
@@ -23,7 +23,7 @@ export class Item<T extends Type> implements IItem<T> {
      * @internal
      */
     #tag?: string;
-    
+
     /**
      * Sort order
      */

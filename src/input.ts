@@ -6,7 +6,7 @@
 
 import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
-import { toDate } from "./time";
+import { toDate } from "./calendar";
 import { AnyRow, RowType, RowLabel, Type, InputRow, Writeable, InputColumn, ItemType, Initable } from "./types";
 import { identity } from "./utils";
 

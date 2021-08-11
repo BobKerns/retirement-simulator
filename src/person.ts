@@ -6,7 +6,7 @@
 
 import { Item } from "./item";
 import { Age, asAge, asIAge, floor, IAge, Year } from "./tagged";
-import { calculate_age } from "./time";
+import { calculate_age } from "./calendar";
 import { IPerson, RowType, Sex } from "./types";
 import { classChecks } from "./utils";
 

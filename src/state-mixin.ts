@@ -5,7 +5,7 @@
  */
 
 import { IItem, IState, Type , IFScenario} from "./types";
-import { asTimeStep, TimeStep } from "./time";
+import { asCalendarStep, CalendarStep } from "./calendar";
 import { as } from "./tagged";
 
 /**
@@ -25,7 +25,7 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
     // If we import asScenario directly, we get multiple circular dependencies.
     const asScenario: (s: any) => IFScenario = (StateMixin as any).asScenario ?? as;
     class StateMixinImpl extends Base implements IState<T> {
-        readonly period: TimeStep;
+        readonly period: CalendarStep;
         readonly scenario: IFScenario;
         readonly item: IItem<T>;
         #tag?: string = undefined;
@@ -33,7 +33,7 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
             super(...args)
             this.item = args[0];
             this.scenario = as(args[1])
-            this.period = asTimeStep(args[2]);
+            this.period = asCalendarStep(args[2]);
         }
 
         /**

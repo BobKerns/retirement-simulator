@@ -33,7 +33,7 @@ export * from './states';
 export * from './tagged';
 export * from './tax/index';
 export * from './text';
-export * from './time';
+export * from './calendar';
 export * from './types';
 export * from './utils';
 

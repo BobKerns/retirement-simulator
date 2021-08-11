@@ -6,7 +6,7 @@
 
 import { Monetary } from "./monetary";
 import { asRate, Rate } from "./tagged";
-import { day_of_year, TODAY, YEAR } from "./time";
+import { day_of_year, TODAY, YEAR } from "./calendar";
 import { CashFlowType, ICashFlowItem, RowType } from "./types";
 
 /**
