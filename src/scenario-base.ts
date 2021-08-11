@@ -5,7 +5,7 @@
  */
 
 import { Item } from "./item";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IScenario, IScenarioBase, NamedIndex } from "./types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IScenario, IScenarioBase, NamedIndex } from "./types";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -44,6 +44,11 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
     abstract incomeStream_list: IFIncomeStream[];
 
     /**
+     * List of text messages
+     */
+    abstract text_list: IFText[];
+
+    /**
      * A lookup table of {@link Asset} for convenient lookup by name.
      * See also {@link asset_list}.
      */
@@ -78,6 +83,12 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
      * See also {@link tax_list}.
      */
     abstract taxes: NamedIndex<IFIncomeTax>;
+
+    /**
+     * A lookup table of {@link IncomeTax} for convenient lookup by name.
+     * See also {@link tax_list}.
+     */
+    abstract texts: NamedIndex<IFText>;
 
     /**
      * Get the associated {@link Scenario}

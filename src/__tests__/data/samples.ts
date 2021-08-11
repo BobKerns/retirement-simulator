@@ -17,8 +17,7 @@ export const expense_1: IExpense = {
     sort: 1,
     value: asMoney(100.00),
     categories: [CAT_FRED],
-    scenarios: [],
-    fraction: asRate(1)
+    scenarios: []
 };
 
 export const person_1: IPerson = {

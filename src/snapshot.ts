@@ -11,7 +11,8 @@ import { IncomeStream } from "./income-stream";
 import { IncomeTax } from "./income-tax";
 import { Liability } from "./liability";
 import { ScenarioBase } from "./scenario-base";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, NamedIndex } from "./types";
+import { TextItem } from "./text";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, NamedIndex } from "./types";
 import { classChecks, indexByName } from "./utils";
 
 /**
@@ -29,12 +30,16 @@ export class Snapshot extends ScenarioBase {
     expense_list: IFExpense[];
     tax_list: IFIncomeTax[];
     incomeStream_list: IFIncomeStream[];
+    text_list: IFText[];
+
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;
     expenses: NamedIndex<IFExpense>;
     incomeStreams: NamedIndex<IFIncomeStream>;
     taxes: NamedIndex<IFIncomeTax>;
+    texts: NamedIndex<IFText>;
+
     readonly scenario: IFScenario;
 
     constructor(scenario: IFScenario, year: number, previous: ScenarioBase) {
@@ -47,12 +52,14 @@ export class Snapshot extends ScenarioBase {
         this.expense_list = scenario.expense_list.map(a => new Expense(a));
         this.tax_list = scenario.tax_list.map(a => new IncomeTax(a));
         this.incomeStream_list = scenario.incomeStream_list.map(a => new IncomeStream(a));
+        this.text_list = scenario.text_list.map(a => new TextItem(a));
         this.assets = indexByName(this.asset_list);
         this.liabilities = indexByName(this.liability_list);
         this.incomes = indexByName(this.income_list);
         this.expenses = indexByName(this.expense_list);
-        this.incomeStreams = indexByName(this.incomeStream_list);
         this.taxes = indexByName(this.tax_list);
+        this.incomeStreams = indexByName(this.incomeStream_list);
+        this.texts = indexByName(this.text_list);
     }
 }
 

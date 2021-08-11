@@ -10,7 +10,7 @@ import { actuary, SS_2017 } from "./actuary";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./time";
-import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson } from "./types";
+import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson, IFText } from "./types";
 import { assertRow, classChecks, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";
 import { as, Year } from "./tagged";
@@ -38,6 +38,7 @@ export class Scenario extends ScenarioBase {
     expense_list: IFExpense[];
     tax_list: IFIncomeTax[];
     incomeStream_list: IFIncomeStream[];
+    text_list: IFText[];
 
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
@@ -45,6 +46,7 @@ export class Scenario extends ScenarioBase {
     incomeStreams: NamedIndex<IFIncomeStream>;
     expenses: NamedIndex<IFExpense>;
     taxes: NamedIndex<IFIncomeTax>;
+    texts: NamedIndex<IFText>;
 
     /**
      * @internal
@@ -98,18 +100,21 @@ export class Scenario extends ScenarioBase {
         this.taxes = indexByName(this.tax_list);
         this.incomeStream_list = this.#find_items("incomeStream");
         this.incomeStreams = indexByName(this.incomeStream_list);
+        this.text_list = this.#find_items("text");
+        this.texts = indexByName(this.text_list);
+
         const timelineCmp = (a: TimeLineItem, b: TimeLineItem) =>
-        a.date.valueOf() < b.date.valueOf()
-            ? -1
-            : a.date.valueOf() === b.date.valueOf()
-                ? a.item.type < b.item.type
-                    ? -1
-                    : a.item.type === b.item.type
-                    ? a.item.name < b.item.name
+            a.date.valueOf() < b.date.valueOf()
+                ? -1
+                : a.date.valueOf() === b.date.valueOf()
+                    ? a.item.type < b.item.type
                         ? -1
-                        : 0
-                : -1
-            : 1;
+                        : a.item.type === b.item.type
+                        ? a.item.name < b.item.name
+                            ? -1
+                            : 0
+                    : -1
+                : 1;
 
         // Compute the intial timeline.
         const timeline = new Heap(timelineCmp);

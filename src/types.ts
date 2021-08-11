@@ -7,6 +7,9 @@
 import { StateCode } from "./states";
 import { Money, Rate, Tagged } from "./tagged";
 
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
+
 export type Name = string;
 export type AssetName = Name;
 export type IncomeName = Name;
@@ -87,6 +90,7 @@ export interface IScenarioBase extends IItem<'scenario'> {
     readonly expense_list: IFExpense[];
     readonly tax_list: IFIncomeTax[];
     readonly incomeStream_list: IFIncomeStream[];
+    readonly text_list: IFText[];
 
     readonly assets: NamedIndex<IFAsset>;
     readonly liabilities: NamedIndex<IFLiability>;
@@ -94,6 +98,7 @@ export interface IScenarioBase extends IItem<'scenario'> {
     readonly incomeStreams: NamedIndex<IFIncomeStream>;
     readonly expenses: NamedIndex<IFExpense>;
     readonly taxes: NamedIndex<IFIncomeTax>;
+    readonly texts: NamedIndex<IFText>;
 
     readonly scenario: IFScenario;
 }
@@ -137,10 +142,6 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
  * Items which represent flows of money.
  */
 export interface ICashFlowItem<T extends CashFlowType> extends IMonetaryItem<T> {
-    /**
-     * The fraction of a year this expense item applies to, for expenses which start or end midyear.
-     */
-    readonly fraction: Rate;
 }
 
 /**
@@ -232,11 +233,12 @@ export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
     & Partial<Omit<IPerson, IItemKeys>>
     & IItem;
 
+
 export type RowLabel = keyof AnyRow;
 export type ItemType<T extends Type = Type> = ItemTypes[T] & {type: T};
 export type RowType<T extends Type = Type> = RowTypes[T] & {type: T};
 
-export type InputColumns = Capitalize<RowLabel>;
+export type InputColumn = Capitalize<RowLabel>;
 
 export type InputRow = {
     [k in Capitalize<RowLabel>]: AnyRow[Uncapitalize<k>]
