@@ -1,0 +1,10 @@
+Type,File
+scenario,scenario.csv
+person,people.csv
+income,income.csv
+expense,expense.csv
+asset,asset.csv
+liability,liability.csv
+incomeTax,income_tax.csv
+incomeStream,income_stream.csv
+text,text.csv
