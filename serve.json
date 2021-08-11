@@ -1,17 +1,37 @@
 {
   "cleanUrls": false,
   "trailingSlash": true,
-  "etag": true,
+  "redirects": [
+      { "source": "/", "destination": "/lib/umd/index.js"},
+      { "source": "/docs", "destination": "/docs/index.html"}
+  ],
+  "rewrites": [
+    { "source": "/docs/:p1", "destination": "/build/docs/api/:p1"},
+    { "source": "/docs/:p1/:p2", "destination": "/build/docs/api/:p1/:p2"},
+    { "source": "/docs/:p1/:p2/:p3", "destination": "/build/docs/api/:p1/:p2/:p3"},
+    { "source": "/docs/:p1/:p2/:p3/:p4", "destination": "/build/docs/api/:p1/:p2/:p3/:p4"},
+    { "source": "/test", "destination": "/src/__tests__/data"},
+    { "source": "/test/:p1", "destination": "/src/__tests__/data/:p1"},
+    { "source": "/test/:p1/:p2", "destination": "/src/__tests__/data/:p1/:p2"}
+  ],
   "headers": [
-      {
-        "source": "**/*.@(csv|json)",
-        "headers" : [{
-            "key" : "Access-Control-Allow-Origin",
-            "value" : "*"
+        {
+            "source": "**/*.@(csv|json)",
+            "headers" : [
+                {
+                    "key": "Cache-Control",
+                    "value": "max-age=0, must-revalidate"
+                }
+            ]
         },
         {
-            "key": "Cache-Control",
-            "value": "max-age=0, must-revalidate"
-        }]
-    }]
+            "source": "404.html",
+            "headers" : [
+                {
+                    "key": "Cache-Control",
+                    "value": "max-age=0, must-revalidate"
+                }
+            ]
+        }
+    ]
 }
