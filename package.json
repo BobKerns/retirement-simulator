@@ -21,7 +21,7 @@
         "prepublishOnly": "NODE_ENV=production npm run build",
         "build:docs": "GRAPHVIZ_DOT=\"$(which dot)\" typedoc --out build/docs/api src/",
         "preserve": "npm run build:compile",
-        "serve": "serve -l 3035 -s",
+        "serve": "serve -l 3035 -C",
         "predocs": "npm install && npm run build:compile && npm run build:docs",
         "docs": "npm run serve"
     },
