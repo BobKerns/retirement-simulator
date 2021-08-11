@@ -2,7 +2,7 @@
   "cleanUrls": false,
   "trailingSlash": true,
   "redirects": [
-      { "source": "/", "destination": "/lib/umd/index.js"},
+      { "source": "/index.js", "destination": "/lib/umd/index.js"},
       { "source": "/docs", "destination": "/docs/index.html"}
   ],
   "rewrites": [
