@@ -18,11 +18,19 @@ describe('Time', () => {
 
             test('7 day', () =>
                 expect(new TimePeriod(new Date(2021, 7, 4), new Date(2021, 7, 11)).length).toStrictEqual({week: 1, totalDays: 7}));
+
+            test('1 month', () =>
+                expect(new TimePeriod(new Date(2021, 12, 11), new Date(2022, 1, 11)).length).toEqual({month: 1, totalDays: 31}));
+
+
+            test('year wrap', () =>
+                expect(new TimePeriod(new Date(2021, 11, 11, 0, 0, 0, 0), new Date(2022, 0, 11, 0, 0, 0, 0)).length).toEqual({month: 1, totalDays: 31}));
+
         });
     });
 
     describe('incrementDate', () => {
-        const date = new Date(2021, 7); // August 2021
+        const date = new Date(2021, 7, 1); // August 2021
 
         test('1 day', () =>
             expect(incrementDate(date, TimeUnit.day, as(1)).getUTCDate()).toBe(2));
@@ -58,6 +66,34 @@ describe('Time', () => {
             expect(incrementDate(date, TimeUnit.month, asInteger(12)).getUTCMonth()).toBe(7));
 
 
+        test('0 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(0)).getUTCDate()).toBe(1));
+        test('1 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(1)).getUTCDate()).toBe(1));
+        test('2 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(2)).getUTCDate()).toBe(1));
+        test('3 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(3)).getUTCDate()).toBe(1));
+        test('4 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(4)).getUTCDate()).toBe(1));
+        test('5 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(5)).getUTCDate()).toBe(1));
+        test('6 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(6)).getUTCDate()).toBe(1));
+        test('7 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(7)).getUTCDate()).toBe(1));
+        test('8 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(8)).getUTCDate()).toBe(1));
+        test('9 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(9)).getUTCDate()).toBe(1));
+        test('10 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(10)).getUTCDate()).toBe(1));
+        test('11 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(11)).getUTCDate()).toBe(1));
+        test('12 month day', () =>
+            expect(incrementDate(date, TimeUnit.month, asInteger(12)).getUTCDate()).toBe(1));
+
+
         test('0 month->year', () =>
             expect(incrementDate(date, TimeUnit.month, asInteger(0)).getUTCFullYear()).toBe(2021));
         test('1 month->year', () =>
@@ -84,6 +120,7 @@ describe('Time', () => {
             expect(incrementDate(date, TimeUnit.month, asInteger(11)).getUTCFullYear()).toBe(2022));
         test('12 month->year', () =>
             expect(incrementDate(date, TimeUnit.month, asInteger(12)).getUTCFullYear()).toBe(2022));
+
     });
     describe('timeSeries', () => {
         const start = new Date(2021, 7);

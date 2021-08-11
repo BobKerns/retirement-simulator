@@ -209,13 +209,13 @@ export class TimePeriod {
             ? [months - 1, days + MONTH_LEMGTH[isLeap ? 1 : 0][this.end.getUTCMonth()]]
             : [months, days];
         const [kyears, kmonths] = imonths < 0
-            ? [years - 1, imonths + 1]
+            ? [years - 1, imonths + 12]
             : [years, imonths];
         const iweeks = floor(days / 7);
         const fdays = idays - iweeks * 7;
         return {
-            ...(years && {year: as(kyears)}),
-            ...(months && {month: as(kmonths)}),
+            ...(kyears && {year: as(kyears)}),
+            ...(kmonths && {month: as(kmonths)}),
             ...(iweeks && {week: iweeks}),
             ...(fdays && {day: as(fdays)}),
             totalDays: floor((this.end.getTime() - this.start.getTime()) / (24 * 60 * 60 * 1000))
@@ -232,6 +232,8 @@ export const [isTimePeriod, toTimePeriod, asTimePeriod] = classChecks(TimePeriod
 
 /**
  * Increment a time by a specified period of time.
+ *
+ * The returned value is truncated to the beginning of the UTC day.
  * @param date The date to be incremented
  * @param unit The units to increment by
  * @param n The number of units to increment by
@@ -264,13 +266,44 @@ export const incrementDate = (date: Date, unit: TimeUnit, n: Integer = as(1)) =>
             date.getUTCFullYear() + iYear,
             iMonth,
             date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds(),
-            date.getUTCMilliseconds()
+            0, 0, 0, 0
         );
     }
-}
+};
+
+/**
+ * Rolls back time to the start of a year, quarter, month, or day. Higher-order function that
+ * returns a function for the specific time period to truncate to.
+ * @param unit Unit of time to truncate to (must not be 'week').
+ * @returns (date: {@link Date}) => {@link Date}
+ */
+export const truncateDate = (unit: TimeUnit) => {
+    switch (unit) {
+        case TimeUnit.year: return (date: Date) =>
+            new Date(date.getUTCFullYear(), 0, 0, 0, 0, 0, 0);
+        case TimeUnit.quarter: return (date: Date) =>
+            new Date(
+                date.getUTCFullYear(),
+                floor(date.getUTCMonth()/3) * 3,
+                0, 0, 0, 0, 0
+            );
+        case TimeUnit.month: return (date: Date) =>
+            new Date(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                0, 0, 0, 0, 0
+            );
+        case TimeUnit.week: throw new Error(`'week' is not a meaningful unit to truncate a date to.`);
+        case TimeUnit.day: return (date: Date) =>
+            new Date(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                date.getUTCDate(),
+                0, 0, 0, 0
+            );
+    }
+    throw new Error(`Unknown TimeInterval: ${unit}`);
+};
 
 Reflect.defineProperty(TimePeriod.prototype, Symbol.toStringTag, {
     value: "TimePeriod",
