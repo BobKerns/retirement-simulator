@@ -31,7 +31,7 @@ export const construct = <T extends Type>(item: RowType<T>, type: T = item.type,
             return new Asset(assertRow(item, 'asset')) as unknown as ItemType<T>;
         case "expense":
             return new Expense(assertRow(item, 'expense')) as unknown as ItemType<T>;
-        case "loan":
+        case "liability":
             return new Liability(assertRow(item, 'liability')) as unknown as ItemType<T>;
         case "income":
             return new Income(assertRow(item, 'income')) as unknown as ItemType<T>;
