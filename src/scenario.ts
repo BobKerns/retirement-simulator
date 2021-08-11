@@ -235,9 +235,9 @@ export class Scenario extends ScenarioBase {
             sort: item?.sort ?? 0,
             categories,
             scenarios,
-            expectency: SS_2017[age][sex].years,
+            expectency: SS_2017[age]?.[sex].years,
             expectencies: range(0, years + 1)
-                .map((y) => SS_2017[age + y][sex].years)
+                .map((y) => SS_2017[age + y]?.[sex].years)
                 .asArray(),
             probabilities: this.#compute_probabilities(item)
         };

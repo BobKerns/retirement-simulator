@@ -59,13 +59,16 @@ export function actuary(spouse: IPerson, date: Date): ActuaryDatum;
  */
 export function actuary(age: number, sex: Sex): ActuaryDatum;
 export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): ActuaryDatum {
+    const eol = {p: 0, n: 0, years: 0};
     if (typeof spouseOrAge == 'number') {
         const idx = floor(spouseOrAge);
         const frac = spouseOrAge - idx;
         const sex = dateOrSex as Sex;
-        const base = SS_2017[idx]?.[sex] ?? Throw(`No data for age ${idx}.`);
+        const base = SS_2017[idx]?.[sex];
+        if (!base) return eol;
         if (frac <= 0.003) return base;
-        const next = SS_2017[idx + 1]?.[sex] ?? Throw(`No data for age ${idx + 1}.`);
+        const next = SS_2017[idx + 1]?.[sex];
+        if (!next) return eol;
         const interpolate = (a: number, b: number, frac: number) => (a * (1 - frac) + b * frac);
         return {
             p: interpolate(base.p, next.p, frac),
