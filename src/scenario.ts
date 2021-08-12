@@ -125,7 +125,7 @@ export class Scenario extends ScenarioBase {
                     timeline.push({ date: item.start, action: "begin", item });
                 }
                 if (item && item.end) {
-                    timeline.push({ date: item.end, action: "end", item });
+                    timeline.push({ date: item.start, action: "end", item });
                 }
             });
         this.spouse1 && scan([this.spouse1]);

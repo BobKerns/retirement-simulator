@@ -41,20 +41,32 @@ export const optionalMoney = optional(t => toMoney(Number(t)));
 export const optionalRate = optional(t => toRate(1 + Number(t)/100));
 export const optionalNumber = optional(Number);
 
+export const isBoolean = (a: any): a is boolean => a === true || a === false;
+export const [toBoolean, asBoolean] =
+    typeChecks(
+        isBoolean,
+        "true or false",
+        a => /^\s*(?:false|f)\s*$/i.test(a) ? false : /^\s*(?:true|t)\s*$/i.test(a) ? true : undefined
+        );
+
+/**
+ * Map of fields to converters to convert to the proper type (e.g. number, date, etc.)
+ */
 export const converters: Converters = {
     name: identity,
     type: identity,
     prettyName: or(undefined),
     expense: or(undefined),
     start: optionalDate(START),
-    end: optionalDate(undefined),
+    end: optional(toBoolean)(false),
     text: or(undefined),
     value: optionalMoney(undefined),
     sort: optionalNumber(0),
     categories: split([]),
     scenarios: split(["Default"]),
     notes: or(undefined),
-    growth: optionalRate(undefined),
+    rate: optionalRate(undefined),
+    rateType: or(undefined),
     payment: optionalMoney(undefined),
     fromStream: or('default'),
     spec: or(undefined),
@@ -65,6 +77,12 @@ export const converters: Converters = {
 };
 
 /**
+ * Conveert an {@link InputRow} to an {@link AnyRow}, that is, parse and validate fields for
+ * each type of object.
+ *
+ * {@link InputRow} objects differ from {@link AnyRow} objects, in that the field names are capitalized.
+ * This is convenient for column headings in editing the CSV files, and also helps to distinguish between
+ * unprocessed {@link InputRow} and processed {@link AnyRow} objects.
  *
  * @param row
  * @returns

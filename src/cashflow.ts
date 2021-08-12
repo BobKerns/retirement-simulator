@@ -28,8 +28,8 @@ export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> imple
         const next_year = YEAR + 1;
         const start = this.start ?? TODAY;
         const start_year = start.getUTCFullYear();
-        const end = this.end;
-        const end_year = end?.getUTCFullYear();
+        const end = undefined // this.end;
+        const end_year = undefined // end?.getUTCFullYear();
         return asRate(
             (start.getUTCFullYear() > next_year
             ? 0

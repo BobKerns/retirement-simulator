@@ -14,7 +14,7 @@ export class Item<T extends Type> implements IItem<T> {
     readonly name: Name;
     readonly type: T;
     readonly start: Date;
-    readonly end?: Date;
+    readonly end?: boolean;
     readonly categories: Category[];
     readonly scenarios: ScenarioName[];
     notes?: string;

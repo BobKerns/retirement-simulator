@@ -4,7 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { as, asMoney, asRate } from "../../tagged";
+import { START } from "../../input";
+import { as, asMoney } from "../../tagged";
 import { Category, IExpense, IPerson } from "../../types";
 
 export const CAT_FRED: Category = as('fred');
@@ -13,6 +14,7 @@ export const CAT_SALLY: Category = as('sally');
 export const expense_1: IExpense = {
     name: 'Expense',
     type: 'expense' as const,
+    start: START,
     fromStream: 'from',
     sort: 1,
     value: asMoney(100.00),
@@ -27,6 +29,7 @@ export const person_1: IPerson = {
     categories: [],
     scenarios: [],
     birth: new Date("1967-01-01"),
+    start: new Date("1967-01-01"),
     sex: 'female'
 };
 
@@ -37,5 +40,6 @@ export const person_2: IPerson = {
     categories: [],
     scenarios: [],
     birth: new Date("1967-01-01"),
+    start: new Date("1967-01-01"),
     sex: 'male'
 };

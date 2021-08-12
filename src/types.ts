@@ -79,8 +79,8 @@ export type Sex = 'male' | 'female';
 export interface IItem<T extends Type = Type> extends Named {
     type: T;
     sort: number,
-    start?: Date;
-    end?: Date;
+    start: Date;
+    end?: boolean;
     categories: Category[];
     scenarios: ScenarioName[];
     notes?: string;
