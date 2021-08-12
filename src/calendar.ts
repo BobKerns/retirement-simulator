@@ -10,6 +10,7 @@
  */
 
 import { Sync, range } from "genutils";
+import { CalendarUnit } from "./enums";
 import { Age, as, asAge, floor, Integer, isInteger, isString, Year } from "./tagged";
 import { classChecks, typeChecks } from "./utils";
 
@@ -147,16 +148,6 @@ export const calculate_age = (birth: Date, thisDate: Date): Age => {
     const days = yearDays(as(bday < 60 ? year - 1 : year));
     const frac = (tday - bday) / days;
     return asAge(diff + frac);
-};
-/**
- * Units of time intervals.
- */
-export enum CalendarUnit {
-    year = 'year',
-    quarter = 'quarter',
-    month = 'month',
-    week = 'week',
-    day = 'day'
 };
 
 export type CalendarLength = {
