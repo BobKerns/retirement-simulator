@@ -6,6 +6,9 @@
 
 import { StateCode } from "./states";
 import { Money, Rate, Tagged } from "./tagged";
+import type { StateCode } from "./states";
+import type { Money, Rate, Tagged } from "./tagged";
+import type { Temporal } from "./temporal";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -233,6 +236,12 @@ export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
     & Partial<Omit<IPerson, IItemKeys>>
     & IItem;
 
+
+export interface TemporalItem {
+    readonly start: Date;
+    readonly end?: boolean;
+    temporal?: Temporal<TemporalItem>;
+}
 
 export type RowLabel = keyof AnyRow;
 export type ItemType<T extends Type = Type> = ItemTypes[T] & {type: T};
