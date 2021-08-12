@@ -28,7 +28,10 @@ export const optional = <T>(fn: (a: any) => T) =>
             : dflt;
 
 const start = new Date();
-export let START = new Date(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
+/**
+ * The default start date.
+ */
+export let START = new Date(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate(), 0, 0, 0, 0);
 
 export const split = <T>(dflt: T[]) => (c: any): T[] =>
     ((c === undefined || c === '')
