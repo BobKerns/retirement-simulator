@@ -1,2 +1,2 @@
-Name,PrettyName,Value,Growth,Notes
-car,MY CAR!,1000,-20,Quickly losing its value.
+Name,PrettyName,Start,End,Value,Rate,RateType,Notes
+car,MY CAR!,,,1000,-20,apr,Quickly losing its value.

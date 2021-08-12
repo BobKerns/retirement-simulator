@@ -1,2 +1,3 @@
 Name,PrettyName,Start,End
-Default,,2021-09-01,2050-09-01
+Default,,2021-09-01,
+Default,,2050-09-01,true

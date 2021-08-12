@@ -1,2 +1,2 @@
-Name,PrettyName,Value
-car,MY CAR!,250.0
+Name,PrettyName,Start,End,Value
+car,MY CAR!,,,250.0

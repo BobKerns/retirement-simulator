@@ -4,11 +4,10 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { StateCode } from "./states";
-import { Money, Rate, Tagged } from "./tagged";
 import type { StateCode } from "./states";
 import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
+import type { RateType } from "./enums";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -20,6 +19,7 @@ export type LiabilityName = Name;
 export type ExpenseName = Name;
 export type IncomeStreamName = Name;
 export type ScenarioName = Name;
+export type SeriesName = Name;
 
 export interface Named {
     readonly name: Name;
@@ -138,7 +138,11 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
      * Multiplicative factor. Will need to canonicalize compounding periods (APR vs simple, etc.)
      * Non interest-bearing assets, or loans use a value of `1.0,`;
      */
-    readonly growth: Rate;
+    readonly rate: Rate;
+    /**
+     * Type of interest rate calculation, or the name of a time series calculator.
+     */
+    readonly rateType: RateType | SeriesName;
 }
 
 /**

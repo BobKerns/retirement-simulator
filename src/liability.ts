@@ -4,23 +4,26 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { ExpenseName, ILiability, RowType } from "./types";
-import {Monetary} from "./monetary";
+import { ExpenseName, ILiability, RowType, SeriesName } from "./types";
+import { Monetary } from "./monetary";
 import { Money, Rate } from "./tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "./utils";
+import { RateType } from "./enums";
 
 /**
- * A liability (generally, a loan or mortgage). If not interest-free, `growth` should be supplied with
+ * A liability (generally, a loan or mortgage). If not interest-free, `rate` should be supplied with
  * 1 + the simple annual interest rate.
  */
 export class Liability extends Monetary<'liability'> implements ILiability {
-    growth: Rate;
+    rate: Rate;
+    rateType: RateType | SeriesName;
     payment?: Money;
     expense?: ExpenseName;
     constructor(row: RowType<'liability'>) {
         super(row);
-        this.growth = row.growth ?? 1;
+        this.rate = row.rate ?? 1;
+        this.rateType = row.rateType || RateType.apr;
     }
 }
 

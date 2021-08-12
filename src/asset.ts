@@ -4,10 +4,11 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { RateType } from "./enums";
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { Rate } from "./tagged";
-import { IAsset, RowType } from "./types";
+import { IAsset, RowType, SeriesName } from "./types";
 import { classChecks } from "./utils";
 
 /**
@@ -15,10 +16,12 @@ import { classChecks } from "./utils";
  * will change by that factor each period (currently, always annually, pro-rated).
  */
 export class Asset extends Monetary<'asset'> implements IAsset {
-    growth: Rate;
+    rate: Rate;
+    rateType: RateType | SeriesName;
     constructor(row: RowType<'asset'>) {
         super(row);
-        this.growth = row.growth ?? 1;
+        this.rate = row.rate ?? 1;
+        this.rateType = row.rateType || RateType.apr;
     }
 }
 

@@ -57,7 +57,7 @@ export const indexByName = <T extends Named>(list: Array<T>) =>
  */
 export const Sort = {
     byValue: <T extends MonetaryType, I extends IMonetaryItem<T> = IMonetaryItem<T>>(a: I, b: I) => (a.value < b.value ? 1 : a.value === b.value ? 0 : -1),
-    byGrowth: <T extends BalanceType, I extends IBalanceItem<T> = IBalanceItem<T>>(a: I, b: I) => (a.growth < b.growth ? 1 : a.growth === b.growth ? 0 : -1)
+    byRate: <T extends BalanceType, I extends IBalanceItem<T> = IBalanceItem<T>>(a: I, b: I) => (a.rate < b.rate ? 1 : a.rate === b.rate ? 0 : -1)
 };
 
 /**
