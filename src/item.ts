@@ -6,6 +6,8 @@
 
 import { Category, IItem, Name, RowType, ScenarioName, Type } from "./types";
 import { TODAY } from "./calendar";
+import { Temporal } from "./temporal";
+import { Throw } from "./utils";
 
 /**
  * Base class for all items. Holds all the common fields.
@@ -29,6 +31,8 @@ export class Item<T extends Type> implements IItem<T> {
      */
     sort: number;
 
+    #temporal?: Temporal<this> = undefined;
+
     constructor(row: RowType<T>) {
         this.type = row.type;
         this.name = row.name;
@@ -40,6 +44,15 @@ export class Item<T extends Type> implements IItem<T> {
         this.notes = row.notes;
         this.sort = Number(row.sort || 0)
 
+    }
+
+    set temporal(value: Temporal<this>) {
+        if (this.#temporal) throw new Error(`Cannot reset .temporal`);
+        this.#temporal = value;
+    }
+
+    get temporal() {
+        return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
     /**

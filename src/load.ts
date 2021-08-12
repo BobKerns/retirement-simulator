@@ -10,10 +10,11 @@
  */
 
 import { csvParse, DSVRowArray } from 'd3-dsv';
+import { construct } from './construct';
 import { convert } from './input';
-import { Scenario } from './scenario';
-import { as, isString } from './tagged';
+import { asYear, isString } from './tagged';
 import { InputRow, RowType, Type } from './types';
+import { assertRow, uniq } from './utils';
 
 export const parse = (text: string) => {
     return csvParse(text);
@@ -58,7 +59,10 @@ export const loadData = async (url: string) => {
     const data = tables
         .flatMap(i  => i as unknown as InputRow)
         .map(convert);
-    return data
-        .filter(r => r.type === 'scenario')
-        .map(r => new Scenario(r.name, (data) as RowType[],  as(r.end?.getUTCFullYear() ?? 2080)));
+    const scenarios = uniq(data
+            .filter(r => r.type === 'scenario')
+            .map(r => r.name));
+    return scenarios
+        .map(name => data.filter(r => r.type === 'scenario' && r.name === name))
+        .map(rows => construct(rows.map(r => assertRow(r as RowType<Type>, 'scenario')), 'scenario', data as RowType<Type>[], asYear(2060)));
 }

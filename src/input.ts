@@ -4,16 +4,24 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+/**
+ * Input processing, invoked by {@link loadData}. A separate file because {@link loadData} triggers loading problems
+ * for jest unit tests.
+ * @module
+ */
+
 import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
 import { toDate } from "./calendar";
-import { AnyRow, RowType, RowLabel, Type, InputRow, Writeable, InputColumn, ItemType, Initable } from "./types";
-import { identity } from "./utils";
+import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "./types";
+import { identity, typeChecks } from "./utils";
+import { Temporal } from "./temporal";
 
 export type Converters = {
     [T in RowLabel ]: (a: any) => AnyRow[T];
 } & {
     src: (a: any) => string | undefined;
+    temporal: (a: any) => Temporal<TemporalItem> | undefined;
 }
 
 export const or = <T>(dflt: T) =>
@@ -76,7 +84,8 @@ export const converters: Converters = {
     state: or(undefined),
     birth: optionalDate(undefined),
     sex: or(undefined),
-    src: or(undefined)
+    src: or(undefined),
+    temporal: or(undefined)
 };
 
 /**
@@ -104,7 +113,11 @@ export const convert = <T extends Type>(row: InputRow) => {
                 }
             }
         } catch (e) {
-            throw new Error(`Could not convert field '${l}' of row ${row.Type ?? '<missing type>'} ${row.Name ?? '<missing name>'} : ${e.constructor.name}: ${e.messagee}`);
+            const type = row.Type ?? '<missing type>';
+            const name = row.Name ?? '<missing name>';
+            const start =row.Start ?? '';
+            const field = `'${l}' of row ${type} ${name} ${start}`;
+            throw new Error(`Could not convert field ${field} : ${e.constructor.name}: ${e.message}`);
         }
     }
     const checkRequired = (list?: Array<keyof AnyRow>) => {
@@ -112,7 +125,11 @@ export const convert = <T extends Type>(row: InputRow) => {
             for (const k of list) {
                 if (result[k] === undefined || result[k] === '') {
                     const l = upcase(k);
-                    throw new Error(`Row ${result.type ?? '<missing type>'} ${result.name ?? '<missing name>'} is missing required key '${l}'`)
+                    const type = row.Type ?? '<missing type>';
+                    const name = row.Name ?? '<missing name>';
+                    const start =row.Start ?? '';
+                    const field = `'${l}' of row ${type} ${name} ${start}`;
+                    throw new Error(`Row ${field} is missing required key '${l}'`);
                 }
             }
         }

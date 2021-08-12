@@ -11,7 +11,7 @@ import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { TODAY, YEAR } from "./calendar";
 import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson, IFText } from "./types";
-import { assertRow, classChecks, heapgen, indexByName, Throw, total } from "./utils";
+import { classChecks, heapgen, indexByName, Throw, total } from "./utils";
 import { construct } from "./construct";
 import { as, Year } from "./tagged";
 import { StateMixin } from "./state-mixin";
@@ -67,8 +67,8 @@ export class Scenario extends ScenarioBase {
 
     static scenarios: NamedIndex<Scenario> = {};
 
-    constructor(name: Name, dataset: Array<RowType<Type>>, end_year: Year) {
-        super(assertRow(dataset.find(i => i.name === name && i.type === 'scenario') ?? Throw(`Scenario ${name} not found.`), 'scenario'));
+    constructor(row: RowType<'scenario'>, dataset: Array<RowType<Type>>, end_year: Year) {
+        super(row);
         this.data = dataset.filter(i => i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
         const spouse1 = this.#find_spouse("spouse1") ?? Throw("No spouse1 specified");
@@ -197,21 +197,21 @@ export class Scenario extends ScenarioBase {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
-                items.push(construct(r as RowType<T>, type, this.data, this.#end_year));
+                items.push(construct([r as RowType<T>], type, this.data, this.#end_year));
             }
         });
         return items;
     }
 
     #find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
-        const item = this.data.find(
+        const items = this.data.filter(
             (r: RowType) =>
                 r.name === name &&
                 r.type === type &&
                 (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
         );
-        if (item) {
-            return construct(item as RowType<T>, type, this.data, this.#end_year);
+        if (items.length) {
+            return construct(items as Array<RowType<T>>, type, this.data, this.#end_year);
         }
         return null;
     }
@@ -241,7 +241,7 @@ export class Scenario extends ScenarioBase {
                 .asArray(),
             probabilities: this.#compute_probabilities(item)
         };
-        const x =  construct(row, "person", this.data, this.#end_year);
+        const x =  construct([row], "person", this.data, this.#end_year);
         return x;
     }
 

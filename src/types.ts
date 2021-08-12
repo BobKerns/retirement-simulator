@@ -76,7 +76,7 @@ export type Sex = 'male' | 'female';
 /**
  * A basic data item, with a value.
  */
-export interface IItem<T extends Type = Type> extends Named {
+export interface IItem<T extends Type = Type> extends Named, TemporalItem {
     type: T;
     sort: number,
     start: Date;
