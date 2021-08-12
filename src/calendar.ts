@@ -179,7 +179,8 @@ export const isCalendarStep = (a: any): a is CalendarStep =>
 
 export const [toCalendarStep, asCalendarStep] = typeChecks(isCalendarStep, 'a CalendarStep');
 
-export const [isDate, toDate, asDate] = classChecks(Date, d => new Date(d));
+export const isDate = (d: any): d is Date => d instanceof Date && !isNaN(d.valueOf());
+export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Date(d));
 
 export class CalendarPeriod {
     readonly start: Date;
