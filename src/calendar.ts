@@ -357,7 +357,7 @@ export const fmt_date = (date: Date) =>
  * @returns
  */
 export const fmt_time = (date: Date) =>
-    `${p2(date.getUTCHours())}-${p2(date.getUTCMinutes() + 1)}-${p2(date.getUTCSeconds())}`;
+    `${p2(date.getUTCHours())}:${p2(date.getUTCMinutes() + 1)}:${p2(date.getUTCSeconds())}`;
 
 /**
  * Format the time as year-mo-dd HH:MM:SS
