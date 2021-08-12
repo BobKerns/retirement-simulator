@@ -26,5 +26,17 @@
             "",
             "$0"
         ]
+    },
+    "module": {
+        "prefix":  ["@module"],
+        "body": [
+            "$BLOCK_COMMENT_START",
+            " * $1",
+            " *",
+            " * @module",
+            " $BLOCK_COMMENT_END",
+            "",
+            "$0"
+        ]
     }
 }
