@@ -13,10 +13,10 @@
  */
 import { Sync, SyncMixin } from "genutils";
 import { CalendarUnit } from "../enums";
-import { as, Integer } from "../tagged";
+import { as, Integer, Relaxed, TagOf } from "../tagged";
 import { CalendarPeriod } from "./calendar-period";
 import { CalendarStep } from "./calendar-step";
-import { CalendarInterval, CalendarLength, decodeCalendarInterval, incrementDate, isCalendarInterval, isCalendarUnit } from "./calendar-utils";
+import { CalendarInterval, decodeCalendarInterval, incrementDate, isCalendarInterval, isCalendarUnit } from "./calendar-utils";
 
 /**
  * Base class for {@link @CalendarRange} before mixing in array-likee enhancements.
@@ -45,8 +45,8 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
      * @param n The number of units.
      */
     constructor(start: Date, end: Date, unit: CalendarUnit, n?: Integer);
-    constructor(start: Date, end: Date, interval: CalendarInterval);
-    constructor(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
+    constructor(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>>);
+    constructor(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit, n?: Integer) {
         super(start, end);
         if (isCalendarInterval(interval)) {
             this.interval = interval;
@@ -94,8 +94,8 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
  */
 export class CalendarRange extends SyncMixin(CalendarRangeBase) {
     constructor(start: Date, end: Date, unit: CalendarUnit, n?: Integer);
-    constructor(start: Date, end: Date, interval: CalendarInterval);
-    constructor(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
+    constructor(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>>);
+    constructor(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit, n?: Integer) {
         super(start, end, interval, n);
     }
 }
@@ -117,7 +117,7 @@ export class CalendarRange extends SyncMixin(CalendarRangeBase) {
  * @param n The number of units.
  */
 export function calendarRange(start: Date, end: Date, unit: CalendarUnit, n?: Integer): CalendarRange;
-export function calendarRange(start: Date, end: Date, interval: CalendarInterval): CalendarRange;
-export function calendarRange(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
+export function calendarRange(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>>): CalendarRange;
+export function calendarRange(start: Date, end: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit, n?: Integer) {
     return new CalendarRange(start, end, interval as CalendarUnit, n);
 }
