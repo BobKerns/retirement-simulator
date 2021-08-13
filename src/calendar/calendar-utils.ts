@@ -118,6 +118,16 @@ export const [toCalendarLength, asCalendarLength] = typeChecks(isCalendarLength,
 export const isDate = (d: any): d is Date => d instanceof Date && !isNaN(d.valueOf());
 export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Date(d));
 
+
+/**
+ * Increment a time by a specified period of time.
+ *
+ * The returned value is truncated to the beginning of the UTC day.
+ * @param date The date to be incremented
+ * @param interval A CalendarInterval denoting how much to increment by.
+ * @returns
+ */
+export function incrementDate(date: Date, interval: CalendarInterval): Date;
 /**
  * Increment a time by a specified period of time.
  *
@@ -127,7 +137,13 @@ export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Dat
  * @param n The number of units to increment by
  * @returns
  */
-export const incrementDate = (date: Date, unit: CalendarUnit, n: Integer = as(1)) => {
+export function incrementDate(date: Date, unitOrInterval: CalendarUnit, n?: Integer): Date;
+export function incrementDate(date: Date, unitOrInterval: CalendarUnit|CalendarInterval, n: Integer = as(1)) {
+    if (isCalendarInterval(unitOrInterval)) {
+        const [unit, n] = decodeCalendarInterval(unitOrInterval);
+        return incrementDate(date, unit, n);
+    }
+    const unit = unitOrInterval;
     const month = date.getUTCMonth();
     const step = () => {
         const nmonths = (n: number) => {
