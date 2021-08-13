@@ -13,7 +13,7 @@
 
 import { Sync } from "genutils";
 import { CalendarUnit } from "../enums";
-import { as, floor, Integer, isInteger, Year } from "../tagged";
+import { as, asInteger, floor, Integer, isInteger, Relaxed, TagOf, Year } from "../tagged";
 import { Throw, typeChecks } from "../utils";
 /**
  * The starting day of each month, 0-origin, for non-leap and leap years.
@@ -127,7 +127,7 @@ export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Dat
  * @param interval A CalendarInterval denoting how much to increment by.
  * @returns
  */
-export function incrementDate(date: Date, interval: CalendarInterval): Date;
+export function incrementDate(date: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>>): Date;
 /**
  * Increment a time by a specified period of time.
  *
@@ -137,14 +137,15 @@ export function incrementDate(date: Date, interval: CalendarInterval): Date;
  * @param n The number of units to increment by
  * @returns
  */
-export function incrementDate(date: Date, unitOrInterval: CalendarUnit, n?: Integer): Date;
-export function incrementDate(date: Date, unitOrInterval: CalendarUnit|CalendarInterval, n: Integer = as(1)) {
+export function incrementDate(date: Date, unitOrInterval: CalendarUnit, n?: Relaxed<Integer>): Date;
+export function incrementDate(date: Date, unitOrInterval: CalendarUnit|Relaxed<CalendarInterval, TagOf<Integer>>, num: Relaxed<Integer> = 1) {
     if (isCalendarInterval(unitOrInterval)) {
         const [unit, n] = decodeCalendarInterval(unitOrInterval);
         return incrementDate(date, unit, n);
     }
     const unit = unitOrInterval;
     const month = date.getUTCMonth();
+    const n = asInteger(num);
     const step = () => {
         const nmonths = (n: number) => {
                 const nm = month + n;
