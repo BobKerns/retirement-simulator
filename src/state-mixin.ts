@@ -22,8 +22,6 @@ export type State<T extends Type> = IItem<T> & IState<T>;
 export type StateMixin<T extends Type> = Constructor<State<T>>;
 
 export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixin<T> {
-    // If we import asScenario directly, we get multiple circular dependencies.
-    const asScenario: (s: any) => IFScenario = (StateMixin as any).asScenario ?? as;
     class StateMixinImpl extends Base implements IState<T> {
         readonly period: CalendarStep;
         readonly scenario: IFScenario;
