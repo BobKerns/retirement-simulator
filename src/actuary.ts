@@ -8,7 +8,6 @@ import SS_2017_raw from './data/SS_2017.json';
 import { floor } from './tagged';
 import { calculate_age } from './calendar';
 import { IPerson, Sex } from './types';
-import { Throw } from './utils';
 
 
 export type ActuaryDatum = {

@@ -4,6 +4,7 @@
   "include": [
     "*.ts",
     "tax/*.ts",
+    "calendar/*.ts",
     "data/*.json"
   ],
   "exclude": ["node_modules", "build", "__test__"],

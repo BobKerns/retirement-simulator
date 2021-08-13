@@ -12,7 +12,7 @@
 
 import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
-import { toDate } from "./calendar-utils";
+import { toDate } from "./calendar";
 import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "./types";
 import { identity, typeChecks } from "./utils";
 import { Temporal } from "./temporal";

@@ -11,9 +11,9 @@
  */
 
 
-import { CalendarUnit } from "./enums";
-import { as, floor, Integer, isString } from "./tagged";
-import { classChecks } from "./utils";
+import { CalendarUnit } from "../enums";
+import { as, floor, Integer, isString } from "../tagged";
+import { classChecks } from "../utils";
 import { asDate, isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date } from "./calendar-utils";
 
 

@@ -9,11 +9,10 @@
  * @module
  */
 
-import { Sync, range } from "genutils";
-import { CalendarPeriod } from "./calendar-period";
+import { range } from "genutils";
 import { isLeapYear, MONTH_START } from "./calendar-utils";
-import { CalendarUnit } from "./enums";
-import { Age, as, asAge, floor, Year } from "./tagged";
+import { CalendarUnit } from "../enums";
+import { Age, as, asAge, floor, Year } from "../tagged";
 /**
  * Obtain the day number of a given `Date`
  * @param d The given `Date`.

@@ -5,9 +5,9 @@
  */
 
 import { Sync } from "genutils";
-import { CalendarUnit } from "./enums";
-import { as, floor, Integer, isInteger, Year } from "./tagged";
-import { typeChecks } from "./utils";
+import { CalendarUnit } from "../enums";
+import { as, floor, Integer, isInteger, Year } from "../tagged";
+import { typeChecks } from "../utils";
 
 /*
  * General calendar utilities.
