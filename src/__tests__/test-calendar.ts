@@ -127,9 +127,9 @@ describe('Calendar', () => {
         const start = new Date(2021, 7);
         const end = new Date(2021, 8);
         test('days', () =>
-            expect(calendarRange(start, end, CalendarUnit.day, as(1))[Symbol.iterator]()
+            expect(calendarRange(start, end, CalendarUnit.day, as(1))
                 .map(d => d.start)
                 .map(fmt_date).asArray())
-                .toEqual([...range(1, 32).map(d => `${2021}-08-${String(d).padStart(2, '0')}`), '2021-09-01']));
+                .toEqual(range(1, 32).map(d => `${2021}-08-${String(d).padStart(2, '0')}`).asArray()));
     });
 });
