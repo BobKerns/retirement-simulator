@@ -30,7 +30,7 @@
     "module": {
         "prefix":  ["@module"],
         "body": [
-            "$BLOCK_COMMENT_START",
+            "$BLOCK_COMMENT_START*",
             " * $1",
             " *",
             " * @module",
