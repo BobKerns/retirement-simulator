@@ -4,9 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IExpense, IncomeStreamName, RowType } from "./types";
+import { IExpense, IncomeStreamName, RowType } from "../types";
 import { CashFlow } from "./cashflow";
-import { classChecks, Throw } from "./utils";
+import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
 
 /**
@@ -23,5 +23,9 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
     }
 }
 
-export const ExpenseState = StateMixin(Expense);
+export class ExpenseState extends StateMixin(Expense) {
+    constructor(row: RowType<'expense'>) {
+        super(row);
+    }
+}
 export const [isExpense, toExpense, asExpense] = classChecks(Expense);

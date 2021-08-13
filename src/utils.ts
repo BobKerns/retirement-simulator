@@ -14,7 +14,7 @@
 
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import { MonetaryType, IMonetaryItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary } from './types';
+import type { MonetaryType, IMonetaryItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary } from './types';
 
 export const Heap = HeapIn;
 

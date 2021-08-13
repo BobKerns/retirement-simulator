@@ -5,7 +5,11 @@
  */
 
 import { Item } from "./item";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IScenario, IScenarioBase, NamedIndex } from "./types";
+import {
+    IFAsset, IFExpense, IFIncome, IFIncomeStream,
+    IFIncomeTax, IFLiability, IFScenario, IFText,
+    IScenario, IScenarioBase, NamedIndex
+    } from "../types";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same

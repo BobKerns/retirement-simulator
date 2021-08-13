@@ -3,8 +3,9 @@
   "extends": "../tsconfig",
   "include": [
     "*.ts",
-    "tax/*.ts",
     "calendar/*.ts",
+    "model/*.ts",
+    "tax/*.ts",
     "data/*.json"
   ],
   "exclude": ["node_modules", "build", "__test__"],

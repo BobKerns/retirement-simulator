@@ -4,16 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Type, RowType, ItemType, IItem, AnyRow, TemporalItem } from './types';
-import { Asset } from './asset';
-import { Expense } from './expense';
-import { Liability } from './liability';
-import { Income } from './income';
-import { IncomeStream } from './income-stream';
-import { IncomeTax } from './income-tax';
-import { Person } from './person';
-import { assertRow, makeSort } from './utils';
-import { TextItem } from './text';
+import { Type, RowType, ItemType, AnyRow, TemporalItem } from './types';
+import { Asset, Expense, Liability, Income, IncomeStream, IncomeTax, Person, TextItem, Scenario } from './model';
+import { assertRow } from './utils';
 import { Year } from './tagged';
 import { Temporal } from './temporal';
 
@@ -44,7 +37,7 @@ export const construct = <T extends Type>(items: Array<RowType<T>>, type: T, dat
             case "text":
                 return (i: RowType<T>) => new TextItem(assertRow(i, 'text'));
             case "scenario":
-                return (i: RowType<T>) => new (construct as any).Scenario(assertRow(i, 'scenario'), dataset, end_year);
+                return (i: RowType<T>) => new Scenario(assertRow(i, 'scenario'), dataset, end_year);
             default:
                 throw new Error(`Unrecognized item type: ${type}`);
         }
@@ -54,3 +47,6 @@ export const construct = <T extends Type>(items: Array<RowType<T>>, type: T, dat
     tItems.forEach(i => i.temporal = temporal);
     return temporal.first as unknown as ItemType<T>;
 };
+
+// Avoid circular dependencies.
+Scenario.construct = construct;

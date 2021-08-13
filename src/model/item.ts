@@ -4,10 +4,10 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, IItem, Name, RowType, ScenarioName, Type } from "./types";
-import { TODAY } from "./calendar";
-import { Temporal } from "./temporal";
-import { Throw } from "./utils";
+import { Category, IItem, Name, RowType, ScenarioName, Type } from "../types";
+import { TODAY } from "../calendar";
+import { Temporal } from "../temporal";
+import { Throw } from "../utils";
 
 /**
  * Base class for all items. Holds all the common fields.

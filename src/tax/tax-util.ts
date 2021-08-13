@@ -5,7 +5,7 @@
  */
 
 import { Throw } from "../utils";
-import { Person } from "../person";
+import { Person } from "../model";
 import { Age, asMoney, IAge, Money, TaxRate, Year } from "../tagged";
 
 export type TaxStatus = 'single' | 'married' | 'separately' | 'head';

@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import {Expense} from '../expense';
+import {Expense} from '../model/expense';
 import { construct as bareConstruct } from '../construct';
 import { expense_1 } from './data/samples';
 import { as } from '../tagged';

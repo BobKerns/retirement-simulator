@@ -12,8 +12,8 @@ import { IncomeTax } from "./income-tax";
 import { Liability } from "./liability";
 import { ScenarioBase } from "./scenario-base";
 import { TextItem } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, NamedIndex } from "./types";
-import { classChecks, indexByName } from "./utils";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, NamedIndex } from "../types";
+import { classChecks, indexByName } from "../utils";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.

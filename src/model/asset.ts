@@ -4,12 +4,12 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { RateType } from "./enums";
+import { RateType } from "../enums";
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
-import { Rate } from "./tagged";
-import { IAsset, RowType, SeriesName } from "./types";
-import { classChecks } from "./utils";
+import { Rate } from "../tagged";
+import { IAsset, RowType, SeriesName } from "../types";
+import { classChecks } from "../utils";
 
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value
@@ -25,5 +25,9 @@ export class Asset extends Monetary<'asset'> implements IAsset {
     }
 }
 
-export const AssetState = StateMixin(Asset);
+export class AssetState extends StateMixin(Asset) {
+    constructor(row: RowType<'asset'>) {
+        super(row);
+    }
+}
 export const [isAsset, toAsset, asAsset] = classChecks(Asset);

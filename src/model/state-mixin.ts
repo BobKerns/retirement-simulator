@@ -4,9 +4,11 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type , IFScenario} from "./types";
-import { asCalendarStep, CalendarStep } from "./calendar";
-import { as } from "./tagged";
+import { IItem, IState, Type , IFScenario} from "../types";
+import { asCalendarStep, CalendarStep } from "../calendar";
+import { as } from "../tagged";
+import type { asScenario } from "./scenario";
+import { ConstructorType } from "genutils";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -19,10 +21,13 @@ export type Constructor<T extends {}> = new (...args: any[]) => T;
 
 export type State<T extends Type> = IItem<T> & IState<T>;
 
-export type StateMixin<T extends Type> = Constructor<State<T>>;
+//export type StateMixin<T extends Type> = Constructor<State<T>>;
 
-export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixin<T> {
-    class StateMixinImpl extends Base implements IState<T> {
+type AConstructorType<T extends abstract new (...args: any[]) => any> = T extends abstract new (...args: any[]) => infer R ? R : never;
+export type StateMixinConstructor<T extends Type, Base extends AConstructor<IItem<T>>> = Constructor<AConstructorType<Base> & IState<T>>;
+
+export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixinConstructor<T, typeof Base> {
+    class StateMixin extends Base implements IState<T> {
         readonly period: CalendarStep;
         readonly scenario: IFScenario;
         readonly item: IItem<T>;
@@ -52,5 +57,5 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
         }
 
     }
-    return StateMixinImpl;
+    return StateMixin;
 }

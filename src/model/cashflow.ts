@@ -5,9 +5,9 @@
  */
 
 import { Monetary } from "./monetary";
-import { asRate, Rate } from "./tagged";
-import { day_of_year, TODAY, YEAR } from "./calendar";
-import { CashFlowType, ICashFlowItem, RowType } from "./types";
+import { asRate, Rate } from "../tagged";
+import { day_of_year, TODAY, YEAR } from "../calendar";
+import { CashFlowType, ICashFlowItem, RowType } from "../types";
 
 /**
  * An expense or income; that is, money flowing in or out.

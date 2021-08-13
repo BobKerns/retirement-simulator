@@ -4,10 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { MonetaryType, IMonetaryItem } from ".";
 import { Item } from "./item";
-import { Money } from "./tagged";
-import { RowType } from "./types";
+import { Money } from "../tagged";
+import { RowType, MonetaryType, IMonetaryItem } from "../types";
 
 /**
  * An item with a monetary value, supplied as `value`.

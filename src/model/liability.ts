@@ -4,12 +4,12 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { ExpenseName, ILiability, RowType, SeriesName } from "./types";
+import { ExpenseName, ILiability, RowType, SeriesName } from "../types";
 import { Monetary } from "./monetary";
-import { Money, Rate } from "./tagged";
+import { Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
-import { classChecks } from "./utils";
-import { RateType } from "./enums";
+import { classChecks } from "../utils";
+import { RateType } from "../enums";
 
 /**
  * A liability (generally, a loan or mortgage). If not interest-free, `rate` should be supplied with
@@ -27,5 +27,10 @@ export class Liability extends Monetary<'liability'> implements ILiability {
     }
 }
 
-export const LiabilityState = StateMixin(Liability);
+
+export class LiabilityState extends StateMixin(Liability) {
+    constructor(row: RowType<'liability'>) {
+        super(row);
+    }
+}
 export const [isLiability, toLiability, asLiability] = classChecks(Liability);

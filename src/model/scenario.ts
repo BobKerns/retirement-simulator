@@ -6,14 +6,20 @@
 
 import { range } from "genutils";
 import Heap from "heap";
-import { actuary, SS_2017 } from "./actuary";
+import { actuary, SS_2017 } from "../actuary";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { TODAY, YEAR } from "./calendar";
-import { IItem, Name, NamedIndex, Type, TimeLineItem, RowType, ItemType, ScenarioName, Category, IFLiability, IFAsset, IFIncome, IFExpense, IFIncomeTax, IFIncomeStream, IFPerson, IFText } from "./types";
-import { classChecks, heapgen, indexByName, Throw, total } from "./utils";
-import { construct } from "./construct";
-import { as, Year } from "./tagged";
+import { TODAY, YEAR } from "../calendar";
+import {
+    IItem, Name, NamedIndex, Type,
+    TimeLineItem, RowType, ItemType, ScenarioName,
+    Category, IFLiability, IFAsset, IFIncome,
+    IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
+    IFText
+    } from "../types";
+import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
+import type { construct } from "../construct";
+import { as, Year } from "../tagged";
 import { StateMixin } from "./state-mixin";
 
 
@@ -26,6 +32,7 @@ const NON_INCOME_ASSET: Category = as("non-income");
  * A particular scenario.
  */
 export class Scenario extends ScenarioBase {
+    static construct: typeof construct;
     readonly data: Array<RowType<Type>>;
 
     spouse1: IFPerson;
@@ -197,7 +204,7 @@ export class Scenario extends ScenarioBase {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
-                items.push(construct([r as RowType<T>], type, this.data, this.#end_year));
+                items.push(Scenario.construct([r as RowType<T>], type, this.data, this.#end_year));
             }
         });
         return items;
@@ -211,7 +218,7 @@ export class Scenario extends ScenarioBase {
                 (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
         );
         if (items.length) {
-            return construct(items as Array<RowType<T>>, type, this.data, this.#end_year);
+            return Scenario.construct(items as Array<RowType<T>>, type, this.data, this.#end_year);
         }
         return null;
     }
@@ -241,7 +248,7 @@ export class Scenario extends ScenarioBase {
                 .asArray(),
             probabilities: this.#compute_probabilities(item)
         };
-        const x =  construct([row], "person", this.data, this.#end_year);
+        const x =  Scenario.construct([row], "person", this.data, this.#end_year);
         return x;
     }
 
@@ -284,5 +291,3 @@ export class Scenario extends ScenarioBase {
 export const [isScenario, toScenario, asScenario] = classChecks(Scenario);
 // Passed this way to avoid circular loading dependencies.
 (StateMixin as any).asScenario = asScenario;
-// And a simpler circular dependency:
-(construct as any).Scenario = Scenario;
