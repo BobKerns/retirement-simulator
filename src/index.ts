@@ -14,6 +14,9 @@
 
 export * from './actuary';
 export * from './asset';
+export * from './calendar';
+export * from './calendar-period';
+export * from './calendar-utils';
 export * from './color';
 export * from './construct';
 export * from './enums';
@@ -35,7 +38,6 @@ export * from './tagged';
 export * from './tax/index';
 export * from './temporal';
 export * from './text';
-export * from './calendar';
 export * from './types';
 export * from './utils';
 

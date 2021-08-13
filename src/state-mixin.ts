@@ -5,7 +5,7 @@
  */
 
 import { IItem, IState, Type , IFScenario} from "./types";
-import { asCalendarStep, CalendarStep } from "./calendar";
+import { asCalendarStep, CalendarStep } from "./calendar-utils";
 import { as } from "./tagged";
 
 /**

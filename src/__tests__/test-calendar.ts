@@ -6,7 +6,8 @@
 
 import { range } from "genutils";
 import { as, asInteger } from "../tagged";
-import { incrementDate, CalendarPeriod, calendarSteps, fmt_date } from "../calendar";
+import { incrementDate, calendarSteps, fmt_date } from "../calendar-utils";
+import { CalendarPeriod } from '../calendar-period';
 import { CalendarUnit } from "../enums";
 
 describe('Calendar', () => {
