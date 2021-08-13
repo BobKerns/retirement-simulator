@@ -14,8 +14,10 @@
 import { CalendarUnit } from "../enums";
 import { as, floor, Integer } from "../tagged";
 import { classChecks } from "../utils";
+import { truncateDate } from "./calendar-fns";
 import { asDate, isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, CalendarInterval, isCalendarInterval, decodeCalendarInterval } from "./calendar-utils";
 
+const trunc = truncateDate(CalendarUnit.day);
 /**
  * A defined period of time between a {@link CalendarPeriod.start} date and a {@link CalendarPeriod.end} date.
  */
@@ -33,14 +35,14 @@ export class CalendarPeriod {
     constructor(start: Date, interval: CalendarInterval);
     constructor(start: Date, interval: CalendarUnit, n?: Integer);
     constructor(start: Date, endOrInterval: Date | CalendarUnit | CalendarInterval, n?: Integer) {
-        this.start = asDate(start);
+        this.start = trunc(asDate(start));
         if (isCalendarUnit(endOrInterval)) {
             this.end = incrementDate(start, endOrInterval, n ?? as(1));
         } else if (isCalendarInterval(endOrInterval)) {
             const [unit, n] = decodeCalendarInterval(endOrInterval);
             this.end = incrementDate(start, unit, n);
         } else {
-            this.end = asDate(endOrInterval);
+            this.end = trunc(asDate(endOrInterval));
         }
     }
 
