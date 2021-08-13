@@ -45,8 +45,8 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
      * @param n The number of units.
      */
     constructor(start: Date, end: Date, unit: CalendarUnit, n?: Integer);
-    constructor(start: Date, end: Date, interval: CalendarLength);
-    constructor(start: Date, end: Date, interval: CalendarLength | CalendarUnit, n?: Integer) {
+    constructor(start: Date, end: Date, interval: CalendarInterval);
+    constructor(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
         super(start, end);
         if (isCalendarInterval(interval)) {
             this.interval = interval;
@@ -94,8 +94,8 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
  */
 export class CalendarRange extends SyncMixin(CalendarRangeBase) {
     constructor(start: Date, end: Date, unit: CalendarUnit, n?: Integer);
-    constructor(start: Date, end: Date, interval: CalendarLength);
-    constructor(start: Date, end: Date, interval: CalendarLength | CalendarUnit, n?: Integer) {
+    constructor(start: Date, end: Date, interval: CalendarInterval);
+    constructor(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
         super(start, end, interval, n);
     }
 }
@@ -117,7 +117,7 @@ export class CalendarRange extends SyncMixin(CalendarRangeBase) {
  * @param n The number of units.
  */
 export function calendarRange(start: Date, end: Date, unit: CalendarUnit, n?: Integer): CalendarRange;
-export function calendarRange(start: Date, end: Date, interval: CalendarLength): CalendarRange;
-export function calendarRange(start: Date, end: Date, interval: CalendarLength | CalendarUnit, n?: Integer) {
+export function calendarRange(start: Date, end: Date, interval: CalendarInterval): CalendarRange;
+export function calendarRange(start: Date, end: Date, interval: CalendarInterval | CalendarUnit, n?: Integer) {
     return new CalendarRange(start, end, interval as CalendarUnit, n);
 }
