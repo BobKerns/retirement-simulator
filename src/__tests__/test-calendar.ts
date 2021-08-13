@@ -6,7 +6,7 @@
 
 import { range } from "genutils";
 import { as, asInteger } from "../tagged";
-import { incrementDate, calendarSteps, fmt_date, CalendarPeriod } from "../calendar";
+import { incrementDate, calendarRange, fmt_date, CalendarPeriod } from "../calendar";
 import { CalendarUnit } from "../enums";
 
 describe('Calendar', () => {
@@ -127,8 +127,8 @@ describe('Calendar', () => {
         const start = new Date(2021, 7);
         const end = new Date(2021, 8);
         test('days', () =>
-            expect(calendarSteps(start, end, CalendarUnit.day, as(1))
-                .map(d => d.date)
+            expect(calendarRange(start, end, CalendarUnit.day, as(1))[Symbol.iterator]()
+                .map(d => d.start)
                 .map(fmt_date).asArray())
                 .toEqual([...range(1, 32).map(d => `${2021}-08-${String(d).padStart(2, '0')}`), '2021-09-01']));
     });

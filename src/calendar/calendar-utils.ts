@@ -4,17 +4,17 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Sync } from "genutils";
-import { CalendarUnit } from "../enums";
-import { as, floor, Integer, isInteger, Year } from "../tagged";
-import { typeChecks } from "../utils";
 
-/*
+/**
  * General calendar utilities.
  *
  * @module
  */
 
+import { Sync } from "genutils";
+import { CalendarUnit } from "../enums";
+import { as, floor, Integer, isInteger, Year } from "../tagged";
+import { Throw, typeChecks } from "../utils";
 /**
  * The starting day of each month, 0-origin, for non-leap and leap years.
  */
@@ -32,11 +32,76 @@ export const MONTH_LEMGTH = [
 
 ]
 
+export const isCalendarUnit = (u: any): u is CalendarUnit => u in CalendarUnit;
+export const [toCalendarUnit, asCalendarUnit] = typeChecks(isCalendarUnit, 'a calendar unit');
 
-export type CalendarLength = {
-    [k in keyof typeof CalendarUnit]?: Integer
-} & {
-    totalDays: Integer
+/**
+ * A specification of a length of time in units specified as {@link CalendarUnit}.
+ * e.g.:
+ *
+ * ```typescript
+ * const interval = {month: 3}; // 3 months
+ * ```
+ */
+export type CalendarInterval = {
+    /**
+     * The desired units and count in those units.
+     */
+    [k in keyof typeof CalendarUnit]?: Integer;
+};
+
+/**
+ * Type guard that determines if the argument is a valid {@link CalendarInterval}.
+ * @param i The object under test
+ * @returns
+ */
+export const isCalendarInterval = (i: any): i is CalendarInterval => {
+    if (i instanceof Object) {
+        const keys = Object.keys(i);
+        switch (keys.length) {
+            case 0: return false;
+            case 1: return isCalendarUnit(keys[0]) && isInteger(i[keys[0]]);
+            case 2: return (isCalendarUnit(keys[0]) && isInteger(i[keys[0]])
+                             && keys[1] === 'totalDays' && isInteger(i.totalDays))
+                        || (isCalendarUnit(keys[1]) && isInteger(i[keys[1]])
+                             && keys[0] === 'totalDays' && isInteger(i.totalDays));
+            default: return false;
+        }
+    }
+    return false;
+};
+
+/**
+ * Coercer and caster to {@link CalendarInterval}. There is no coercion, so both
+ * perform the same function: verifying and asserting the type.
+ */
+export const [toCalendarInterval, asCalendarInterval] = typeChecks(isCalendarInterval, 'a CalendarInterval');
+
+/**
+ * Decode a {@link CalendarInterval} into `[`{@link CalendarUnit}, _count_`]`.
+ */
+export const decodeCalendarInterval = (i: CalendarInterval): [CalendarUnit, Integer] =>
+    i.year
+        ? [CalendarUnit.year, i.year]
+        : i.quarter
+        ? [CalendarUnit.quarter, i.quarter]
+        : i.month
+        ? [CalendarUnit.month, i.month]
+        : i.week
+        ? [CalendarUnit.week, i.week]
+        : i.day
+        ? [CalendarUnit.day, i.day]
+        : Throw(`${JSON.stringify(i)} is not a CalendarInterval`);
+
+/**
+ * Measured length of time. This incorporates a {@link CalenderInterval} and adds a measured
+ * {@link CalendarLength.totalDays} that measures the exact number of days.
+ */
+export type CalendarLength = CalendarInterval & {
+    /**
+     * The total number of days represented by this interval.
+     */
+    totalDays: Integer;
 };
 
 export const isCalendarLength = (a: any): a is CalendarLength => {
@@ -49,18 +114,6 @@ export const isCalendarLength = (a: any): a is CalendarLength => {
 }
 
 export const [toCalendarLength, asCalendarLength] = typeChecks(isCalendarLength, 'a valid CalendarLength')
-
-export type CalendarStep = CalendarLength & {
-    date: Date;
-    step: Integer;
-};
-
-export const isCalendarStep = (a: any): a is CalendarStep =>
-        isCalendarLength(a)
-        && isDate((a as any).date)
-        && isInteger((a as any).step);
-
-export const [toCalendarStep, asCalendarStep] = typeChecks(isCalendarStep, 'a CalendarStep');
 
 export const isDate = (d: any): d is Date => d instanceof Date && !isNaN(d.valueOf());
 export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Date(d));
@@ -146,31 +199,6 @@ export const fmt_time = (date: Date) =>
  */
 export const fmt_datetime = (date: Date) =>
     `${fmt_date(date)} ${fmt_time(date)}`;
-
-
-/**
- *
- * @param start
- * @param end
- * @param timeUnit
- * @param n
- * @returns
- */
-export const calendarSteps = (start: Date, end: Date, timeUnit: CalendarUnit, n: Integer) => {
-    const startTime = start.getTime();
-    const day = (24 * 60 * 60 * 1000);
-    function *calendarSteps(): Generator<CalendarStep, void, void> {
-        let step: Integer = as(0);
-        let date = start;
-        while (date <= end) {
-            const totalDays: Integer = floor((date.getTime() - startTime)/day);
-            yield {step, date, [timeUnit]: n,  totalDays};
-            step++;
-            date = incrementDate(date, timeUnit, n);
-        }
-    }
-    return Sync.enhance(calendarSteps());
-}
 
 /**
  * Return `true` iff the supplied year is a leap year.

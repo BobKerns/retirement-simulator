@@ -13,4 +13,6 @@
 
 export * from './calendar-utils';
 export * from './calendar-period';
+export * from './calendar-step';
+export * from './calendar-range';
 export * from './calendar-fns';

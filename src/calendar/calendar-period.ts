@@ -12,11 +12,13 @@
 
 
 import { CalendarUnit } from "../enums";
-import { as, floor, Integer, isString } from "../tagged";
+import { as, floor, Integer } from "../tagged";
 import { classChecks } from "../utils";
-import { asDate, isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date } from "./calendar-utils";
+import { asDate, isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, CalendarInterval, isCalendarInterval, decodeCalendarInterval } from "./calendar-utils";
 
-
+/**
+ * A defined period of time between a {@link CalendarPeriod.start} date and a {@link CalendarPeriod.end} date.
+ */
 export class CalendarPeriod {
     /**
      * The starting date of the period.
@@ -28,11 +30,15 @@ export class CalendarPeriod {
     readonly end: Date;
 
     constructor(start: Date, end: Date);
-    constructor(start: Date, interval: CalendarUnit, n: Integer);
-    constructor(start: Date, endOrInterval: Date | CalendarUnit, n?: Integer) {
+    constructor(start: Date, interval: CalendarInterval);
+    constructor(start: Date, interval: CalendarUnit, n?: Integer);
+    constructor(start: Date, endOrInterval: Date | CalendarUnit | CalendarInterval, n?: Integer) {
         this.start = asDate(start);
-        if (isString(endOrInterval)) {
+        if (isCalendarUnit(endOrInterval)) {
             this.end = incrementDate(start, endOrInterval, n ?? as(1));
+        } else if (isCalendarInterval(endOrInterval)) {
+            const [unit, n] = decodeCalendarInterval(endOrInterval);
+            this.end = incrementDate(start, unit, n);
         } else {
             this.end = asDate(endOrInterval);
         }
@@ -68,11 +74,5 @@ export class CalendarPeriod {
         return `${fmt_date(this.start)} to ${fmt_date(this.end)}`;
     }
 }
-
-Reflect.defineProperty(CalendarPeriod.prototype, Symbol.toStringTag, {
-    value: "CalendarPeriod",
-    enumerable: false
-});
-
 
 export const [isCalendarPeriod, toCalendarPeriod, asCalendarPeriod] = classChecks(CalendarPeriod);
