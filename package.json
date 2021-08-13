@@ -11,19 +11,22 @@
     "scripts": {
         "build:compile": "tsc --build config src src/__tests__",
         "pretest": "npm run build:compile",
-        "test": "jest",
+        "build:test": "jest",
+        "test": "npm run build:test",
         "prebuild": "npm run build:compile",
-        "build": "rollup -c",
-        "postbuild": "npm run build:docs",
-        "prewatch": "npm run build:compile",
-        "watch": "NODE_ENV=development rollup -c --watch",
+        "build:package": "rollup -c",
+        "build": "npm run build:package",
+        "all": "npm run build && npm run build:test && npm run build:docs",
         "clean": "rm -rf build lib docs",
         "prepublishOnly": "NODE_ENV=production npm run build",
         "build:docs": "GRAPHVIZ_DOT=\"$(which dot)\" typedoc --out build/docs/api src/",
         "preserve": "npm run build:compile",
         "serve": "serve -l 3035 -C",
         "predocs": "npm install && npm run build:compile && npm run build:docs",
-        "docs": "npm run serve"
+        "docs": "npm run serve",
+        "watch:compile": "tsc --build --watch config src src/__tests__",
+        "watch:package": "rollup -c --watch",
+        "watch": "(trap 'kill 0' SIGINT; npm run watch:compile & npm run watch:package)"
     },
     "bin": {},
     "repository": {
