@@ -27,6 +27,23 @@ export type Tag<T extends string> = {[typetag]: T};
 export type Tagged<TagType extends string, Base = number> = Base & Tag<TagType>;
 
 /**
+ * Relax the type checking on tagged types. You can use typeguards and validators to convert back
+ * to the unrelaxed version by checking.
+ * @typeParam T the type being relaxed.
+ * @typeParam Tag the tag being removed. Defaults for simple types, must be supplied for recursive.
+ */
+export type Relaxed<T, Tag extends string = TagOf<T>> =
+    T extends Tagged<Tag, infer Base>
+    ? Base
+    : T extends Tagged<Tag, infer Base>
+    ? Base | undefined
+    : T extends {}
+    ? {
+        [k in keyof T]: Relaxed<T[k], Tag>;
+      }
+    : T
+
+/**
  * The base type of _T_ without the {@link Tag}.
  */
 export type Untag<T extends Tag<string>> = Omit<T, typeof typetag>;
