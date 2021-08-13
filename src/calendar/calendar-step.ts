@@ -14,8 +14,20 @@ import { CalendarPeriod } from "./calendar-period";
  * @module
  */
 
+/**
+ * A {@link CalendarStep} is a {@link CalendarPeriod} augmented with a {@link CalendarStep.step | step} number.
+ */
 export class CalendarStep extends CalendarPeriod {
+    /**
+     * The step number in the iteration.
+     */
     readonly step: Integer;
+    /**
+     * 
+     * @param start The start `Date` of the time period
+     * @param end The end `Date` of the time period
+     * @param step The iteration counter value.
+     */
     constructor(start: Date, end: Date, step: Integer) {
         super(start, end);
         this.step = step;

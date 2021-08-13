@@ -20,11 +20,11 @@ import { CalendarInterval, CalendarLength, decodeCalendarInterval, incrementDate
 
 /**
  * A {@link CalendarRange} is a {@link CalendarPeriod} that is divided up by increments of time into
- * a series of {@link CalendarPeriod} segments. These segments can be iterated over in a for loop:
+ * a series of {@link CalendarStep} segments. These segments can be iterated over in a `for` loop:
  *
  * ```typescript
- * for (const period in calendarRange) {
- *      console.log(period.start, period.end, JSON.stringify(period.length));
+ * for (const step in calendarRange) {
+ *      console.log(step.start, step.end, JSON.stringify(step.length));
  * }
  * ```
  */
@@ -52,12 +52,6 @@ export class CalendarRange extends CalendarPeriod implements Iterable<CalendarSt
      * @param n The number of units.
      */
     constructor(start: Date, end: Date, unit: CalendarUnit, n?: Integer);
-    /**
-     * Construct a {@link CalendarRange}.
-     * @param start The start `Date`.
-     * @param end The end `Date`.
-     * @param interval The amount to increment.
-     */
     constructor(start: Date, end: Date, interval: CalendarLength);
     constructor(start: Date, end: Date, interval: CalendarLength | CalendarUnit, n?: Integer) {
         super(start, end);
@@ -99,11 +93,11 @@ export class CalendarRange extends CalendarPeriod implements Iterable<CalendarSt
  * Construct a {@link CalendarRange}.
  *
  * A {@link CalendarRange} is a {@link CalendarPeriod} that is divided up by increments of time into
- * a series of {@link CalendarPeriod} segments. These segments can be iterated over in a for loop:
+ * a series of {@link CalendarStep} segments. These segments can be iterated over in a `for` loop:
  *
  * ```typescript
- * for (const period in calendarRange) {
- *      console.log(period.start, period.end, JSON.stringify(period.length));
+ * for (const step in calendarRange) {
+ *      console.log(step.start, step.end, JSON.stringify(step.length));
  * }
  * ```
  * @param start The start `Date`.
