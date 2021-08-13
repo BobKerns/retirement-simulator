@@ -4,8 +4,17 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+/**
+ * Tools for working with the various types of items.
+ *
+ * @module
+ */
+
 import { Type } from "./types";
 
+/**
+ * Type validation and conversion support data.
+ */
 export const TYPES: {[k in Type]: any} = {
     asset: {
         required: ['name', 'value']

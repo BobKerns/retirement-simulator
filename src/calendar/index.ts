@@ -6,7 +6,6 @@
 
 /**
  * [[include:src/calendar/README.md]]
- * Collect the calendar facilities into a single import.
  *
  * @module
  */

@@ -3,6 +3,12 @@
  *
  * Github: https://github.com/BobKerns/retirement-simulator
  */
+/**
+ * Teach the compiler about type checking for constrained types.
+ *
+ * @module
+ */
+
 
 import { makeSummer, Throw } from "./utils";
 
@@ -387,14 +393,45 @@ export const widenTo = <T>(coerce: TypeCoercion<T>): TypeCoercion<T|undefined> =
  */
 export const as = <T extends string,B>(n: B) => n as Tagged<T,B>;
 
+/**
+ * {@link Integer} version of `Math.floor`
+ */
 export const floor = Math.floor as (n: number) => Integer;
+/**
+ * {@link Integer} version of `Math.ciel`
+ */
 export const ceil = Math.ceil as (n: number) => Integer;
+/**
+ * {@link Integer} version of `Math.round`
+ */
 export const round = Math.round as (n: number) => Integer;
+/**
+ * {@link Integer} version of `Math.trunc`
+ */
 export const trunc = Math.trunc as (n: number) => Integer;
+
+/**
+ * {@link Integer} version of `n % m`
+ */
 export const imod = (n: Integer, m: Integer) => trunc(n % m);
+
+/**
+ * {@link Integer} division.
+ */
 export const idiv = (n: Integer, d: Integer) => trunc(n / d);
 
+/**
+ * {@link Integer} increment
+ */
 export const incr = (n: Integer) => asInteger(n + 1);
+/**
+ * {@link Integer} decrement
+ */
 export const decr = (n: Integer) => asInteger(n - 1);
+
 const isummer2 = makeSummer<Integer, Integer>(asInteger, asInteger);
+
+/**
+ * Sum the {@link Integer} arguments as an {@link Integer}
+ */
 export const isum = (...n: Integer[]) => isummer2(n);

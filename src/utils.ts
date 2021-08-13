@@ -4,6 +4,14 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+/**
+ * General utilities, without runtime dependencies on other parts of the system.
+ *
+ * @module
+ */
+
+
+
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
 import { MonetaryType, IMonetaryItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary } from './types';
