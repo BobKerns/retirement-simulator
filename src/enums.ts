@@ -9,6 +9,18 @@
  * @module
  */
 
+export enum Types {
+    asset = 'asset',
+    liability = 'liability',
+    income = 'income',
+    expense = 'expense',
+    incomeStream = 'incomeStream',
+    incomeTax = 'incomeTax',
+    person = 'person',
+    text = 'text',
+    scenario = 'scenario'
+}
+
 /**
  * Units of time intervals.
  */

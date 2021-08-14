@@ -7,7 +7,7 @@
 import type { StateCode } from "./states";
 import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
-import type { CalendarUnit } from "./enums";
+import type { CalendarUnit, Types } from "./enums";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -33,7 +33,7 @@ export interface NamedIndex<T extends Named> {
 export type BalanceType = 'asset' | 'liability';
 export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
-export type Type = MonetaryType | 'person' | 'text' | 'scenario';
+export type Type = `${Types}`;
 
 export interface ItemMethods {
     hasCategory(category: Category): boolean;
