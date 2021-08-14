@@ -12,7 +12,7 @@
 
 import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
-import { toDate, UTC } from "./calendar";
+import { asCalendarUnit, toCalendarUnit, toDate, UTC } from "./calendar";
 import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "./types";
 import { identity, typeChecks } from "./utils";
 import { Temporal } from "./temporal";
@@ -49,7 +49,7 @@ export const split = <T>(dflt: T[]) => (c: any): T[] =>
 
 export const optionalDate = optional(toDate);
 export const optionalMoney = optional(t => toMoney(Number(t)));
-export const optionalRate = optional(t => toRate(1 + Number(t)/100));
+export const optionalRate = optional(t => toRate(Number(t)/100));
 export const optionalNumber = optional(Number);
 
 export const isBoolean = (a: any): a is boolean => a === true || a === false;
@@ -79,6 +79,7 @@ export const converters: Converters = {
     rate: optionalRate(undefined),
     rateType: or(undefined),
     payment: optionalMoney(undefined),
+    paymentPeriod: optional(toCalendarUnit)(undefined),
     fromStream: or('default'),
     spec: or(undefined),
     state: or(undefined),

@@ -10,32 +10,6 @@
  */
 
 /**
- * Type of interest rate compounding.
- */
-export enum RateType {
-    /**
-     * Fixed yield (yield only available at maturity)
-     */
-    fixed = 'FIXED',
-    /**
-     * Interest expressed as Annual Percentage Rage
-     */
-    apr = 'APR',
-    /**
-     * Interest expressed as Monthly Percentage Rage
-     */
-    mpr = 'MPR',
-    /**
-     * Interest expressed as Daily Percentage Rage
-     */
-    dpr = 'DPR',
-    /**
-     * Interest expressed as Annual Percentage Rage
-     */
-    compound = 'COMPOUND'
-}
-
-/**
  * Units of time intervals.
  */
 export enum CalendarUnit {

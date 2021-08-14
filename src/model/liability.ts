@@ -9,7 +9,7 @@ import { Monetary } from "./monetary";
 import { Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
-import { RateType } from "../enums";
+import { CalendarUnit } from "../enums";
 
 /**
  * A liability (generally, a loan or mortgage). If not interest-free, `rate` should be supplied with
@@ -17,13 +17,15 @@ import { RateType } from "../enums";
  */
 export class Liability extends Monetary<'liability'> implements ILiability {
     rate: Rate;
-    rateType: RateType | SeriesName;
+    rateType: CalendarUnit | SeriesName;
     payment?: Money;
+    paymentPeriod: CalendarUnit;
     expense?: ExpenseName;
     constructor(row: RowType<'liability'>) {
         super(row);
         this.rate = row.rate ?? 1;
-        this.rateType = row.rateType || RateType.apr;
+        this.rateType = row.rateType || CalendarUnit.year;
+        this.paymentPeriod = row.paymentPeriod || CalendarUnit.month;
     }
 }
 

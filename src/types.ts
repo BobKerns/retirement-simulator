@@ -7,7 +7,7 @@
 import type { StateCode } from "./states";
 import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
-import type { RateType } from "./enums";
+import type { CalendarUnit } from "./enums";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -135,14 +135,19 @@ export interface IMonetaryItem<T extends MonetaryType> extends IItem<T>, IMoneta
  */
 export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
     /**
-     * Multiplicative factor. Will need to canonicalize compounding periods (APR vs simple, etc.)
+     * Interest rate, per payment period. Will need to canonicalize compounding periods (APR vs simple, etc.)
      * Non interest-bearing assets, or loans use a value of `1.0,`;
      */
     readonly rate: Rate;
     /**
      * Type of interest rate calculation, or the name of a time series calculator.
      */
-    readonly rateType: RateType | SeriesName;
+    readonly rateType: CalendarUnit | SeriesName;
+
+    /**
+     * Payment frequency
+     */
+    readonly paymentPeriod: CalendarUnit;
 }
 
 /**
@@ -281,3 +286,31 @@ export type IFIncomeTax = ItemImpl<'incomeTax'>;
 export type IFPerson = ItemImpl<'person'>;
 export type IFText = ItemImpl<'text'>;
 export type IFScenario = ItemImpl<'scenario'>;
+
+/**
+ * Interest applied to an account.
+ */
+export interface AppliedInterest {
+    /**
+     * The resulting value after this payment.
+     */
+    value: Money;
+    /**
+     * The interest applied.
+     */
+    interest: Money
+}
+
+/**
+ * Record of a loan paymenmt.
+ */
+export interface AppliedLoanPayment extends AppliedInterest {
+    /**
+     * How much of this payment is repayment of principal
+     */
+    principal: Money,
+    /**
+     * Total amount of the payment.
+     */
+    payment: Money
+}

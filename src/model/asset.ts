@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { RateType } from "../enums";
+import { CalendarUnit } from "../enums";
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { Rate } from "../tagged";
@@ -17,11 +17,13 @@ import { classChecks } from "../utils";
  */
 export class Asset extends Monetary<'asset'> implements IAsset {
     rate: Rate;
-    rateType: RateType | SeriesName;
+    rateType: CalendarUnit | SeriesName;
+    paymentPeriod: CalendarUnit;
     constructor(row: RowType<'asset'>) {
         super(row);
         this.rate = row.rate ?? 1;
-        this.rateType = row.rateType || RateType.apr;
+        this.rateType = row.rateType || CalendarUnit.year;
+        this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;
     }
 }
 
