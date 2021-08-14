@@ -12,7 +12,7 @@
 
 import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
-import { toDate } from "./calendar";
+import { toDate, UTC } from "./calendar";
 import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "./types";
 import { identity, typeChecks } from "./utils";
 import { Temporal } from "./temporal";
@@ -39,7 +39,7 @@ const start = new Date();
 /**
  * The default start date.
  */
-export let START = new Date(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate(), 0, 0, 0, 0);
+export let START = UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
 
 export const split = <T>(dflt: T[]) => (c: any): T[] =>
     ((c === undefined || c === '')

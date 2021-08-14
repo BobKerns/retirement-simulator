@@ -7,9 +7,9 @@
 import {Expense} from '../model/expense';
 import { construct as bareConstruct } from '../construct';
 import { expense_1 } from './data/samples';
-import { as } from '../tagged';
+import { asYear } from '../tagged';
 
-const construct = (row: any) => bareConstruct(row, row[0].type, [], as(2021));
+const construct = (row: any) => bareConstruct(row, row[0].type, [], asYear(2021));
 
 describe("Expense", () => {
     test("Create", () => expect(new Expense(expense_1).fromStream).toEqual(expense_1.fromStream));

@@ -7,10 +7,10 @@
 import {Expense} from '../model/expense';
 import { construct as bareConstruct } from '../construct';
 import { CAT_FRED, CAT_SALLY, expense_1 } from './data/samples';
-import { as } from '../tagged';
+import { asYear } from '../tagged';
 
 
-const construct = (row: any) => bareConstruct(row, row[0].type, [], as(2021));
+const construct = (row: any) => bareConstruct(row, row[0].type, [], asYear(2021));
 
 describe("Items", () => {
     test("Category yes", () => expect(new Expense(expense_1).hasCategory(CAT_FRED)).toBeTruthy());

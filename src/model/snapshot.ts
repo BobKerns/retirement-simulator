@@ -14,6 +14,7 @@ import { ScenarioBase } from "./scenario-base";
 import { TextItem } from "./text";
 import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, NamedIndex } from "../types";
 import { classChecks, indexByName } from "../utils";
+import { CalendarStep } from "../calendar";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.
@@ -23,7 +24,7 @@ import { classChecks, indexByName } from "../utils";
  * from which graphs, tables, and interactive tools can be constructed.
  */
 export class Snapshot extends ScenarioBase {
-    year: number;
+    period: CalendarStep;
     asset_list: IFAsset[];
     liability_list: IFLiability[];
     income_list: IFIncome[];
@@ -42,10 +43,10 @@ export class Snapshot extends ScenarioBase {
 
     readonly scenario: IFScenario;
 
-    constructor(scenario: IFScenario, year: number, previous: ScenarioBase) {
+    constructor(scenario: IFScenario, period: CalendarStep, previous: ScenarioBase) {
         super(scenario);
         this.scenario = scenario;
-        this.year = year;
+        this.period = period;
         this.asset_list = scenario.asset_list.map(a => new Asset(a));
         this.liability_list = scenario.liability_list.map(a => new Liability(a));
         this.income_list = scenario.income_list.map(a => new Income(a));

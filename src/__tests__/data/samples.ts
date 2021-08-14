@@ -4,6 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { UTC } from "../../calendar";
 import { START } from "../../input";
 import { as, asMoney } from "../../tagged";
 import { Category, IExpense, IPerson } from "../../types";
@@ -28,8 +29,8 @@ export const person_1: IPerson = {
     sort: 1,
     categories: [],
     scenarios: [],
-    birth: new Date("1967-01-01"),
-    start: new Date("1967-01-01"),
+    birth: UTC("1967-01-01"),
+    start: UTC("1967-01-01"),
     sex: 'female'
 };
 
@@ -39,7 +40,7 @@ export const person_2: IPerson = {
     sort: 1,
     categories: [],
     scenarios: [],
-    birth: new Date("1967-01-01"),
-    start: new Date("1967-01-01"),
+    birth: UTC("1967-01-01"),
+    start: UTC("1967-01-01"),
     sex: 'male'
 };

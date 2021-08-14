@@ -4,17 +4,37 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-
 /**
- * General calendar utilities.
+ * General calendar utilities. Dates are represented with `Date` objects constrained to `00:00:00.000 UTC`.
+ * Consistent use of [UTC](https://www.timeanddate.com/time/aboututc.html) avoids issues with timezones
+ * and possible differing behavior.
  *
  * @module
  */
-
-import { Sync } from "genutils";
 import { CalendarUnit } from "../enums";
-import { as, asInteger, floor, Integer, isInteger, Relaxed, TagOf, Year } from "../tagged";
+import { asInteger, asYear, floor, Integer, isInteger, isString, Relaxed, TagOf, toInteger, Year } from "../tagged";
 import { Throw, typeChecks } from "../utils";
+
+
+/**
+ * Parse a [UTC](https://www.timeanddate.com/time/aboututc.html) date.
+ * @see {@link parseDate}
+ * @param date a string.
+ * @returns a `Date`, constrained to `00:00:00.000 UTC`.
+ */
+export function UTC(date: string): Date
+/**
+ * Construct a [UTC](https://www.timeanddate.com/time/aboututc.html) Date
+ * @param year
+ * @param month (0-11), default = 0 (January)
+ * @param day (1-31), default = 1
+ * @returns a `Date`, constrained to `00:00:00.000 UTC`.
+ */
+export function UTC(year: Relaxed<Integer>|string, month?: Relaxed<Integer>, day?: Relaxed<Integer>): Date;
+export function UTC(year: Relaxed<Integer>|string, month: Relaxed<Integer> = 0, day: Relaxed<Integer> = 1): Date {
+    if (isString(year)) return parseDate(year);
+    return new Date(Date.UTC(toInteger(year), toInteger(month), toInteger(day), 0, 0, 0, 0));
+}
 /**
  * The starting day of each month, 0-origin, for non-leap and leap years.
  */
@@ -115,36 +135,33 @@ export const isCalendarLength = (a: any): a is CalendarLength => {
 
 export const [toCalendarLength, asCalendarLength] = typeChecks(isCalendarLength, 'a valid CalendarLength')
 
-export const isDate = (d: any): d is Date => d instanceof Date && !isNaN(d.valueOf());
-export const [toDate, asDate] = typeChecks(isDate, 'is not a Date', d => new Date(d));
-
-
 /**
  * Increment a time by a specified period of time.
  *
- * The returned value is truncated to the beginning of the UTC day.
+ * The returned value is truncated to the beginning of the [UTC](https://www.timeanddate.com/time/aboututc.html) day.
  * @param date The date to be incremented
  * @param interval A CalendarInterval denoting how much to increment by.
  * @returns
  */
-export function incrementDate(date: Date, interval: Relaxed<CalendarInterval, TagOf<Integer>>): Date;
+export function incrementDate(date: Date|string, interval: Relaxed<CalendarInterval, TagOf<Integer>>): Date;
 /**
  * Increment a time by a specified period of time.
  *
- * The returned value is truncated to the beginning of the UTC day.
+ * The returned value is truncated to the beginning of the [UTC](https://www.timeanddate.com/time/aboututc.html) day.
  * @param date The date to be incremented
  * @param unit The units to increment by
  * @param n The number of units to increment by
  * @returns
  */
-export function incrementDate(date: Date, unitOrInterval: CalendarUnit, n?: Relaxed<Integer>): Date;
-export function incrementDate(date: Date, unitOrInterval: CalendarUnit|Relaxed<CalendarInterval, TagOf<Integer>>, num: Relaxed<Integer> = 1) {
+export function incrementDate(date: Date|string, unitOrInterval: CalendarUnit, n?: Relaxed<Integer>): Date;
+export function incrementDate(date: Date|string, unitOrInterval: CalendarUnit|Relaxed<CalendarInterval, TagOf<Integer>>, num: Relaxed<Integer> = 1) {
     if (isCalendarInterval(unitOrInterval)) {
         const [unit, n] = decodeCalendarInterval(unitOrInterval);
         return incrementDate(date, unit, n);
     }
     const unit = unitOrInterval;
-    const month = date.getUTCMonth();
+    const ndate = toDate(date);
+    const month = ndate.getUTCMonth();
     const n = asInteger(num);
     const step = () => {
         const nmonths = (n: number) => {
@@ -165,69 +182,76 @@ export function incrementDate(date: Date, unitOrInterval: CalendarUnit|Relaxed<C
 
     const [iYear, iMonth, iDay] = step();
     if (iDay) {
-        return new Date(date.getTime() + iDay * 24 * 60 * 60 * 1000);
+        return new Date(toDate(date).getTime() + iDay * 24 * 60 * 60 * 1000);
     } else {
-        return new Date(
-            date.getUTCFullYear() + iYear,
-            iMonth,
-            date.getUTCDate(),
-            0, 0, 0, 0
-        );
+        return UTC(
+                ndate.getUTCFullYear() + iYear,
+                iMonth,
+                ndate.getUTCDate()
+            );
     }
 };
 
 /**
- *  Left-pad with '0'  to 2 digits.
+ *  Left-pad with `'0'` to 2 digits.
  * @param n A number or a string representation of a number
  * @returns
  */
 const p2 = (n: any) => String(n).padStart(2, '0');
 
 /**
- * Format the date as year-mo
+ * Format the date as _year-mo_
  * @param date
  * @returns
  */
-export const fmt_month = (date: Date) =>
-    `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}`;
+export const fmt_month = (date: Date|string): string =>
+    isDate(date)
+        ? `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}`
+        : fmt_month(toDate(date));
 
 
 /**
- * Format the date as year-mo-dd
+ * Format the date as _year-mo-dd_
  * @param date
  * @returns
  */
-export const fmt_date = (date: Date) =>
-    `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}-${p2(date.getUTCDate())}`;
-
-
-/**
- * Format the time as HH:MM:SS
- * @param date
- * @returns
- */
-export const fmt_time = (date: Date) =>
-    `${p2(date.getUTCHours())}:${p2(date.getUTCMinutes() + 1)}:${p2(date.getUTCSeconds())}`;
+export const fmt_date = (date: Date|string): string =>
+    isDate(date)
+        ? `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}-${p2(date.getUTCDate())}`
+        : fmt_date(toDate(date));
 
 /**
- * Format the time as year-mo-dd HH:MM:SS
+ * Format the time as _HH:MM:SS_
  * @param date
  * @returns
  */
-export const fmt_datetime = (date: Date) =>
-    `${fmt_date(date)} ${fmt_time(date)}`;
+export const fmt_time = (date: Date|string): string =>
+    isDate(date)
+        ? `${p2(date.getUTCHours())}:${p2(date.getUTCMinutes() + 1)}:${p2(date.getUTCSeconds())}`
+        :  fmt_time(toDate(date));
+
+/**
+ * Format the time as _year-mo-dd HH:MM:SS_
+ * @param date
+ * @returns
+ */
+export const fmt_datetime = (date: Date): string =>
+    isDate(date)
+        ? `${fmt_date(date)} ${fmt_time(date)}`
+        : fmt_datetime(toDate(date));
 
 /**
  * Return `true` iff the supplied year is a leap year.
  * @param year The year as a number
  * @returns
  */
-export function isLeapYear(year: Year): boolean;
+export function isLeapYear(year: Relaxed<Year>): boolean;
 export function isLeapYear(year: Date): boolean;
-export function isLeapYear(year: Year | Date): boolean {
-    if (year instanceof Date) {
-        return isLeapYear(as(year.getUTCFullYear()));
+export function isLeapYear(yearOrDate: Relaxed<Year> | Date): boolean {
+    if (yearOrDate instanceof Date) {
+        return isLeapYear(yearOrDate.getUTCFullYear());
     }
+    const year = asYear(yearOrDate);
     if ((year % 4) !== 0) {
         return false;
     } else if ((year % 100) !== 0) {
@@ -238,3 +262,80 @@ export function isLeapYear(year: Year | Date): boolean {
         return true;
     }
 };
+
+/**
+ * Rolls back time to the start of a year, quarter, month, or day. Higher-order function that
+ * returns a function for the specific time period to truncate to.
+ * @param unit Unit of time to truncate to (must not be 'week').
+ * @returns (date: {@link Date}) => {@link Date}
+ */
+export const truncateDate = (unit: CalendarUnit) => {
+    switch (unit) {
+        case CalendarUnit.year: return (date: Date) =>
+            UTC(date.getUTCFullYear());
+        case CalendarUnit.quarter: return (date: Date) =>
+            UTC(
+                date.getUTCFullYear(),
+                floor(date.getUTCMonth()/3) * 3
+            );
+        case CalendarUnit.month: return (date: Date) =>
+            UTC(
+                date.getUTCFullYear(),
+                date.getUTCMonth()
+            );
+        case CalendarUnit.week: throw new Error(`'week' is not a meaningful unit to truncate a date to.`);
+        case CalendarUnit.day: return (date: Date) =>
+            UTC(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                date.getUTCDate()
+            );
+    }
+    throw new Error(`Unknown TimeInterval: ${unit}`);
+};
+
+export const isDate = (d: any): d is Date =>
+    d instanceof Date
+    && !isNaN(d.valueOf())
+    && d.getUTCHours() === 0
+    && d.getUTCMinutes() === 0
+    && d.getUTCSeconds() === 0
+    && d.getUTCMilliseconds() === 0;
+
+const truncateToDay = truncateDate(CalendarUnit.day);
+const coerceDate = (d: Date | string) =>
+        (d instanceof Date)
+            ? truncateToDay(d)
+            : UTC(d);
+
+export const [toDate, asDate] = typeChecks(isDate, 'is not a UTC Date', coerceDate);
+
+/**
+ * Get the beginning of the supplied day (using [UTC](https://www.timeanddate.com/time/aboututc.html) for consistency).
+ * @param d The date
+ * @returns
+ */
+export const day = truncateDate(CalendarUnit.day);
+
+/**
+ * Parse a [UTC](https://www.timeanddate.com/time/aboututc.html) date, in one of the following forms:
+ *
+ * * `2021-08-13`
+ * * `2021-08`    // Same as `2021-08-01`
+ * * `2021`       // Same as `2021-01-01`
+ *
+ * Leading zeros on month and day are optional. Two-year year abbreviations are _not_ allowed.
+ *
+ * @param date A string in the form _YYYY-MMM-dd_
+ * @returns a Date at `00:00:00.000 UTC`.
+ */
+export const parseDate = (date: string): Date => {
+    const match = /^\s*(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?\s*$/.exec(date);
+    if (!match) {
+        throw new Error(`${date} is not a valid date. Must be in the form YYYY-01-23. Month and day are optional, default to 01.`);
+    }
+    const year = Number(match[1]);
+    const month = Number(match[2] ?? 1);
+    const day = Number(match[3] ?? 1);
+    return UTC(year, month - 1, day);
+}

@@ -9,7 +9,7 @@ import Heap from "heap";
 import { actuary, SS_2017 } from "../actuary";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { TODAY, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, incrementDate, TODAY, UTC, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
@@ -21,6 +21,7 @@ import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, Year } from "../tagged";
 import { StateMixin } from "./state-mixin";
+import { START } from "../input";
 
 
 /**
@@ -258,9 +259,10 @@ export class Scenario extends ScenarioBase {
      */
     run() {
         const previous = this;
-        return range(YEAR, this.#end_year + 1).reduce(
-        ({ list, previous}: {list: Array<Snapshot>, previous: (Snapshot|Scenario)}, year: number) => {
-            const snapshot = new Snapshot(this, year, previous);
+        const range = calendarRange(START, incrementDate(START, {year: 50}), {month: 1});
+        return range.reduce(
+        ({ list, previous}: {list: Array<Snapshot>, previous: (Snapshot|Scenario)}, period: CalendarStep) => {
+            const snapshot = new Snapshot(this, period, previous);
             list.push(snapshot);
             return {
             list,
@@ -279,7 +281,7 @@ export class Scenario extends ScenarioBase {
         let p = 1;
         return range(0, years + 1)
             .map((y) => {
-                const nyear = new Date(YEAR + y, 0);
+                const nyear = UTC(YEAR + y);
                 p *= 1 - actuary(spouse, nyear)?.p ?? 0;
                 return p;
             })

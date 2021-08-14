@@ -23,12 +23,12 @@ export class CalendarStep extends CalendarPeriod {
      */
     readonly step: Integer;
     /**
-     * 
+     *
      * @param start The start `Date` of the time period
      * @param end The end `Date` of the time period
      * @param step The iteration counter value.
      */
-    constructor(start: Date, end: Date, step: Integer) {
+    constructor(start: Date|string, end: Date|string, step: Integer) {
         super(start, end);
         this.step = step;
     }
