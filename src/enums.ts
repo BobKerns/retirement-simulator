@@ -26,8 +26,11 @@ export enum Types {
  */
 export enum CalendarUnit {
     year = 'year',
+    semiannually = 'semiannually',
     quarter = 'quarter',
     month = 'month',
+    semimonthly = 'semimonthly',
+    biweekly = 'biweekly',
     week = 'week',
     day = 'day'
 };

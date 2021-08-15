@@ -15,6 +15,19 @@ import { CalendarUnit } from "../enums";
 import { asInteger, asYear, floor, Integer, isInteger, isString, Relaxed, TagOf, toInteger, Year } from "../tagged";
 import { Throw, typeChecks } from "../utils";
 
+/**
+ * For each {@link CalendarUnit}, the number of occurrances of that unit per year.
+ */
+export const ANNUAL_PAYMENT_PERIODS: {[k in CalendarUnit]: number} = {
+    year: 1,
+    semiannually: 2,
+    quarter: 4,
+    month: 12,
+    semimonthly: 24,
+    biweekly: 365.25 / 14,
+    week: 365.25 / 7,
+    day: 365.25
+};
 
 /**
  * Parse a [UTC](https://www.timeanddate.com/time/aboututc.html) date.
@@ -103,10 +116,16 @@ export const [toCalendarInterval, asCalendarInterval] = typeChecks(isCalendarInt
 export const decodeCalendarInterval = (i: CalendarInterval): [CalendarUnit, Integer] =>
     i.year
         ? [CalendarUnit.year, i.year]
+        : i.semiannually
+        ? [CalendarUnit.semiannually, i.semiannually]
         : i.quarter
         ? [CalendarUnit.quarter, i.quarter]
         : i.month
         ? [CalendarUnit.month, i.month]
+        : i.semimonthly
+        ? [CalendarUnit.semimonthly, i.semimonthly]
+        : i.biweekly
+        ? [CalendarUnit.biweekly, i.biweekly]
         : i.week
         ? [CalendarUnit.week, i.week]
         : i.day
@@ -161,19 +180,39 @@ export function incrementDate(date: Date|string, unitOrInterval: CalendarUnit|Re
     }
     const unit = unitOrInterval;
     const ndate = toDate(date);
+    const year = ndate.getUTCFullYear();
     const month = ndate.getUTCMonth();
+    const day = ndate.getUTCDate();
     const n = asInteger(num);
     const step = () => {
         const nmonths = (n: number) => {
                 const nm = month + n;
                 const y = floor(nm / 12);
                 const m = nm % 12;
-                return [y, m, 0];
+                return [y, m - month, 0];
+            };
+        const nsemimonths = (n: number) => {
+                const nm = month + floor(n / 2);
+                const y = floor(nm / 12);
+                const m = day >= 15 && n & 1
+                    ? nm % 12 + 1
+                    : nm % 12;
+                const d = day >= 15
+                    ? n & 1
+                        ? - day + 1// Wrapped to next month
+                        : 0
+                    : n & 1
+                        ? 14
+                        : 0;
+                return [y, m - month, d];
             };
         switch (unit) {
             case CalendarUnit.year: return [n, 0, 0];
+            case CalendarUnit.semiannually: return nmonths(n * 6);
             case CalendarUnit.quarter: return nmonths(n * 3);
             case CalendarUnit.month: return nmonths(n);
+            case CalendarUnit.semimonthly: return nsemimonths(n);
+            case CalendarUnit.biweekly: return [0, 0, 14 * n];
             case CalendarUnit.week: return [0, 0, 7 * n];
             case CalendarUnit.day: return [0, 0, n];
         }
@@ -181,14 +220,15 @@ export function incrementDate(date: Date|string, unitOrInterval: CalendarUnit|Re
     }
 
     const [iYear, iMonth, iDay] = step();
+    const idate = UTC(
+        year + iYear,
+        month + iMonth,
+        day
+    );
     if (iDay) {
-        return new Date(toDate(date).getTime() + iDay * 24 * 60 * 60 * 1000);
+        return new Date(idate.getTime() + iDay * 24 * 60 * 60 * 1000);
     } else {
-        return UTC(
-                ndate.getUTCFullYear() + iYear,
-                iMonth,
-                ndate.getUTCDate()
-            );
+        return idate;
     }
 };
 
