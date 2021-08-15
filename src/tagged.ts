@@ -48,6 +48,9 @@ export type Relaxed<T, Tag extends string = TagOf<T>> =
  */
 export type Untag<T extends Tag<string>> = Omit<T, typeof typetag>;
 
+/**
+ * The tag (as a string literal type) of a tagged type.
+ */
 export type TagOf<T> = T extends Tag<infer Tag> ? Tag : never;
 
 /**
@@ -62,6 +65,9 @@ export type TypeGuard<T> = (n: any) => n is T;
  */
 export type TypeAssertion<T extends string, B> = (n: B) => Tagged<T, B>;
 
+/**
+ * A function that coerces to a specified type.
+ */
 export type TypeCoercion<T> = (n: any) => T;
 
 
@@ -165,7 +171,8 @@ export interface DomainFns<T extends string, B> {
 }
 
 /**
- * Produce a predicate for a tagged number range, optionally with some modulus.
+ * Produce a predicate for a tagged number range, optionally with some modulus. The choice of implementations
+ * depends on the combination of arguments supplied.
  * @param {min, max, mod, minEx, maxEx}
  * @returns a suitable is* typeguard function for {@link Tagged|Tagged<T>}
  */
@@ -341,6 +348,9 @@ export const {is: isInteger, as: asInteger, to: toInteger} = numberRange('Intege
 export type Byte = Tagged<'Byte'> | Tagged<'Integer'>;
 export const {is: isByte, as: asByte, to: toByte} = numberRange('Byte', {min: 0, max: 255, mod: 1});
 
+/**
+ * An amount of money.
+ */
 export type Money = Tagged<'Money'>;
 export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 
@@ -350,6 +360,9 @@ export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 export type Rate = Tagged<'Rate'>;
 export const {is: isRate, as: asRate, to: toRate} = numberRange('Rate', {min: -2, max: 2, minEx: true});
 
+/**
+ * A tax rate (as a fraction, not percentage).
+ */
 export type TaxRate = Tagged<'TaxRate'>;
 export const {is: isTaxRate, as: asTaxRate, to: toTaxRate} =
     numberRange('TaxRate', {min: 0, max: 1});
@@ -360,9 +373,15 @@ export const {is: isTaxRate, as: asTaxRate, to: toTaxRate} =
 export type Year = Tagged<'Year'>;
 export const {is: isYear, as: asYear, to: toYear} = numberRange('Year', {min: 1900, max: 2300, mod: 1});
 
+/**
+ * Age (usually of people)
+ */
 export type Age = Tagged<'Age'>;
 export const {is: isAge, as: asAge, to: toAge} = numberRange('Age', {min: 0, max: 130});
 
+/**
+ * Integer age (usually of people)
+ */
 export type IAge = Tagged<'IAge'>;
 export const {is: isIAge, as: asIAge, to: toIAge} = numberRange('IAge', {min: 0, max: 130, mod: 1});
 
