@@ -345,10 +345,10 @@ export type Money = Tagged<'Money'>;
 export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 
 /**
- * Interest/growth rate as a multiplier. Cannot be zero.
+ * Interest/growth rate as a fraction (not percent).
  */
 export type Rate = Tagged<'Rate'>;
-export const {is: isRate, as: asRate, to: toRate} = numberRange('Rate', {min: 0, minEx: true});
+export const {is: isRate, as: asRate, to: toRate} = numberRange('Rate', {min: -2, max: 2, minEx: true});
 
 export type TaxRate = Tagged<'TaxRate'>;
 export const {is: isTaxRate, as: asTaxRate, to: toTaxRate} =
