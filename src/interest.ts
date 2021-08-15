@@ -8,6 +8,7 @@ import { Sync } from "genutils/lib/esm/sync";
 import { ANNUAL_PAYMENT_PERIODS, isCalendarUnit } from "./calendar";
 import { CalendarUnit } from "./enums";
 import { Money, Rate } from "./tagged";
+import { AppliedInterest, AppliedLoanPayment } from "./types";
 
 /*
  * Interest calculations.
@@ -24,12 +25,13 @@ export const interestCalculator = () => undefined;
  * @param payment  Nominal payment amount
  * @returns
  */
-export const applyRateSimpleMonthly = (ivalue: Money, r: Rate, payment: Money) => {
-    // Need to hanle different payment periods, canonicalizing the rate, etc.
-    function *applyRateSimpleMonthly() {
+export function applyRateSimpleMonthly(ivalue: Money, r: Rate): Generator<AppliedInterest>;
+export function applyRateSimpleMonthly(ivalue: Money, r: Rate, paymenmt: Money): Generator<AppliedLoanPayment>;
+export function applyRateSimpleMonthly(ivalue: Money, r: Rate, payment?: Money): Generator<AppliedInterest | AppliedLoanPayment> {
+    // Need to handle different payment periods, canonicalizing the rate, etc.
+    function *applyRateSimpleMonthly(): Generator<AppliedInterest | AppliedLoanPayment> {
         const round = (dollars: number) => (Math.round(dollars * 100) / 100);
         const monthlyRate = (r - 1) / 12;
-        const monthlyPmt = payment / 12;
         let payments = 0;
         let principal = 0;
         let interest = 0;
@@ -37,18 +39,29 @@ export const applyRateSimpleMonthly = (ivalue: Money, r: Rate, payment: Money) =
         while (value !== 0) {
             const mInterest = round(value * monthlyRate);
             const nvalue = value + mInterest;
-            const mPrincipal = Math.min(nvalue, Math.max(0, monthlyPmt - mInterest));
-            const pmt = Math.min(monthlyPmt, nvalue);
-            value = round(value - mPrincipal);
-            principal += mPrincipal;
             interest += mInterest;
-            payments += pmt;
-            yield {
-                principal: mPrincipal as Money,
-                interest: mInterest as Money,
-                payment: pmt as Money
-            };
+            if (payment !== undefined) {
+                const mPrincipal = Math.min(nvalue, Math.max(0, payment - mInterest));
+                const pmt = Math.min(payment, nvalue);
+                value = round(nvalue - mPrincipal);
+                principal += mPrincipal;
+                payments += pmt;
+                yield {
+                    value: value as Money,
+                    interest: mInterest as Money,
+                    principal: mPrincipal as Money,
+                    payment: pmt as Money
+                };
+            } else {
+                value = round(nvalue);
+                return {
+                    value: value as Money,
+                    interest: interest as Money
+                }
+            }
         }
+        // Return value probably won't be used. Returns the final value and total
+        // principal, interest, and payments.
         return {
             value: value as Money,
             principal: principal as Money,
