@@ -5,7 +5,9 @@
  */
 
 import { Sync } from "genutils/lib/esm/sync";
-import { as, Integer, Money, Rate } from "./tagged";
+import { ANNUAL_PAYMENT_PERIODS, isCalendarUnit } from "./calendar";
+import { CalendarUnit } from "./enums";
+import { Money, Rate } from "./tagged";
 
 /*
  * Interest calculations.
@@ -55,4 +57,21 @@ export const applyRateSimpleMonthly = (ivalue: Money, r: Rate, payment: Money) =
         };
     }
     return Sync.enhance(applyRateSimpleMonthly());
+}
+
+/**
+ * Convert interest rates between different compounding periods.
+ * @param rate The rate _per year_ in the original compounding period.
+ * @param fromPeriod The number of periods per year for the original compounding period, or the corresponding {@link CalendarUnit}.
+ * @param newPeriod  The number of periods per year for the new compounding period, or the corresponding {@link CalendarUnit}.
+ * @returns The effective rate _per year_ at the new compounding period.
+ */
+
+export const convertInterest = (rate: Rate, fromPeriod: number|CalendarUnit, newPeriod: number|CalendarUnit): Rate => {
+    if (isCalendarUnit(fromPeriod)) {
+        return convertInterest(rate, ANNUAL_PAYMENT_PERIODS[fromPeriod], newPeriod);
+    } else if (isCalendarUnit(newPeriod)) {
+        return convertInterest(rate, fromPeriod, ANNUAL_PAYMENT_PERIODS[newPeriod]);
+    }
+    return newPeriod * (Math.pow(1 + rate / fromPeriod, fromPeriod / newPeriod) - 1) as Rate;
 }
