@@ -5,10 +5,12 @@
  */
 
 import { Item } from "./item";
-import { Age, asAge, asIAge, floor, IAge, Year } from "../tagged";
-import { calculate_age } from "../calendar";
+import { Age, asAge, asIAge, asYear, floor, IAge, Year } from "../tagged";
+import { calculate_age, END_YEAR, TODAY, UTC, YEAR } from "../calendar";
 import { IPerson, RowType, Sex } from "../types";
 import { classChecks } from "../utils";
+import { range } from "genutils";
+import { actuary, SS_2017 } from "../actuary";
 
 /**
  * A person (typically a spouse or domestic partner). Birth date and sex must be specified
@@ -17,10 +19,19 @@ import { classChecks } from "../utils";
 export class Person extends Item<'person'> implements IPerson {
     birth: Date;
     sex: Sex;
+    expectency: number;
+    expectencies: number[];
+    probabiliies: number[];
     constructor(row: RowType<'person'>) {
         super(row);
         this.birth = row.birth;
         this.sex = row.sex;
+        const age = floor(this.age(TODAY));
+        this.expectency = SS_2017[age]?.[this.sex].years;
+        this.expectencies = range(0, END_YEAR - YEAR + 1)
+                .map((y) => SS_2017[asIAge(age + y)]?.[this.sex].years)
+                .asArray()
+        this.probabiliies = this.#compute_probabilities();
     }
 
     /**
@@ -56,6 +67,19 @@ export class Person extends Item<'person'> implements IPerson {
            return asIAge(floor(calculate_age(this.birth, date)));
         }
         return asIAge(date - this.birth.getUTCFullYear());
+    }
+
+
+    #compute_probabilities() {
+        const years = END_YEAR - YEAR;
+        let p = 1;
+        return range(0, years + 1)
+            .map((y) => {
+                const nyear = UTC(YEAR + y);
+                p *= 1 - actuary(this, nyear)?.p ?? 0;
+                return p;
+            })
+            .asArray();
     }
 }
 

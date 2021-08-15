@@ -242,12 +242,7 @@ export class Scenario extends ScenarioBase {
             sex,
             sort: item?.sort ?? 0,
             categories,
-            scenarios,
-            expectency: SS_2017[age]?.[sex].years,
-            expectencies: range(0, years + 1)
-                .map((y) => SS_2017[age + y]?.[sex].years)
-                .asArray(),
-            probabilities: this.#compute_probabilities(item)
+            scenarios
         };
         const x =  Scenario.construct([row], "person", this.data, this.#end_year);
         return x;
@@ -273,20 +268,6 @@ export class Scenario extends ScenarioBase {
         ).list;
     }
 
-    #compute_probabilities(spouse: IFPerson) {
-        if (!spouse) return undefined;
-        const { birth, sex } = spouse;
-        const age = TODAY.getUTCFullYear() - birth.getUTCFullYear();
-        const years = this.#end_year - YEAR;
-        let p = 1;
-        return range(0, years + 1)
-            .map((y) => {
-                const nyear = UTC(YEAR + y);
-                p *= 1 - actuary(spouse, nyear)?.p ?? 0;
-                return p;
-            })
-            .asArray();
-    }
 }
 
 

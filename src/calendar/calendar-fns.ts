@@ -11,7 +11,7 @@
 
 import { range } from "genutils";
 import { day, isLeapYear, MONTH_START, UTC } from "./calendar-utils";
-import { Age, asAge, Relaxed, Year } from "../tagged";
+import { Age, asAge, asYear, Relaxed, Year } from "../tagged";
 
 /**
  * Obtain the day number of a given `Date`
@@ -81,17 +81,22 @@ export const TODAY = day(new Date());
  * This year as a 4-digit number.
  */
 
-export const YEAR = TODAY.getUTCFullYear();
+export const YEAR = asYear(TODAY.getUTCFullYear());
+
+/**
+ * Default to 50 years.
+ */
+export let END_YEAR = asYear(YEAR + 50);
 
 /**
  * `Date` a century in the future.
  */
-export const END_OF_TIME = day(UTC(YEAR + 100))
+export const END_OF_TIME = UTC(YEAR + 100);
 
 /**
  * Year number a century in the future.
  */
-export const END_OF_YEARS = END_OF_TIME.getUTCFullYear() + 1;
+export const END_OF_YEARS = asYear(END_OF_TIME.getUTCFullYear() + 1);
 
 /**
  * The year boundaries for the next century.
