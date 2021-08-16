@@ -11,7 +11,7 @@
  *
  * @module
  */
-import { Sync, SyncMixin } from "genutils";
+import { Sync } from "genutils";
 import { CalendarUnit } from "../enums";
 import { as, Integer, Relaxed, TagOf } from "../tagged";
 import { CalendarPeriod } from "./calendar-period";
@@ -92,7 +92,7 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
  * }
  * ```
  */
-export class CalendarRange extends SyncMixin(CalendarRangeBase) {
+export class CalendarRange extends Sync.Mixin(CalendarRangeBase) {
     constructor(start: Date|string, end: Date|string, unit: CalendarUnit, n?: Relaxed<Integer>);
     constructor(start: Date|string, end: Date|string, interval: Relaxed<CalendarInterval, TagOf<Integer>>);
     constructor(
