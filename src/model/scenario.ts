@@ -4,22 +4,23 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { range } from "genutils";
+import { Sync } from "genutils";
 import Heap from "heap";
-import { actuary, SS_2017 } from "../actuary";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, incrementDate, TODAY, UTC, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, incrementDate, TODAY, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
     Category, IFLiability, IFAsset, IFIncome,
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
-    IFText
+    IFText,
+    ItemImpl,
+    IFScenario
     } from "../types";
 import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
-import { as, Year } from "../tagged";
+import { as, Integer, Year } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { START } from "../input";
 
@@ -32,7 +33,7 @@ const NON_INCOME_ASSET: Category = as("non-income");
 /**
  * A particular scenario.
  */
-export class Scenario extends ScenarioBase {
+export class Scenario extends ScenarioBase implements IFScenario {
     static construct: typeof construct;
     readonly data: Array<RowType<Type>>;
 
@@ -147,7 +148,7 @@ export class Scenario extends ScenarioBase {
         this.#timeline = timeline;
     }
 
-    get scenario(): this { return this; }
+    get scenario(): IFScenario { return this; }
 
     /**
      * Get the full timeline in sorted order as a generator.
@@ -254,20 +255,53 @@ export class Scenario extends ScenarioBase {
      */
     run() {
         const previous = this;
+        let state: any= {};
+        const start = {
+            start: START,
+            end: START,
+            step: 0 as Integer,
+            length: {
+                days: 0 as Integer,
+                totalDays: 0 as Integer
+            }
+        };
+        this.items().forEach(i => state[`${i.type}/${i.name}`] = i.states(start));
         const range = calendarRange(START, incrementDate(START, {year: 50}), {month: 1});
         return range.reduce(
         ({ list, previous}: {list: Array<Snapshot>, previous: (Snapshot|Scenario)}, period: CalendarStep) => {
             const snapshot = new Snapshot(this, period, previous);
             list.push(snapshot);
             return {
-            list,
-            previous: snapshot
+                list,
+                previous: snapshot
             };
         },
         { list: [], previous } as {list: Array<Snapshot>, previous: (Snapshot|Scenario)}
         ).list;
     }
 
+    /**
+     *
+     * @returns all the items in a scenario as an enhanced iterator
+     */
+    items() {
+        return Sync.concat<ItemImpl<Type>, unknown, unknown>(
+            [this],
+            [this.spouse1],
+            this.spouse2 ? [this.spouse2] : [],
+            this.asset_list,
+            this.liability_list,
+            this.income_list,
+            this.expense_list,
+            this.incomeStream_list,
+            this.tax_list,
+            this.text_list
+        );
+    }
+
+    [Symbol.iterator]() {
+        return this.items();
+    }
 }
 
 

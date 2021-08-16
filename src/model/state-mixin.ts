@@ -4,11 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type , IFScenario} from "../types";
-import { asCalendarStep, CalendarStep } from "../calendar";
+import { IItem, IState, Type , IFScenario, ItemState} from "../types";
 import { as } from "../tagged";
-import type { asScenario } from "./scenario";
-import { ConstructorType } from "genutils";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -28,7 +25,7 @@ export type StateMixinConstructor<T extends Type, Base extends AConstructor<IIte
 
 export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixinConstructor<T, typeof Base> {
     class StateMixin extends Base implements IState<T> {
-        readonly period: CalendarStep;
+        readonly state: ItemState<T>;
         readonly scenario: IFScenario;
         readonly item: IItem<T>;
         #tag?: string = undefined;
@@ -36,7 +33,7 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
             super(...args)
             this.item = args[0];
             this.scenario = as(args[1])
-            this.period = asCalendarStep(args[2]);
+            this.state = args[2] as ItemState<T>;
         }
 
         /**
@@ -46,7 +43,7 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
         get [Symbol.toStringTag]() {
             try {
                 return this.#tag
-                    ?? (this.#tag = `${Base.name}State[${this.name} #${this.period?.step ?? '??'}]`);
+                    ?? (this.#tag = `${Base.name}State[${this.name} #${this.state?.step?.step ?? '??'}]`);
             } catch {
                 // This can happen when viewing the prototype, because #tag isn't declared
                 // on the prototype. That screws up ObservableHQ's inspector, which gets an unhandled

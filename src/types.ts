@@ -8,6 +8,8 @@ import type { StateCode } from "./states";
 import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
 import type { CalendarUnit, Types } from "./enums";
+import { CalendarStep } from "./calendar";
+import { Sync } from "genutils";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -35,12 +37,13 @@ export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
 export type Type = `${Types}`;
 
-export interface ItemMethods {
+export interface ItemMethods<T extends Type> {
     hasCategory(category: Category): boolean;
     inScenario(scenario: ScenarioName): boolean;
+    states(start: CalendarStep): Sync.Generator<ItemState, any, ItemState>;
 };
 
-type ItemImpl<T extends Type> = RowType<T> & ItemMethods;
+export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T>;
 
 type ItemTypes = {
     [T in keyof RowTypes]: ItemImpl<T>;
@@ -56,6 +59,24 @@ type RowTypes = {
     incomeStream: IIncomeStream;
     incomeTax: IIncomeTax;
     scenario: IScenario;
+};
+
+/**
+ * Common fields for item states.
+ * */
+export type IItemState<T extends Type> = {
+    item: IItem<T> ;
+    step: CalendarStep;
+}
+
+/**
+ * The type of a particlar item type.
+ */
+export type ItemState<T extends Type|'any' = 'any'> = ItemStateTypes[T];
+
+// Fill in as we flesh out implementations
+type ItemStateTypes = {
+    [k in Type|'any']: k extends 'any' ? IItemState<Type> : IItemState<Exclude<k, 'any'>>;
 };
 
 /**
