@@ -108,6 +108,9 @@ export interface IItem<T extends Type = Type> extends Named, TemporalItem {
 }
 
 export interface IScenarioBase extends IItem<'scenario'> {
+    readonly spouse1: IFPerson;
+    readonly spouse2: IFPerson | null
+    readonly person_list: IFPerson[];
     readonly asset_list: IFAsset[];
     readonly liability_list: IFLiability[];
     readonly income_list: IFIncome[];
@@ -116,6 +119,7 @@ export interface IScenarioBase extends IItem<'scenario'> {
     readonly incomeStream_list: IFIncomeStream[];
     readonly text_list: IFText[];
 
+    readonly people: NamedIndex<IFPerson>;
     readonly assets: NamedIndex<IFAsset>;
     readonly liabilities: NamedIndex<IFLiability>;
     readonly incomes: NamedIndex<IFIncome>;

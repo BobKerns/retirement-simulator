@@ -39,8 +39,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
 
     spouse1: IFPerson;
     spouse2: IFPerson | null;
-    readonly people: NamedIndex<IFPerson>;
-
     asset_list: IFAsset[];
     liability_list: IFLiability[];
     income_list: IFIncome[];
@@ -49,6 +47,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
     incomeStream_list: IFIncomeStream[];
     text_list: IFText[];
 
+    readonly people: NamedIndex<IFPerson>;
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;
@@ -278,29 +277,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
         },
         { list: [], previous } as {list: Array<Snapshot>, previous: (Snapshot|Scenario)}
         ).list;
-    }
-
-    /**
-     *
-     * @returns all the items in a scenario as an enhanced iterator
-     */
-    items() {
-        return Sync.concat<ItemImpl<Type>, unknown, unknown>(
-            [this],
-            [this.spouse1],
-            this.spouse2 ? [this.spouse2] : [],
-            this.asset_list,
-            this.liability_list,
-            this.income_list,
-            this.expense_list,
-            this.incomeStream_list,
-            this.tax_list,
-            this.text_list
-        );
-    }
-
-    [Symbol.iterator]() {
-        return this.items();
     }
 }
 

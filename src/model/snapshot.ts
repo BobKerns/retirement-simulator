@@ -24,6 +24,9 @@ import { CalendarStep } from "../calendar";
  * from which graphs, tables, and interactive tools can be constructed.
  */
 export class Snapshot extends ScenarioBase {
+    get spouse1() { return this.scenario.spouse1; }
+    get spouse2() { return this.scenario.spouse2; }
+    get person_list() { return this.scenario.person_list; }
     period: CalendarStep;
     asset_list: IFAsset[];
     liability_list: IFLiability[];
@@ -33,6 +36,7 @@ export class Snapshot extends ScenarioBase {
     incomeStream_list: IFIncomeStream[];
     text_list: IFText[];
 
+    get people() { return this.scenario.people; }
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;

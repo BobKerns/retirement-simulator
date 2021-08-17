@@ -7,9 +7,10 @@
 import { Item } from "./item";
 import {
     IFAsset, IFExpense, IFIncome, IFIncomeStream,
-    IFIncomeTax, IFLiability, IFScenario, IFText,
-    IScenario, IScenarioBase, NamedIndex
+    IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText,
+    IScenario, IScenarioBase, ItemImpl, NamedIndex, Type
     } from "../types";
+import { Sync } from "genutils";
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -21,7 +22,14 @@ import {
  * * For a {@link Snapshot}, they are the subset that apply during the snapshot period, together
  * with their values during that snapshot period.
  */
-export abstract class ScenarioBase extends Item<'scenario'> implements IScenarioBase {
+abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioBase {
+    abstract spouse1: IFPerson;
+    abstract spouse2: IFPerson | null;
+    get person_list() {
+        return this.spouse2
+            ? [this.spouse1, this.spouse2]
+            : [this.spouse1];
+    }
     /**
      * A list of {@link Asset}. See also {@link assets}.
      */
@@ -51,6 +59,11 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
      * List of text messages
      */
     abstract text_list: IFText[];
+
+    /**
+     * A lookup table of {@link Person} by name.
+     */
+    abstract people: NamedIndex<IFPerson>;
 
     /**
      * A lookup table of {@link Asset} for convenient lookup by name.
@@ -127,5 +140,33 @@ export abstract class ScenarioBase extends Item<'scenario'> implements IScenario
      */
     get total_expenses() {
         return Math.round(this.expense_list.reduce((a, i) => a + i.value, 0));
+    }
+
+    /**
+     *
+     * @returns all the items in a scenario as an enhanced iterator
+     */
+    items() {
+        return Sync.concat<ItemImpl<Type>, unknown, unknown>(
+            [this],
+            this.person_list,
+            this.asset_list,
+            this.liability_list,
+            this.income_list,
+            this.expense_list,
+            this.incomeStream_list,
+            this.tax_list,
+            this.text_list
+        );
+    }
+
+    [Symbol.iterator]() {
+        return this.items();
+    }
+}
+
+export abstract class ScenarioBase extends Sync.Mixin(ScenarioBaseSimple) {
+    constructor(row: IScenario) {
+        super(row);
     }
 }
