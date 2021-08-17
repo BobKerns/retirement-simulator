@@ -13,10 +13,10 @@
  */
 import { Sync } from "genutils";
 import { CalendarUnit } from "../enums";
-import { as, Integer, Relaxed, TagOf } from "../tagged";
+import { as, asInteger, Integer, Relaxed, TagOf } from "../tagged";
 import { CalendarPeriod } from "./calendar-period";
 import { CalendarStep } from "./calendar-step";
-import { CalendarInterval, decodeCalendarInterval, incrementDate, isCalendarInterval, isCalendarUnit } from "./calendar-utils";
+import { asCalendarInterval, CalendarInterval, decodeCalendarInterval, incrementDate, isCalendarUnit, toDate } from "./calendar-utils";
 
 /**
  * Base class for {@link @CalendarRange} before mixing in array-like enhancements.
@@ -44,22 +44,11 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
      * @param unit The units of increment.
      * @param n The number of units.
      */
-    constructor(start: Date|string, end: Date|string, unit: CalendarUnit, n?: Integer);
-    constructor(start: Date|string, end: Date|string, interval: Relaxed<CalendarInterval, TagOf<Integer>>);
-    constructor(start: Date|string, end: Date|string, interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit, n?: Integer) {
+    constructor(start: Date, end: Date, unit: CalendarUnit, n: Integer) {
         super(start, end);
-        if (isCalendarInterval(interval)) {
-            this.interval = interval;
-            const [unit, n] = decodeCalendarInterval(interval);
-            this.unit = unit;
-            this.n = n;
-        } else if (isCalendarUnit(interval)) {
-            this.interval = {[interval]: n ?? 1};
-            this.unit = interval;
-            this.n = n ?? as(1);
-        } else {
-            throw new Error(`${JSON.stringify(interval)} is not a CalendarStep or CalenderUnit`);
-        }
+        this.interval = {[unit]: n ?? 1};
+        this.unit = unit;
+        this.n = n ?? 1;
     }
 
     /**
@@ -93,14 +82,35 @@ class CalendarRangeBase extends CalendarPeriod implements Iterable<CalendarStep>
  * ```
  */
 export class CalendarRange extends Sync.Mixin(CalendarRangeBase) {
-    constructor(start: Date|string, end: Date|string, unit: CalendarUnit, n?: Relaxed<Integer>);
+    constructor(start: Date|string, end: Date|string, unit: CalendarUnit, n?: Integer);
     constructor(start: Date|string, end: Date|string, interval: Relaxed<CalendarInterval, TagOf<Integer>>);
     constructor(
             start: Date|string, end: Date|string,
             interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit,
             n?: Relaxed<Integer>
         ) {
-        super(start, end, interval, n);
+        super(
+            toDate(start), toDate(end),
+            CalendarRange.#getUnit(interval),
+            CalendarRange.#getN(interval, n)
+        );
+    }
+
+    static #getUnit(interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit) {
+        if (isCalendarUnit(interval)) {
+            return interval;
+        }
+        const [unit, n] = decodeCalendarInterval(asCalendarInterval(interval));
+        return unit;
+    }
+
+    static #getN(interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit, n?: Relaxed<Integer>) {
+        if (isCalendarUnit(interval)) {
+            return asInteger(n ?? 1);
+        } else {
+            const [unit, n] = decodeCalendarInterval(asCalendarInterval(interval));
+            return n;
+        }
     }
 }
 
@@ -127,5 +137,5 @@ export function calendarRange(
         interval: Relaxed<CalendarInterval, TagOf<Integer>> | CalendarUnit,
         n?: Relaxed<Integer>
     ): CalendarRange {
-    return new CalendarRange(start, end, interval as CalendarUnit, n);
+    return new CalendarRange(start, end, interval as CalendarUnit, n === undefined ? undefined : asInteger(n));
 }
