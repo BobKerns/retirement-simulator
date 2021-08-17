@@ -77,7 +77,7 @@
     "dependencies": {
         "@observablehq/plot": "^0.1.0",
         "d3": "^7.0.1",
-        "genutils": "^1.0.2",
+        "genutils": "^1.0.3",
         "heap": "^0.2.6"
     }
 }
