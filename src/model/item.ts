@@ -16,6 +16,7 @@ import { Sync } from "genutils";
 export class Item<T extends Type> implements IItem<T> {
     readonly name: Name;
     readonly type: T;
+    readonly id: string;
     readonly start: Date;
     readonly end?: boolean;
     readonly categories: Category[];
@@ -37,6 +38,7 @@ export class Item<T extends Type> implements IItem<T> {
     constructor(row: RowType<T>) {
         this.type = row.type;
         this.name = row.name;
+        this.id = `${this.type}/${this.name}`;
         this.prettyName = row.prettyName ?? row.name;
         this.start = row.start ?? TODAY;
         this.end = row.end;
