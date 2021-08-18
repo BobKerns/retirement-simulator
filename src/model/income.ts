@@ -6,7 +6,7 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncome, ItemState, RowType } from "../types";
+import { IFScenario, IIncome, ItemImpl, ItemState, RowType } from "../types";
 import { classChecks } from "../utils";
 
 /**
@@ -21,7 +21,7 @@ export class Income extends CashFlow<'income'> implements IIncome {
 
 
 export class IncomeState extends StateMixin(Income) {
-    constructor(row: RowType<'income'>, scenario: IFScenario, state: ItemState<'income'>) {
+    constructor(row: ItemImpl<'income'>, scenario: IFScenario, state: ItemState<'income'>) {
         super(row, scenario, state);
     }
 }

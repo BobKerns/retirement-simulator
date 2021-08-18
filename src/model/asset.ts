@@ -43,11 +43,9 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
 }
 
 export class AssetState extends StateMixin<'asset'>(Asset) {
-    constructor(row: RowType<'asset'>, scenario: IFScenario, state: ItemState<'asset'>) {
+    constructor(row: ItemImpl<'asset'>, scenario: IFScenario, state: ItemState<'asset'>) {
         super(row, scenario, state);
     }
 }
-
-const as = new AssetState({} as RowType<'asset'>, {} as IFScenario, {} as ItemState<'asset'>);
 
 export const [isAsset, toAsset, asAsset] = classChecks(Asset);

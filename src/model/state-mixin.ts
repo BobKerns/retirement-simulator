@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl} from "../types";
+import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl, ItemStates, StateItem} from "../types";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -14,7 +14,7 @@ import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl} from ".
 
 export type Constructor<T extends {}, P extends any[] = any[]> = abstract new (...args: P) => T;
 
-export type State<T extends Type> = IItem<T> & IState<T>;
+export type State<T extends Type> = ItemImpl<T> & IState<T>;
 
 export type StateMixinConstructor<
     T extends Type, Base extends Constructor<ItemImpl<T>, [ItemImpl<T>, ...any[]]>,
@@ -24,15 +24,15 @@ export type StateMixinConstructor<
 
 export function StateMixin<
     T extends Type,
-    P extends [row: IItem<T>, scenario: IFScenario, state: ItemState<T>] = [row: IItem<T>, scenario: IFScenario, state: ItemState<T>]
+    P extends [row: ItemImpl<T>, scenario: IFScenario, state: ItemState<T>] = [row: ItemImpl<T>, scenario: IFScenario, state: ItemState<T>]
     >(Base: abstract new (row: RowType<T>, ...args: any[]) => IItem<T>):
         StateMixinConstructor<T, abstract new (row: ItemImpl<T>, ...args: any[]) => ItemImpl<T>, P> {
     abstract class StateMixin extends Base implements IState<T> {
         readonly state: ItemState<T>;
         readonly scenario: IFScenario;
-        readonly item: RowType<T>;
+        readonly item: ItemImpl<T>;
         #tag?: string = undefined;
-        constructor(row: RowType<T>, scenario: IFScenario, state: ItemState<T>) {
+        constructor(row: ItemImpl<T>, scenario: IFScenario, state: ItemState<T>) {
             super(row, scenario, state);
             this.item = row;
             this.scenario = scenario;
@@ -55,7 +55,6 @@ export function StateMixin<
                 return `${Base.name}State.prototype`;
             }
         }
-
     }
     return StateMixin as unknown as StateMixinConstructor<T, abstract new (row: ItemImpl<T>, ...args: any[]) => ItemImpl<T>, P>;
 }
