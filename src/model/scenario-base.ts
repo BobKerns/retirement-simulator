@@ -8,7 +8,7 @@ import { Item } from "./item";
 import {
     IFAsset, IFExpense, IFIncome, IFIncomeStream,
     IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText,
-    IScenario, IScenarioBase, ItemImpl, NamedIndex, Type
+    IScenario, IScenarioBase, ItemImpl, NamedIndex, RowType, Type
     } from "../types";
 import { Sync } from "genutils";
 
@@ -112,7 +112,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      */
     abstract readonly scenario: IFScenario;
 
-    constructor(row: IScenario) {
+    constructor(row: RowType<'scenario'>) {
         super(row);
     }
 
@@ -148,7 +148,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      */
     items() {
         return Sync.concat<ItemImpl<Type>, unknown, unknown>(
-            [this],
+            [this as ItemImpl<any>],
             this.person_list,
             this.asset_list,
             this.liability_list,
@@ -166,7 +166,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
 }
 
 export abstract class ScenarioBase extends Sync.Mixin(ScenarioBaseSimple) {
-    constructor(row: IScenario) {
+    constructor(row: RowType<'scenario'>) {
         super(row);
     }
 }

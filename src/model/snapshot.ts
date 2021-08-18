@@ -4,15 +4,15 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Asset } from "./asset";
-import { Expense } from "./expense";
-import { Income } from "./income";
-import { IncomeStream } from "./income-stream";
-import { IncomeTax } from "./income-tax";
-import { Liability } from "./liability";
+import { AssetState } from "./asset";
+import { ExpenseState } from "./expense";
+import { IncomeState } from "./income";
+import { IncomeStreamState } from "./income-stream";
+import { IncomeTaxState } from "./income-tax";
+import { LiabilityState } from "./liability";
 import { ScenarioBase } from "./scenario-base";
-import { TextItem } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, NamedIndex } from "../types";
+import { TextItemState } from "./text";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex }from "../types";
 import { classChecks, indexByName } from "../utils";
 import { CalendarStep } from "../calendar";
 
@@ -47,17 +47,23 @@ export class Snapshot extends ScenarioBase {
 
     readonly scenario: IFScenario;
 
-    constructor(scenario: IFScenario, period: CalendarStep, previous: ScenarioBase) {
+    constructor(scenario: IFScenario, period: CalendarStep, previous: ScenarioBase, states: ItemStates) {
         super(scenario);
         this.scenario = scenario;
         this.period = period;
-        this.asset_list = scenario.asset_list.map(a => new Asset(a));
-        this.liability_list = scenario.liability_list.map(a => new Liability(a));
-        this.income_list = scenario.income_list.map(a => new Income(a));
-        this.expense_list = scenario.expense_list.map(a => new Expense(a));
-        this.tax_list = scenario.tax_list.map(a => new IncomeTax(a));
-        this.incomeStream_list = scenario.incomeStream_list.map(a => new IncomeStream(a));
-        this.text_list = scenario.text_list.map(a => new TextItem(a));
+        const next = (item: IItem) => {
+            const state = states[item.id];
+            const {current, generator} = state;
+            const val = generator.next({...current, step: period});
+            return state.current = val.value;
+        };
+        this.asset_list = scenario.asset_list.map(a => new AssetState(a, scenario, next(a)));
+        this.liability_list = scenario.liability_list.map(a => new LiabilityState(a, scenario, next(a)));
+        this.income_list = scenario.income_list.map(a => new IncomeState(a, scenario, next(a)));
+        this.expense_list = scenario.expense_list.map(a => new ExpenseState(a, scenario, next(a)));
+        this.tax_list = scenario.tax_list.map(a => new IncomeTaxState(a, scenario, next(a)));
+        this.incomeStream_list = scenario.incomeStream_list.map(a => new IncomeStreamState(a, scenario, next(a)));
+        this.text_list = scenario.text_list.map(a => new TextItemState(a, scenario, next(a)));
         this.assets = indexByName(this.asset_list);
         this.liabilities = indexByName(this.liability_list);
         this.incomes = indexByName(this.income_list);

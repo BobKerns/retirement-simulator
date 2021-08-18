@@ -6,7 +6,7 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IIncomeStream, IncomeStreamSpec, RowType } from "../types";
+import { IFScenario, IIncomeStream, IncomeStreamSpec, ItemState, RowType } from "../types";
 import { classChecks } from "../utils";
 
 /**
@@ -43,8 +43,8 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
 
 
 export class IncomeStreamState extends StateMixin(IncomeStream) {
-    constructor(row: RowType<'incomeStream'>) {
-        super(row);
+    constructor(row: RowType<'incomeStream'>, scenario: IFScenario, state: ItemState<'incomeStream'>) {
+        super(row, scenario, state);
     }
 }
 export const [isIncomeStream, toIncomeStream, asIncomeStream] = classChecks(IncomeStream);

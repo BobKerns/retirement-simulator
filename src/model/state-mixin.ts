@@ -4,8 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type , IFScenario, ItemState} from "../types";
-import { as } from "../tagged";
+import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl} from "../types";
 
 /**
  * Mixin and support for fields that vary over time.
@@ -13,27 +12,31 @@ import { as } from "../tagged";
  */
 
 
-export type AConstructor<T extends {}> = abstract new (...args: any[]) => T;
-export type Constructor<T extends {}> = new (...args: any[]) => T;
+export type Constructor<T extends {}, P extends any[] = any[]> = abstract new (...args: P) => T;
 
 export type State<T extends Type> = IItem<T> & IState<T>;
 
-//export type StateMixin<T extends Type> = Constructor<State<T>>;
+export type StateMixinConstructor<
+    T extends Type, Base extends Constructor<ItemImpl<T>, [ItemImpl<T>, ...any[]]>,
+    P extends [IItem<T>, ...any[]] = [IItem<T>, ...any[]]
+    >
+    = Constructor<InstanceType<Base> & IState<T> & { [Symbol.toStringTag]: string; }, P>;
 
-type AConstructorType<T extends abstract new (...args: any[]) => any> = T extends abstract new (...args: any[]) => infer R ? R : never;
-export type StateMixinConstructor<T extends Type, Base extends AConstructor<IItem<T>>> = Constructor<AConstructorType<Base> & IState<T>>;
-
-export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateMixinConstructor<T, typeof Base> {
-    class StateMixin extends Base implements IState<T> {
+export function StateMixin<
+    T extends Type,
+    P extends [row: IItem<T>, scenario: IFScenario, state: ItemState<T>] = [row: IItem<T>, scenario: IFScenario, state: ItemState<T>]
+    >(Base: abstract new (row: RowType<T>, ...args: any[]) => IItem<T>):
+        StateMixinConstructor<T, abstract new (row: ItemImpl<T>, ...args: any[]) => ItemImpl<T>, P> {
+    abstract class StateMixin extends Base implements IState<T> {
         readonly state: ItemState<T>;
         readonly scenario: IFScenario;
-        readonly item: IItem<T>;
+        readonly item: RowType<T>;
         #tag?: string = undefined;
-        constructor(...args: any[]) {
-            super(...args)
-            this.item = args[0];
-            this.scenario = as(args[1])
-            this.state = args[2] as ItemState<T>;
+        constructor(row: RowType<T>, scenario: IFScenario, state: ItemState<T>) {
+            super(row, scenario, state);
+            this.item = row;
+            this.scenario = scenario;
+            this.state = state;
         }
 
         /**
@@ -54,5 +57,5 @@ export function StateMixin<T extends Type>(Base: AConstructor<IItem<T>>): StateM
         }
 
     }
-    return StateMixin;
+    return StateMixin as unknown as StateMixinConstructor<T, abstract new (row: ItemImpl<T>, ...args: any[]) => ItemImpl<T>, P>;
 }

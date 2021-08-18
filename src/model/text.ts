@@ -6,7 +6,7 @@
 
 import { Item } from "./item";
 import { StateMixin } from "./state-mixin";
-import { IText, RowType } from "../types";
+import { IFScenario, ItemState, IText, RowType } from "../types";
 import { classChecks } from "../utils";
 /**
  * A configured item of text used in model explanations, etc.
@@ -20,8 +20,8 @@ export class TextItem extends Item<'text'> implements IText {
 }
 
 export class TextItemState extends StateMixin(TextItem) {
-    constructor(row: RowType<'text'>) {
-        super(row);
+    constructor(row: RowType<'text'>, scenario: IFScenario, state: ItemState<'text'>) {
+        super(row, scenario, state);
     }
 }
 export const [isTextItem, toTextItem, asTextItem] = classChecks(TextItem);

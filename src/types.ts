@@ -9,7 +9,6 @@ import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
 import type { CalendarUnit, Types } from "./enums";
 import { CalendarStep } from "./calendar";
-import { Sync } from "genutils";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -24,6 +23,7 @@ export type ScenarioName = Name;
 export type SeriesName = Name;
 
 export interface Named {
+    readonly type: Type;
     readonly name: Name;
     prettyName?: string;
 }
@@ -40,10 +40,42 @@ export type Type = `${Types}`;
 export interface ItemMethods<T extends Type> {
     hasCategory(category: Category): boolean;
     inScenario(scenario: ScenarioName): boolean;
-    states(start: CalendarStep): Sync.Generator<ItemState, any, ItemState>;
+    states(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
 };
 
-export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T>;
+interface ItemImplTypes {
+        scenario: {
+        readonly spouse1: IFPerson;
+        readonly spouse2: IFPerson | null
+        readonly person_list: IFPerson[];
+        readonly asset_list: IFAsset[];
+        readonly liability_list: IFLiability[];
+        readonly income_list: IFIncome[];
+        readonly expense_list: IFExpense[];
+        readonly tax_list: IFIncomeTax[];
+        readonly incomeStream_list: IFIncomeStream[];
+        readonly text_list: IFText[];
+
+        readonly people: NamedIndex<IFPerson>;
+        readonly assets: NamedIndex<IFAsset>;
+        readonly liabilities: NamedIndex<IFLiability>;
+        readonly incomes: NamedIndex<IFIncome>;
+        readonly incomeStreams: NamedIndex<IFIncomeStream>;
+        readonly expenses: NamedIndex<IFExpense>;
+        readonly taxes: NamedIndex<IFIncomeTax>;
+        readonly texts: NamedIndex<IFText>;
+
+        readonly scenario: IFScenario;
+    }
+};
+
+export type ItemImplType<T extends Type> = T extends keyof ItemImplTypes ? ItemImplTypes[T] : {};
+
+export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplType<T> & {
+    id: string;
+    prettyName: string;
+    temporal: Temporal<ItemImpl<T>>;
+};
 
 type ItemTypes = {
     [T in keyof RowTypes]: ItemImpl<T>;
@@ -65,8 +97,17 @@ type RowTypes = {
  * Common fields for item states.
  * */
 export type IItemState<T extends Type> = {
-    item: IItem<T> ;
+    item: ItemImpl<T>;
     step: CalendarStep;
+}
+
+export interface StateItem<T extends Type> {
+    generator: Generator<IItemState<T>, any, IItemState<T>>;
+    current: IItemState<T>;
+}
+
+export interface ItemStates {
+    [k: string]: StateItem<Type>;
 }
 
 /**
@@ -77,6 +118,10 @@ export type ItemState<T extends Type|'any' = 'any'> = ItemStateTypes[T];
 // Fill in as we flesh out implementations
 type ItemStateTypes = {
     [k in Type|'any']: k extends 'any' ? IItemState<Type> : IItemState<Exclude<k, 'any'>>;
+} & {
+    asset: {
+        value: Money;
+    }
 };
 
 /**
@@ -98,16 +143,14 @@ export type Sex = 'male' | 'female';
  * A basic data item, with a value.
  */
 export interface IItem<T extends Type = Type> extends Named, TemporalItem {
-    type: T;
+    id: string;
     sort: number,
-    start: Date;
-    end?: boolean;
     categories: Category[];
     scenarios: ScenarioName[];
     notes?: string;
 }
 
-export interface IScenarioBase extends IItem<'scenario'> {
+export interface IScenarioImpl {
     readonly spouse1: IFPerson;
     readonly spouse2: IFPerson | null
     readonly person_list: IFPerson[];
@@ -129,6 +172,9 @@ export interface IScenarioBase extends IItem<'scenario'> {
     readonly texts: NamedIndex<IFText>;
 
     readonly scenario: IFScenario;
+}
+
+export interface IScenarioBase extends IItem<'scenario'> {
 }
 
 
@@ -258,17 +304,21 @@ export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
     readonly spec: IncomeStreamSpec;
 }
 
-type IItemKeys = keyof IItem;
+type OmitKeys = 'id' | 'type' | 'name' ;
 
-export type AnyRow = Partial<Omit<IAsset, IItemKeys>>
-    & Partial<Omit<ILiability, IItemKeys>>
-    & Partial<Omit<IExpense, IItemKeys>>
-    & Partial<Omit<IIncome, IItemKeys>>
-    & Partial<Omit<IIncomeStream, IItemKeys>>
-    & Partial<Omit<IIncomeTax, IItemKeys>>
-    & Partial<Omit<IText, IItemKeys>>
-    & Partial<Omit<IPerson, IItemKeys>>
-    & IItem;
+export type AnyRow = Partial<Omit<IAsset, OmitKeys>>
+    & Partial<Omit<ILiability, OmitKeys>>
+    & Partial<Omit<IExpense, OmitKeys>>
+    & Partial<Omit<IIncome, OmitKeys>>
+    & Partial<Omit<IIncomeStream, OmitKeys>>
+    & Partial<Omit<IIncomeTax, OmitKeys>>
+    & Partial<Omit<IText, OmitKeys>>
+    & Partial<Omit<IPerson, OmitKeys>>
+    & Omit<IItem, OmitKeys>
+    & {
+        type: Type;
+        name: Name;
+    };
 
 
 export interface TemporalItem {
@@ -299,7 +349,8 @@ export interface TimeLineItem {
 
 export interface IState<T extends Type> {
     readonly scenario: IFScenario;
-    readonly item: IItem<T>;
+    readonly item: RowType<T>;
+    readonly state: ItemState<T>;
 }
 
 export type IFAsset = ItemImpl<'asset'>;

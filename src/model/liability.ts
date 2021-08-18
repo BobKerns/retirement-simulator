@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { ExpenseName, ILiability, RowType, SeriesName } from "../types";
+import { ExpenseName, IFScenario, ILiability, ItemState, RowType, SeriesName } from "../types";
 import { Monetary } from "./monetary";
 import { Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
@@ -31,8 +31,8 @@ export class Liability extends Monetary<'liability'> implements ILiability {
 
 
 export class LiabilityState extends StateMixin(Liability) {
-    constructor(row: RowType<'liability'>) {
-        super(row);
+    constructor(row: RowType<'liability'>, scenario: IFScenario, state: ItemState<'liability'>) {
+        super(row, scenario, state);
     }
 }
 export const [isLiability, toLiability, asLiability] = classChecks(Liability);

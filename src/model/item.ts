@@ -4,11 +4,10 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, IItem, ItemState, ItemType, Name, RowType, ScenarioName, Type } from "../types";
+import { Category, IItem, ItemImpl, ItemState, ItemType, Name, RowType, ScenarioName, Type } from "../types";
 import { CalendarStep, TODAY } from "../calendar";
 import { Temporal } from "../temporal";
 import { Throw } from "../utils";
-import { Sync } from "genutils";
 
 /**
  * Base class for all items. Holds all the common fields.
@@ -46,7 +45,6 @@ export class Item<T extends Type> implements IItem<T> {
         this.scenarios = row.scenarios?.length ? row.scenarios : ['Default'];
         this.notes = row.notes;
         this.sort = Number(row.sort || 0)
-
     }
 
     set temporal(value: Temporal<this>) {
@@ -58,16 +56,13 @@ export class Item<T extends Type> implements IItem<T> {
         return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
-    states(start: CalendarStep) {
-        const item = this;
-        function* states(): Generator<ItemState, any, ItemState> {
-            let step = start;
-            while (true) {
-                const next = yield {item , step} as ItemState;
-                step = next.step;
-            }
+    *states(start: CalendarStep): Generator<ItemState, any, ItemState> {
+        const item: IItem<Type> = this;
+        let step = start;
+        while (true) {
+            const next = yield {item, step} as ItemState<'any'>;
+            step = next.step;
         }
-        return Sync.enhance(states());
     }
 
     /**

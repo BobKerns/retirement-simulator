@@ -4,24 +4,23 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Sync } from "genutils";
 import Heap from "heap";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, incrementDate, TODAY, YEAR } from "../calendar";
+import { calendarRange, incrementDate, TODAY, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
     Category, IFLiability, IFAsset, IFIncome,
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
     IFText,
-    ItemImpl,
-    IFScenario
+    IFScenario,
+    ItemStates,
+    ItemMethods
     } from "../types";
 import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, Integer, Year } from "../tagged";
-import { StateMixin } from "./state-mixin";
 import { START } from "../input";
 
 
@@ -29,6 +28,8 @@ import { START } from "../input";
  * Category of assets that do not contribute to retirement income streams.
  */
 const NON_INCOME_ASSET: Category = as("non-income");
+
+type foo = ItemMethods<'scenario'>['states']
 
 /**
  * A particular scenario.
@@ -233,10 +234,13 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const years = this.#end_year - YEAR;
         const categories = item?.categories ?? [];
         const scenarios = item?.scenarios ?? ['Default'];
+        const prettyName = item?.prettyName ?? name;
+        const id = `person/${name}`;
         const row = {
             name,
-            prettyName: item?.prettyName ?? name,
             type: 'person' as const,
+            id,
+            prettyName,
             start: item?.start ?? TODAY,
             birth,
             sex,
@@ -248,13 +252,15 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return x;
     }
 
+    *states() {}
+
     /**
      * Run the simulation for the scenario's period.
      * @returns
      */
     run() {
         const previous = this;
-        let state: any= {};
+        let state: ItemStates = {};
         const start = {
             start: START,
             end: START,
@@ -264,23 +270,18 @@ export class Scenario extends ScenarioBase implements IFScenario {
                 totalDays: 0 as Integer
             }
         };
-        this.items().forEach(i => state[`${i.type}/${i.name}`] = i.states(start));
-        const range = calendarRange(START, incrementDate(START, {year: 50}), {month: 1});
-        return range.reduce(
-        ({ list, previous}: {list: Array<Snapshot>, previous: (Snapshot|Scenario)}, period: CalendarStep) => {
-            const snapshot = new Snapshot(this, period, previous);
-            list.push(snapshot);
-            return {
-                list,
-                previous: snapshot
-            };
-        },
-        { list: [], previous } as {list: Array<Snapshot>, previous: (Snapshot|Scenario)}
-        ).list;
+        this.items().forEach(i => {
+            const generator = i.states(start);
+            const current = generator.next().value;
+            state[i.id] = {generator, current};
+        });
+        const snapshots = [];
+        for (const period of calendarRange(START, incrementDate(START, {year: 50}), {month: 1})) {
+            snapshots.push(new Snapshot(this, period, previous, state));
+        }
+        return snapshots;
     }
 }
 
 
 export const [isScenario, toScenario, asScenario] = classChecks(Scenario);
-// Passed this way to avoid circular loading dependencies.
-(StateMixin as any).asScenario = asScenario;
