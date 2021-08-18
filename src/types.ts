@@ -142,7 +142,7 @@ export type Sex = 'male' | 'female';
 /**
  * A basic data item, with a value.
  */
-export interface IItem<T extends Type = Type> extends Named, TemporalItem {
+export interface IItem<T extends Type = Type> extends Named, TemporalItem<ItemImpl<T>> {
     id: string;
     sort: number,
     categories: Category[];
@@ -321,10 +321,10 @@ export type AnyRow = Partial<Omit<IAsset, OmitKeys>>
     };
 
 
-export interface TemporalItem {
+export interface TemporalItem<T extends ItemImpl<Type> = ItemImpl<Type>> {
     readonly start: Date;
     readonly end?: boolean;
-    temporal?: Temporal<TemporalItem>;
+    temporal?: Temporal<TemporalItem<T>>;
 }
 
 export type RowLabel = keyof AnyRow;
