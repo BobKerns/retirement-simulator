@@ -28,7 +28,7 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
     }
 
     *states<T extends Type>(start: CalendarStep): Generator<ItemState<'asset'>, any, ItemState<'asset'>> {
-        const item: ItemImpl<'asset'> = this as  ItemImpl<'asset'>;
+        let item: ItemImpl<'asset'> | null = this as  ItemImpl<'asset'>;
         let step = start;
         let value = this.value;
         while (true) {
@@ -36,6 +36,8 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
             const next = yield {item, step, value};
             step = next.step;
             value = next.value;
+            item = (item.temporal.onDate(step.start) as this) ?? null;
+            if (item === null) return;
         }
     }
 }
