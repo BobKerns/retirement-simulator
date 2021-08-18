@@ -5,7 +5,7 @@
  */
 
 import { Item } from "./item";
-import { Age, asAge, asIAge, asYear, floor, IAge, Year } from "../tagged";
+import { Age, asAge, asIAge, floor, IAge, Year } from "../tagged";
 import { calculate_age, END_YEAR, TODAY, UTC, YEAR } from "../calendar";
 import { IPerson, RowType, Sex } from "../types";
 import { classChecks } from "../utils";
