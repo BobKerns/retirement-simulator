@@ -14,7 +14,7 @@ import { ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
 import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex }from "../types";
 import { classChecks, indexByName } from "../utils";
-import { CalendarStep } from "../calendar";
+import { CalendarStep, fmt_date } from "../calendar";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.
@@ -71,6 +71,15 @@ export class Snapshot extends ScenarioBase {
         this.taxes = indexByName(this.tax_list);
         this.incomeStreams = indexByName(this.incomeStream_list);
         this.texts = indexByName(this.text_list);
+    }
+
+    #tag?: string;
+    get [Symbol.toStringTag]() {
+        try {
+            return this.#tag ?? (this.#tag = `Snap(${this.name})[#${this.period.step} ${fmt_date(this.period.start)}]`);
+        } catch {
+            return `Snapshot.prototype`;
+        }
     }
 }
 
