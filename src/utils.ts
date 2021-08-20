@@ -14,7 +14,7 @@
 
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import type { MonetaryType, IMonetaryItem, Named, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary } from './types';
+import type { MonetaryType, IMonetaryItem, NamedIndex, SortFn, Type, IBalanceItem, BalanceType, RowType, IMonetary, AnyNamed } from './types';
 
 export const Heap = HeapIn;
 
@@ -57,7 +57,7 @@ export const heapgen = <T>(heap: Heap<T>) => {
  * @param list A list of {@link Named} objects
  * @returns An index of the objects by name.
  */
-export const indexByName = <T extends Named>(list: Array<T>) =>
+export const indexByName = <T extends AnyNamed>(list: Array<T>) =>
   list.reduce((acc: NamedIndex<T>, item) => ((acc[item.name] = item), acc), {});
 
 /**

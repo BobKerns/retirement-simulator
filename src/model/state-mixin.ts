@@ -18,7 +18,7 @@ export type State<T extends Type> = ItemImpl<T> & IState<T>;
 
 export type StateMixinConstructor<
     T extends Type, Base extends Constructor<ItemImpl<T>, [ItemImpl<T>, ...any[]]>,
-    P extends [IItem<T>, ...any[]] = [IItem<T>, ...any[]]
+    P extends [ItemImpl<T>, ...any[]] = [ItemImpl<T>, ...any[]]
     >
     = Constructor<InstanceType<Base> & IState<T> & { [Symbol.toStringTag]: string; }, P>;
 

@@ -10,7 +10,7 @@
  */
 
 
-import { ItemImpl, TemporalItem, Type } from "./types";
+import { TemporalItem, Type } from "./types";
 import { makeSort } from "./utils";
 
 const numericalCmp = (a: number, b: number) =>
@@ -20,10 +20,10 @@ const numericalCmp = (a: number, b: number) =>
             ? 0
             : 1;
 
-export const temporalCmp = (a: TemporalItem<ItemImpl<Type>>, b: TemporalItem<ItemImpl<Type>>) =>
+export const temporalCmp = <T extends Type>(a: TemporalItem<T>, b: TemporalItem<T>) =>
     numericalCmp(a.start?.valueOf() ?? 0, b.start?.valueOf() ?? 0);
 
-export const temporalSort = makeSort(temporalCmp);
+export const temporalSort = makeSort<TemporalItem<Type>>(temporalCmp);
 
 /**
  * An immutable, temporally-sorted-and-indexed collection of {@link TemporalItem} instances.
@@ -31,7 +31,7 @@ export const temporalSort = makeSort(temporalCmp);
  * Supports the methods on `Array` that make sense for an immutable object. Note that rather than integers, the
  * indexes are uniformly `Date` objects.
  */
-export class Temporal<T extends TemporalItem<ItemImpl<Type>>> {
+export class Temporal<T extends TemporalItem<Type>> {
     readonly items: readonly T[];
     constructor(items: T[]) {
         this.items = Object.freeze(temporalSort(items));

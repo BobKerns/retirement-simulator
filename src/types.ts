@@ -22,11 +22,22 @@ export type IncomeStreamName = Name;
 export type ScenarioName = Name;
 export type SeriesName = Name;
 
-export interface Named {
-    readonly type: Type;
+/**
+ * A named and typed item in our model schema.
+ */
+export interface Named<T extends Type = Type> {
+    readonly type: T;
     readonly name: Name;
     prettyName?: string;
 }
+
+/**
+ * A non-specific object which satisfies @{link Named}. Useful for object literals in test cases
+ */
+export interface AnyNamed extends Named {
+    [k:  string]: any | undefined;
+}
+
 
 export interface NamedIndex<T extends Named> {
     [k: string]: T;
@@ -43,8 +54,11 @@ export interface ItemMethods<T extends Type> {
     states(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
 };
 
+/**
+ * Additional fields found in specific implementation types.
+ */
 interface ItemImplTypes {
-        scenario: {
+    scenario: {
         readonly spouse1: IFPerson;
         readonly spouse2: IFPerson | null
         readonly person_list: IFPerson[];
@@ -69,8 +83,14 @@ interface ItemImplTypes {
     }
 };
 
+/**
+ * Additional fields found in specific implementation types.
+ */
 export type ItemImplType<T extends Type> = T extends keyof ItemImplTypes ? ItemImplTypes[T] : {};
 
+/**
+ * The model implementation for each {@link Type}.
+ */
 export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplType<T> & {
     id: string;
     prettyName: string;
@@ -142,7 +162,7 @@ export type Sex = 'male' | 'female';
 /**
  * A basic data item, with a value.
  */
-export interface IItem<T extends Type = Type> extends Named, TemporalItem<ItemImpl<T>> {
+export interface IItem<T extends Type = Type> extends Named<T>, TemporalItem<T> {
     id: string;
     sort: number,
     categories: Category[];
@@ -150,40 +170,24 @@ export interface IItem<T extends Type = Type> extends Named, TemporalItem<ItemIm
     notes?: string;
 }
 
-export interface IScenarioImpl {
-    readonly spouse1: IFPerson;
-    readonly spouse2: IFPerson | null
-    readonly person_list: IFPerson[];
-    readonly asset_list: IFAsset[];
-    readonly liability_list: IFLiability[];
-    readonly income_list: IFIncome[];
-    readonly expense_list: IFExpense[];
-    readonly tax_list: IFIncomeTax[];
-    readonly incomeStream_list: IFIncomeStream[];
-    readonly text_list: IFText[];
-
-    readonly people: NamedIndex<IFPerson>;
-    readonly assets: NamedIndex<IFAsset>;
-    readonly liabilities: NamedIndex<IFLiability>;
-    readonly incomes: NamedIndex<IFIncome>;
-    readonly incomeStreams: NamedIndex<IFIncomeStream>;
-    readonly expenses: NamedIndex<IFExpense>;
-    readonly taxes: NamedIndex<IFIncomeTax>;
-    readonly texts: NamedIndex<IFText>;
-
-    readonly scenario: IFScenario;
-}
-
+/**
+ * Common parts between scenarios and snapshots.
+ */
 export interface IScenarioBase extends IItem<'scenario'> {
 }
 
-
+/**
+ * Interface for a scenario. Describes the processed input item, and becomes part of the
+ * {@link IFScenario} interface describing the {@link Scenario} implementation.
+ */
 export interface IScenario extends IScenarioBase {
 
 }
 
-
-
+/**
+ * Interface for a snapshot. As snapshots are not input, not directly used, but part of the
+ * {@link IFSnapshot} interface describing the {@link Snapshot} implementation.
+ */
 export interface ISnapshot extends IScenarioBase {
 
 }
@@ -321,7 +325,7 @@ export type AnyRow = Partial<Omit<IAsset, OmitKeys>>
     };
 
 
-export interface TemporalItem<T extends ItemImpl<Type> = ItemImpl<Type>> {
+export interface TemporalItem<T extends Type = Type> {
     readonly start: Date;
     readonly end?: boolean;
     temporal?: Temporal<TemporalItem<T>>;
