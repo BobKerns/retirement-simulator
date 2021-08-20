@@ -12,11 +12,14 @@
 
 
 import { CalendarUnit } from "../enums";
-import { as, floor, Integer } from "../tagged";
+import { as, floor, Integer, Relaxed } from "../tagged";
 import { classChecks } from "../utils";
+import { CalendarRange, calendarRange } from "./calendar-range";
 import { isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, CalendarInterval, isCalendarInterval, decodeCalendarInterval, toDate } from "./calendar-utils";
 /**
  * A defined period of time between a {@link CalendarPeriod.start} date and a {@link CalendarPeriod.end} date.
+ *
+ * Any value with `.start` and `.end` can be coerced to a {@link CalendarPeriod} via {@link toCalendarPeriod}.
  */
 export class CalendarPeriod {
     /**
@@ -69,9 +72,30 @@ export class CalendarPeriod {
 
     }
 
+
+    /**
+     * Obtain an iterable {@link CalendarRange} for this period by supplying the interval
+     * for each iteration, or by unit and quantity
+     * @param interval
+     * @param unit
+     * @param n the number of specified _unit_ values.
+     */
+    range(interval: CalendarInterval): CalendarRange;
+    range(unit: CalendarUnit, n: Relaxed<Integer>): CalendarRange;
+    range(unitOrInterval: CalendarUnit|CalendarInterval, n: number = 1) {
+        if (isCalendarUnit(unitOrInterval)) {
+            return calendarRange(this.start, this.end, unitOrInterval, n);
+        } else {
+            return calendarRange(this.start, this.end, unitOrInterval);
+        }
+    }
+
     toString() {
         return `${fmt_date(this.start)} to ${fmt_date(this.end)}`;
     }
 }
-
-export const [isCalendarPeriod, toCalendarPeriod, asCalendarPeriod] = classChecks(CalendarPeriod);
+const coerceCalendarPeriod = (p: any) =>
+    typeof p === 'object' && p.start && p.end
+        ? new CalendarPeriod(p.start, p.end)
+        : undefined;
+export const [isCalendarPeriod, toCalendarPeriod, asCalendarPeriod] = classChecks(CalendarPeriod, coerceCalendarPeriod);

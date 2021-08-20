@@ -7,7 +7,7 @@
 import Heap from "heap";
 import { ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, incrementDate, TODAY, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, incrementDate, TODAY, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
@@ -261,15 +261,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
     run() {
         const previous = this;
         let state: ItemStates = {};
-        const start = {
-            start: START,
-            end: START,
-            step: 0 as Integer,
-            length: {
-                days: 0 as Integer,
-                totalDays: 0 as Integer
-            }
-        };
+        const start = new CalendarStep(START, START, as(0));
         this.items().forEach(i => {
             const generator = i.states(start);
             const current = generator.next().value;
