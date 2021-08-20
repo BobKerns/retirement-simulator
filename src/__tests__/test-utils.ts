@@ -4,6 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { AnyNamed, Name, Named } from "../types";
 import { indexByName, makeSort, uniq } from "../utils";
 
 describe("Utils", () => {
@@ -20,7 +21,9 @@ describe("Utils", () => {
     test('Sort copies equal', () =>
         expect(makeSort()(array)).toEqual(array));
 
+    const tc = (name: Name, rest: any = {}) => ({...rest, name, type: 'text'});
     test('indexByName', () =>
-        expect(indexByName([{name: 'x', v: 5}, {name: 'y', v: 8}])).toEqual({x: {name: 'x', v: 5}, y: {name: 'y', v: 8}}));
+        expect(indexByName([tc('x', {v: 5}), tc('y', {v: 8})]))
+            .toEqual({x: tc('x', {v: 5}), y: tc('y', {v: 8})}));
 
 });
