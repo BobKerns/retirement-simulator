@@ -5,9 +5,9 @@
  */
 
 /**
- * [[include:src/calendar/README.md]]
+ * [[include:src/model/README.md]]
  *
- * @module
+ * @module model
  */
 
 export * from './asset';
