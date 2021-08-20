@@ -13,15 +13,15 @@ import { Throw } from "../utils";
  * Base class for all items. Holds all the common fields.
  */
 export class Item<T extends Type> implements IItem<T> {
-    readonly name: Name;
-    readonly type: T;
     readonly id: string;
+    prettyName: string;
     readonly start: Date;
     readonly end?: boolean;
     readonly categories: Category[];
     readonly scenarios: ScenarioName[];
+    readonly name: Name;
+    readonly type: T;
     notes?: string;
-    prettyName: string;
     /**
      * @internal
      */
