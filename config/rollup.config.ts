@@ -56,16 +56,7 @@ const pkg: Package  = require('../package.json');
  * Mapping of module names to variable names for UMD modules.
  */
 const globals: {[k: string]: string} = {
-    // Some default mappings
-    katex: "katex",
-    d3: "d3",
-    "d3-dsv": "d3",
-    "genutils": "genutils",
-    "heap": "heap",
-    "@observablehq/stdlib": "observablehq",
-    "ramda": "ramda",
-    "gl-matrix": "glMatrix"
-};
+}
 
 /**
  * Compute the list of outputs from [[package.json]]'s fields
@@ -122,7 +113,7 @@ const globalsChecked: {[k:string]: string | false} = {};
  */
 const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =>
     {
-        const isExternal = !/genutils|heap|\/build\/src\/.+\.(?:js|json)$/.test(id) && (resolved
+        const isExternal = !/d3|d3-dsv|genutils|heap|\/build\/src\/.+\.(?:js|json)$/.test(id) && (resolved
             ? /\/node_modules\//.test(id)
             : !/^\./.test(id));
         const ext = globals[id] ?? '(missing)';
