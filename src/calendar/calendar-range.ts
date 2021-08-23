@@ -12,11 +12,11 @@
  * @module
  */
 import { Sync } from "genutils";
-import { CalendarUnit } from "../enums";
 import { as, asInteger, Integer, Relaxed, TagOf } from "../tagged";
 import { CalendarPeriod } from "./calendar-period";
 import { CalendarStep } from "./calendar-step";
-import { asCalendarInterval, CalendarInterval, decodeCalendarInterval, incrementDate, isCalendarUnit, toDate } from "./calendar-utils";
+import { CalendarInterval, CalendarUnit } from "./calendar-types";
+import { asCalendarInterval, decodeCalendarInterval, incrementDate, isCalendarUnit, toDate } from "./calendar-utils";
 
 /**
  * Base class for {@link @CalendarRange} before mixing in array-like enhancements.

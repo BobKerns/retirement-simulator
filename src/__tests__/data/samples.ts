@@ -4,11 +4,10 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { omit } from "ramda";
 import { UTC } from "../../calendar";
 import { START } from "../../input";
 import { as, asMoney } from "../../tagged";
-import { Category, IExpense, IItem, IPerson, Type } from "../../types";
+import { Category, IExpense, IFExpense, IFScenario, IItem, IPerson, RowType, Type } from "../../types";
 
 export const CAT_FRED: Category = as('fred');
 export const CAT_SALLY: Category = as('sally');
@@ -16,7 +15,19 @@ export const CAT_SALLY: Category = as('sally');
 /**
  * Fill in the`id` field.
  */
-const id = <T extends IItem<Type>>(spec: Omit<T, 'id'>): T => ({...spec, id: `${spec.type}/${spec.name}`} as T);
+export const id = <T extends IItem<Type>>(spec: Partial<T> & any): T =>
+    ({
+        sort: 1,
+        categories: [],
+        scenarios: ['Default'],
+        ...spec as any,
+        id: `${spec.type}/${spec.name}`
+        } as T);
+
+export const scenario_1: IFScenario = id({
+    name: 'Default',
+    type: 'default'
+});
 
 export const expense_1: IExpense = id({
     name: 'Expense',
@@ -50,3 +61,11 @@ export const person_2: IPerson = id({
     start: UTC("1967-01-01"),
     sex: 'male'
 });
+
+
+export const dataset: RowType[] = [
+    scenario_1,
+    expense_1,
+    person_1,
+    person_2
+    ] as RowType[];

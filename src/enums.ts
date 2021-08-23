@@ -21,16 +21,6 @@ export enum Types {
     scenario = 'scenario'
 }
 
-/**
- * Units of time intervals.
- */
-export enum CalendarUnit {
-    year = 'year',
-    semiannually = 'semiannually',
-    quarter = 'quarter',
-    month = 'month',
-    semimonthly = 'semimonthly',
-    biweekly = 'biweekly',
-    week = 'week',
-    day = 'day'
+export enum RateType {
+    simpleMonthly = 'simpleMonthly'
 };

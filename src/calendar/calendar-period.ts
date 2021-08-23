@@ -10,12 +10,11 @@
  * @module
  */
 
-
-import { CalendarUnit } from "../enums";
-import { as, floor, Integer, Relaxed } from "../tagged";
+import { as, asInteger, floor, Integer, Relaxed } from "../tagged";
 import { classChecks } from "../utils";
-import { CalendarRange, calendarRange } from "./calendar-range";
-import { isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, CalendarInterval, isCalendarInterval, decodeCalendarInterval, toDate } from "./calendar-utils";
+import { CalendarInterval, CalendarUnit, ICalendarRange } from "./calendar-types";
+import { isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, isCalendarInterval, decodeCalendarInterval, toDate } from "./calendar-utils";
+
 /**
  * A defined period of time between a {@link CalendarPeriod.start} date and a {@link CalendarPeriod.end} date.
  *
@@ -80,20 +79,20 @@ export class CalendarPeriod {
      * @param unit
      * @param n the number of specified _unit_ values.
      */
-    range(interval: CalendarInterval): CalendarRange;
-    range(unit: CalendarUnit, n: Relaxed<Integer>): CalendarRange;
+    range(interval: CalendarInterval): ICalendarRange;
+    range(unit: CalendarUnit, n: Relaxed<Integer>): ICalendarRange;
     range(unitOrInterval: CalendarUnit|CalendarInterval, n: number = 1) {
-        if (isCalendarUnit(unitOrInterval)) {
-            return calendarRange(this.start, this.end, unitOrInterval, n);
-        } else {
-            return calendarRange(this.start, this.end, unitOrInterval);
-        }
+        return CalendarPeriod.calendarRange(this.start, this.end, unitOrInterval as CalendarUnit, n === undefined ? undefined : asInteger(n));
     }
 
     toString() {
         return `${fmt_date(this.start)} to ${fmt_date(this.end)}`;
     }
+
+    static calendarRange: (start: Date, end: Date, unit: CalendarUnit, n?: number) => ICalendarRange;
 }
+
+
 const coerceCalendarPeriod = (p: any) =>
     typeof p === 'object' && p.start && p.end
         ? new CalendarPeriod(p.start, p.end)

@@ -10,6 +10,7 @@
  * @module
  */
 
+export * from './calendar-types';
 export * from './calendar-utils';
 export * from './calendar-period';
 export * from './calendar-step';

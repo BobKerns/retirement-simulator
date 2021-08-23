@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, IItem, ItemImpl, ItemState, ItemType, Name, RowType, ScenarioName, Type } from "../types";
+import { Category, IFScenario, IItem, ItemState, Name, RowType, ScenarioName, Type } from "../types";
 import { CalendarStep, TODAY } from "../calendar";
 import { Temporal } from "../temporal";
 import { Throw } from "../utils";
@@ -17,6 +17,7 @@ export class Item<T extends Type> implements IItem<T> {
     prettyName: string;
     readonly start: Date;
     readonly end?: boolean;
+    readonly scenario: IFScenario;
     readonly categories: Category[];
     readonly scenarios: ScenarioName[];
     readonly name: Name;
@@ -34,11 +35,12 @@ export class Item<T extends Type> implements IItem<T> {
 
     #temporal?: Temporal<this> = undefined;
 
-    constructor(row: RowType<T>) {
+    constructor(row: RowType<T>, scenario: IFScenario) {
         this.type = row.type;
         this.name = row.name;
         this.id = `${this.type}/${this.name}`;
         this.prettyName = row.prettyName ?? row.name;
+        this.scenario = scenario ?? this as unknown as IFScenario;
         this.start = row.start ?? TODAY;
         this.end = row.end;
         this.categories = row.categories ?? [];

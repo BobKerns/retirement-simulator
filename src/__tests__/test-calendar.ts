@@ -5,8 +5,7 @@
  */
 
 import { range } from "genutils";
-import { incrementDate, calendarRange, fmt_date, CalendarPeriod, parseDate, isDate, UTC } from "../calendar";
-import { CalendarUnit } from "../enums";
+import { incrementDate, calendarRange, fmt_date, CalendarPeriod, parseDate, isDate, UTC, CalendarUnit } from "../calendar";
 
 describe('Calendar', () => {
     describe('CalendarPeriod', () => {

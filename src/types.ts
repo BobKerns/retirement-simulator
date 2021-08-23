@@ -7,8 +7,8 @@
 import type { StateCode } from "./states";
 import type { Money, Rate, Tagged } from "./tagged";
 import type { Temporal } from "./temporal";
-import type { CalendarUnit, Types } from "./enums";
-import { CalendarStep } from "./calendar";
+import type { RateType, Types } from "./enums";
+import { CalendarStep, CalendarUnit } from "./calendar";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -58,6 +58,9 @@ export interface ItemMethods<T extends Type> {
  * Additional fields found in specific implementation types.
  */
 interface ItemImplTypes {
+    incomeStream: {
+        withdraw(value: Money, purpose: string, states: ItemStates): Money;
+    };
     scenario: {
         readonly spouse1: IFPerson;
         readonly spouse2: IFPerson | null
@@ -95,6 +98,7 @@ export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplTyp
     id: string;
     prettyName: string;
     temporal: Temporal<ItemImpl<T>>;
+    scenario: ItemImpl<'scenario'>;
 };
 
 type ItemTypes = {
@@ -123,7 +127,7 @@ export type IItemState<T extends Type> = {
 
 export interface StateItem<T extends Type> {
     generator: Generator<IItemState<T>, any, IItemState<T>>;
-    current: IItemState<T>;
+    current: ItemState<T>;
 }
 
 export interface ItemStates {
@@ -141,7 +145,20 @@ type ItemStateTypes = {
 } & {
     asset: {
         value: Money;
-    }
+    };
+    liability: {
+        value: Money;
+        payment: Money;
+        principal: Money;
+        interest: Money;
+        rate: Rate;
+    };
+    expense: {
+        value: Money;
+    };
+    income: {
+        value: Money;
+    };
 };
 
 /**
@@ -217,7 +234,7 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
     /**
      * Type of interest rate calculation, or the name of a time series calculator.
      */
-    readonly rateType: CalendarUnit | SeriesName;
+    readonly rateType: CalendarUnit | RateType | SeriesName;
 
     /**
      * Payment frequency

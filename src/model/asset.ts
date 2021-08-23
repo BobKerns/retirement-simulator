@@ -4,13 +4,12 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { CalendarUnit } from "../enums";
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { asMoney, Rate } from "../tagged";
 import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
 import { classChecks } from "../utils";
-import { CalendarStep } from "../calendar";
+import { CalendarStep, CalendarUnit } from "../calendar";
 
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value
@@ -20,8 +19,8 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
     rate: Rate;
     rateType: CalendarUnit | SeriesName;
     paymentPeriod: CalendarUnit;
-    constructor(row: RowType<'asset'>) {
-        super(row);
+    constructor(row: RowType<'asset'>, scenario: IFScenario) {
+        super(row, scenario);
         this.rate = row.rate ?? 1;
         this.rateType = row.rateType || CalendarUnit.year;
         this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;

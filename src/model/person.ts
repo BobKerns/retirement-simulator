@@ -7,7 +7,7 @@
 import { Item } from "./item";
 import { Age, asAge, asIAge, floor, IAge, Year } from "../tagged";
 import { calculate_age, END_YEAR, TODAY, UTC, YEAR } from "../calendar";
-import { IPerson, RowType, Sex } from "../types";
+import { IFScenario, IPerson, RowType, Sex } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
 import { actuary, SS_2017 } from "../actuary";
@@ -22,8 +22,8 @@ export class Person extends Item<'person'> implements IPerson {
     expectency: number;
     expectencies: number[];
     probabiliies: number[];
-    constructor(row: RowType<'person'>) {
-        super(row);
+    constructor(row: RowType<'person'>, scenario: IFScenario) {
+        super(row, scenario);
         this.birth = row.birth;
         this.sex = row.sex;
         const age = floor(this.age(TODAY));

@@ -13,8 +13,8 @@ import { classChecks } from "../utils";
  */
 export class TextItem extends Item<'text'> implements IText {
     text: string;
-    constructor(row: RowType<'text'>) {
-        super(row);
+    constructor(row: RowType<'text'>, scenario: IFScenario) {
+        super(row, scenario);
         this.text = row.text;
     }
 }

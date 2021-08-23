@@ -289,6 +289,8 @@ export const typeChecks = <T>(is: (a: any) => a is T, isNot: string, coerce?: (a
     return [c, as];
   };
 
+export const isFunction = (f: any): f is Function => typeof f === 'function';
+
 /**
  * Simple type-aware identity function.
  * @param a

@@ -16,11 +16,12 @@ import {
     IFText,
     IFScenario,
     ItemStates,
-    ItemMethods
+    ItemMethods,
+    ItemState
     } from "../types";
 import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
-import { as, Integer, Year } from "../tagged";
+import { as, asMoney, Year } from "../tagged";
 import { START } from "../input";
 
 
@@ -77,7 +78,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
     static scenarios: NamedIndex<Scenario> = {};
 
     constructor(row: RowType<'scenario'>, dataset: Array<RowType<Type>>, end_year: Year) {
-        super(row);
+        super(row, undefined as IFScenario);
         this.data = dataset.filter(i => i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
         const spouse1 = this.#find_spouse("spouse1") ?? Throw("No spouse1 specified");
@@ -148,8 +149,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
         this.#timeline = timeline;
     }
 
-    get scenario(): IFScenario { return this; }
-
     /**
      * Get the full timeline in sorted order as a generator.
      */
@@ -206,7 +205,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
-                items.push(Scenario.construct([r as RowType<T>], type, this.data, this.#end_year));
+                items.push(Scenario.construct([r as RowType<T>], type, this, this.#end_year));
             }
         });
         return items;
@@ -220,7 +219,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
                 (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
         );
         if (items.length) {
-            return Scenario.construct(items as Array<RowType<T>>, type, this.data, this.#end_year);
+            return Scenario.construct(items as Array<RowType<T>>, type, this, this.#end_year);
         }
         return null;
     }
@@ -248,7 +247,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
             categories,
             scenarios
         };
-        const x =  Scenario.construct([row], "person", this.data, this.#end_year);
+        const x =  Scenario.construct([row], "person", this, this.#end_year);
         return x;
     }
 
@@ -270,6 +269,12 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const snapshots = [];
         for (const period of calendarRange(START, incrementDate(START, {year: 50}), {month: 1})) {
             snapshots.push(new Snapshot(this, period, previous, state));
+            for (const expense of this.expense_list) {
+                const inStream = this.incomeStreams[expense.fromStream]
+                    ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
+                const current = (state[expense.id].current) as ItemState<'expense'>;
+                current.value = asMoney(current.value = inStream.withdraw(current.value, expense.id, state));
+            }
         }
         return snapshots;
     }

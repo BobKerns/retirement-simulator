@@ -15,8 +15,8 @@ import { classChecks } from "../utils";
  */
 export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
     readonly state: StateCode;
-    constructor(row: RowType<'incomeTax'>) {
-        super(row);
+    constructor(row: RowType<'incomeTax'>, scenario: IFScenario) {
+        super(row, scenario);
         this.state = row.state;
     }
 }

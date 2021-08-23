@@ -11,9 +11,9 @@
  *
  * @module
  */
-import { CalendarUnit } from "../enums";
 import { asInteger, asYear, floor, Integer, isInteger, isString, Relaxed, TagOf, toInteger, Year } from "../tagged";
 import { Throw, typeChecks } from "../utils";
+import { CalendarInterval, CalendarUnit } from "./calendar-types";
 
 /**
  * For each {@link CalendarUnit}, the number of occurrances of that unit per year.
@@ -67,21 +67,6 @@ export const MONTH_LEMGTH = [
 
 export const isCalendarUnit = (u: any): u is CalendarUnit => u in CalendarUnit;
 export const [toCalendarUnit, asCalendarUnit] = typeChecks(isCalendarUnit, 'a calendar unit');
-
-/**
- * A specification of a length of time in units specified as {@link CalendarUnit}.
- * e.g.:
- *
- * ```typescript
- * const interval = {month: 3}; // 3 months
- * ```
- */
-export type CalendarInterval = {
-    /**
-     * The desired units and count in those units.
-     */
-    [k in keyof typeof CalendarUnit]?: Integer;
-};
 
 /**
  * Type guard that determines if the argument is a valid {@link CalendarInterval}.

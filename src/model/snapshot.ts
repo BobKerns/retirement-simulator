@@ -48,7 +48,7 @@ export class Snapshot extends ScenarioBase {
     readonly scenario: IFScenario;
 
     constructor(scenario: IFScenario, period: CalendarStep, previous: ScenarioBase, states: ItemStates) {
-        super(scenario);
+        super(scenario, previous.scenario);
         this.scenario = scenario;
         this.period = period;
         const next = (item: IItem) => {
