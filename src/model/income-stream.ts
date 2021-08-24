@@ -14,11 +14,27 @@ import { isString, Money } from "../tagged";
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
  */
 export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStream {
-    spec: IncomeStreamSpec;
+
+    #rawSpec: IncomeStreamSpec;
+    #boundSpec?: IncomeStreamSpec;
+
     constructor(row: RowType<'incomeStream'>, scenario: IFScenario) {
         super(row, scenario);
-        let spec = row.spec;
-        this.spec = this.parse(spec);
+        const parse = (spec: string | IncomeStreamSpec): IncomeStreamSpec => {
+            if (typeof spec === 'string') {
+                // Fix curly-quotes
+                const nspec = spec.replace(/[“”]/g, '"');
+                if (/^["\[{]/.test(nspec)) {
+                    try {
+                        return JSON.parse(nspec);
+                    } catch (e) {
+                        throw new Error(`Error parsing incomeStream ${this.name}: ${e.message}`);
+                    }
+                }
+            }
+            return spec;
+        };
+        this.#rawSpec = parse(row.spec);
     }
 
     /**
@@ -26,25 +42,18 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
      * @param spec
      * @returns
      */
-    parse(spec: string | IncomeStreamSpec): IncomeStreamSpec {
-        if (typeof spec === 'string') {
-            // Fix curly-quotes
-            const nspec = spec.replace(/[“”]/g, '"');
-            if (/^["\[{]/.test(nspec)) {
-                try {
-                    spec = JSON.parse(nspec);
-                } catch (e) {
-                    throw new Error(`Error parsing incomeStream ${this.name}: ${e.message}`);
-                }
-            }
-        }
+    get spec(): IncomeStreamSpec {
         const bind = (spec: any): IncomeStreamSpec => {
-            const id = (spec: string) => (
-                    this.scenario.incomes[spec]
-                    ?? this.scenario.assets[spec]
-                    ?? this.scenario.liabilities[spec]
-                )?.id
-                ?? Throw(`There is no income source named "${spec}"`);
+            const id = (spec: string) =>
+                spec.startsWith('@')
+                    ? this.scenario.incomeStreams[spec.substring(1)].id
+                        ?? Throw(`There is no IncomeStream named ${spec.substring(1)}`)
+                    : (
+                        this.scenario.incomes[spec]
+                        ?? this.scenario.assets[spec]
+                        ?? this.scenario.liabilities[spec]
+                      )?.id
+                      ?? Throw(`There is no income, asset, or liability named "${spec}"`);
             if (isString(spec)) {
                 if (spec.startsWith('@')) {
                     const name = spec.substring(1);
@@ -69,7 +78,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 throw new Error(`Unknown income stream spec: ${spec}`);
             }
         };
-        return bind(spec);
+        return this.#boundSpec ?? (this.#boundSpec = bind(this.#rawSpec));
     }
 
     withdraw(value: Money, id: string, state: ItemStates) {
