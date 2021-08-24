@@ -47,7 +47,7 @@ export class Temporal<T extends TemporalItem<Type>> {
             return next;
         }
         const current = this.items[nextIdx - 1];
-        if (current.end) return undefined;
+        if (current?.end) return undefined;
         return current;
     }
 

@@ -273,7 +273,9 @@ export class Scenario extends ScenarioBase implements IFScenario {
                 const inStream = this.incomeStreams[expense.fromStream]
                     ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
                 const current = (state[expense.id].current) as ItemState<'expense'>;
-                current.value = asMoney(current.value = inStream.withdraw(current.value, expense.id, state));
+                if (current) {
+                    current.value = asMoney(current.value = inStream.withdraw(current.value, expense.id, state));
+                }
             }
         }
         return snapshots;
