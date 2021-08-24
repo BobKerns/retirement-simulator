@@ -14,7 +14,7 @@
   ],
 
   "compilerOptions": {
-      "composite": true,
+    "composite": true,
     "allowSyntheticDefaultImports": true,
     "incremental": true,
     "tsBuildInfoFile": "../../build/.tsbuild-info-src-tests",
