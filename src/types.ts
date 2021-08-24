@@ -126,7 +126,7 @@ export type IItemState<T extends Type> = {
 }
 
 export interface StateItem<T extends Type> {
-    generator: Generator<IItemState<T>, any, IItemState<T>>;
+    generator: Generator<ItemState<T>, any, ItemState<T>>;
     current: ItemState<T>;
 }
 
