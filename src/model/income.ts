@@ -22,14 +22,18 @@ export class Income extends CashFlow<'income'> implements IIncome {
     *states<T extends Type>(start: CalendarStep): Generator<ItemState<'income'>, any, ItemState<'income'>> {
         let item: ItemImpl<'income'> | null = this as  ItemImpl<'income'>;
         let step = start;
-        let value = this.value;
+        let value = 0;
         while (true) {
             value = asMoney(value + this.value);
-            const next = yield {item, step, value};
+            let next = yield {item, step, value};
             step = next.step;
             value = next.value;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            if (step.start < this.start) {
+                next = yield {item, step, value};
+            } else {
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+                if (item === null) return;
+            }
         }
     }
 }
