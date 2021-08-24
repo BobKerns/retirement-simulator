@@ -118,7 +118,7 @@ export const convert = <T extends Type>(row: InputRow) => {
             const name = row.Name ?? '<missing name>';
             const start =row.Start ?? '';
             const field = `'${l}' of row ${type} ${name} ${start}`;
-            throw new Error(`Could not convert field ${field} : ${e.constructor.name}: ${e.message}`);
+            throw new Error(`Could not convert field ${field} (${row[l]}): ${e.constructor.name}: ${e.message}`);
         }
     }
     const checkRequired = (list?: Array<keyof AnyRow>) => {
