@@ -6,9 +6,10 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncomeStream, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, RowType } from "../types";
-import { classChecks, Throw } from "../utils";
-import { isString, Money } from "../tagged";
+import { IFScenario, IIncomeStream, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Writeable } from "../types";
+import { classChecks, isMonetary, Throw } from "../utils";
+import { asMoney, isString, Money } from "../tagged";
+import { Monetary } from "./monetary";
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
@@ -81,13 +82,24 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return this.#boundSpec ?? (this.#boundSpec = bind(this.#rawSpec));
     }
 
-    withdraw(value: Money, id: string, state: ItemStates) {
+    withdraw(value: Money, id: string, state: ItemStates): Money {
         const withdrawFrom = (amount: number, spec: IncomeStreamSpec) => {
             if (isString(spec)) {
-                const current = state[spec].current as {value: number};
-                const amt = Math.min(amount, current.value);
-                current.value -= amt;
-                return amt;
+                const current = state[spec].current;
+                if (current) {
+                    const item = current.item;
+                    if (isIncomeStream(item)) {
+                        return item.withdraw(asMoney(amount), id, state);
+                    } else if (isMonetaryState(current)) {
+                        const amt = Math.min(amount, current.value);
+                        current.value = asMoney(current.value - amt);
+                        return asMoney(amt);
+                    } else {
+                        throw new Error(`${spec} is not a valid source of income.`);
+                    }
+                } else {
+                    throw new Error(`IncomeStream spec ${spec} was not found.`);
+                }
             } else if (Array.isArray(spec)) {
                 let total = 0;
                 for (const k of spec) {
@@ -96,14 +108,14 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                         break;
                     }
                 }
-                return total;
+                return asMoney(total);
             } else if (typeof spec === 'object') {
                 const shares: {[k: string]: number} = spec;
                 let total = 0;
                 for (const k in spec) {
                     total += withdrawFrom(amount * shares[k], k);
                 }
-                return total;
+                return asMoney(total);
             }
             throw new Error(`Unknown spec: ${spec}`);
         }
@@ -111,6 +123,12 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
     }
 }
 
+/**
+ * @internal
+ * @param a
+ * @returns
+ */
+export const isMonetaryState = <T extends MonetaryType>(a: any): a is Writeable<Monetary<T>> => a.item && isMonetary(a);
 
 export class IncomeStreamState extends StateMixin(IncomeStream) {
     constructor(row: ItemImpl<'incomeStream'>, scenario: IFScenario, state: ItemState<'incomeStream'>) {
