@@ -17,12 +17,16 @@ import {
     IFScenario,
     ItemStates,
     ItemMethods,
-    ItemState
+    ItemState,
+    StateItem,
+    IItemState,
+    ItemImpl
     } from "../types";
-import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
+import { classChecks, heapgen, indexByName, isMonetary, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
 import { START } from "../input";
+import { Item } from "./item";
 
 
 /**
@@ -269,6 +273,24 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const snapshots = [];
         for (const period of calendarRange(START, incrementDate(START, {year: 50}), {month: 1})) {
             snapshots.push(new Snapshot(this, period, previous, state));
+            const update = <T extends Type, L extends Array<ItemImpl<T>>>(list: L) => {
+                for (const income of this.income_list) {
+                    const item = state[income.id] as StateItem<T>;
+                    const {current, generator} = item;
+                    if (current) {
+                        const next = generator.next(current);
+                        if (next.done) {
+                            delete state[income.id];
+                        } else {
+                            item.current = next.value;
+                        }
+                    }
+                }
+            };
+            update(this.income_list);
+            update(this.asset_list);
+            update(this.expense_list);
+            update(this.liability_list);
             for (const expense of this.expense_list) {
                 const inStream = this.incomeStreams[expense.fromStream]
                     ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
