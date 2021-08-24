@@ -122,7 +122,7 @@ export const convert = <T extends Type>(row: InputRow) => {
         }
     }
     const checkRequired = (list?: Array<keyof AnyRow>) => {
-        if (list && row.End) {
+        if (list && !result.end) {
             for (const k of list) {
                 if (result[k] === undefined || result[k] === '') {
                     const l = upcase(k);
