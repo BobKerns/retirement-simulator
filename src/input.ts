@@ -129,8 +129,8 @@ export const convert = <T extends Type>(row: InputRow) => {
                     const type = row.Type ?? '<missing type>';
                     const name = row.Name ?? '<missing name>';
                     const start =row.Start ?? '';
-                    const field = `'${l}' of row ${type} ${name} ${start}`;
-                    throw new Error(`Row ${field} is missing required key '${l}'`);
+                    const field = `'${l}' of row ${type}/${name}@${start}`;
+                    throw new Error(`Column ${field} is missing required key '${l}' in ${(row as any).Src}`);
                 }
             }
         }
