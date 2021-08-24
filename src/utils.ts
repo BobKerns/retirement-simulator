@@ -297,3 +297,11 @@ export const isFunction = (f: any): f is Function => typeof f === 'function';
  * @returns a
  */
 export const identity = <T>(a: T): T => a;
+
+/**
+ * Type guard to determine if the argument has a monetary `.value` field.
+ * @param a
+ * @returns
+ */
+export const isMonetary = <T extends MonetaryType>(a: any): a is IMonetaryItem<T> => typeof a.value === 'number';
+export const [toMonetary, asMonetary] = typeChecks(isMonetary, "a monetary item");
