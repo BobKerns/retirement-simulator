@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Sync } from "genutils/lib/esm/sync";
+import { Sync } from "genutils";
 import { ANNUAL_PAYMENT_PERIODS, CalendarUnit, isCalendarUnit } from "./calendar";
 import { RateType } from "./enums";
 import { isNumber, Money, Rate } from "./tagged";
