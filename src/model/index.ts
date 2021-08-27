@@ -23,3 +23,4 @@ export * from './person';
 export * from './scenario';
 export * from './snapshot';
 export * from './state-mixin';
+export * as G from 'genutils';
