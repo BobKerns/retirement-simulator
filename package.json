@@ -15,7 +15,7 @@
         "test": "npm run build:test",
         "prebuild": "npm run build:compile",
         "build:package": "rollup -c",
-        "postbuild:package": "rm -rf lib/types; mkdir lib/types lib/types/{calendar,model,tax} & find build/src -name '*.ts*' -print | sed -E 's/^build\\/src\\///' | (while read l; do cp \"build/src/$l\" \"lib/types/$l\"; done; )",
+        "postbuild:package": "rsync -a --delete --include='*.d.ts*' build/src/ lib/types/",
         "build": "npm run build:package",
         "all": "npm run build && npm run build:test && npm run build:docs",
         "clean": "rm -rf build lib docs",
@@ -73,7 +73,7 @@
         "typedoc": "^0.21.6",
         "typedoc-plugin-mermaid": "^1.4.0",
         "typedoc-plugin-npm-externals": "^1.0.0",
-        "typescript": "^4.3.5",
+        "typescript": "^4.4.2",
         "wcsize": "^1.0.0"
     },
     "dependencies": {

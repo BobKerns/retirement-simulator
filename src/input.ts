@@ -113,7 +113,7 @@ export const convert = <T extends Type>(row: InputRow) => {
                     result[k as keyof typeof result] = nval;
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             const type = row.Type ?? '<missing type>';
             const name = row.Name ?? '<missing name>';
             const start =row.Start ?? '';

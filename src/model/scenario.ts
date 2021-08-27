@@ -82,7 +82,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
     static scenarios: NamedIndex<Scenario> = {};
 
     constructor(row: RowType<'scenario'>, dataset: Array<RowType<Type>>, end_year: Year) {
-        super(row, undefined as IFScenario);
+        super(row, undefined as unknown as IFScenario);
         this.data = dataset.filter(i => i.name && i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
         const spouse1 = this.#find_spouse("spouse1") ?? Throw("No spouse1 specified");

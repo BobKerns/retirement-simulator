@@ -28,7 +28,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 if (/^["\[{]/.test(nspec)) {
                     try {
                         return JSON.parse(nspec);
-                    } catch (e) {
+                    } catch (e: any) {
                         throw new Error(`Error parsing incomeStream ${this.name}: ${e.message}`);
                     }
                 }
@@ -64,7 +64,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
             } else if (Array.isArray(spec)) {
                 return spec.map(bind);
             } else if (typeof spec === 'object') {
-                const result: {[k: string]: IncomeStreamSpec} = {};
+                const result: {[k: string]: number} = {};
                 let total = 0;
                 for (const k in spec) {
                     total += spec[k];
