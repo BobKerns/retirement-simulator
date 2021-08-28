@@ -21,7 +21,7 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
     paymentPeriod: CalendarUnit;
     constructor(row: RowType<'asset'>, scenario: IFScenario) {
         super(row, scenario);
-        this.rate = row.rate ?? 1;
+        this.rate = row.rate ?? 0;
         this.rateType = row.rateType || CalendarUnit.year;
         this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;
     }

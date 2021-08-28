@@ -24,7 +24,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
     expense?: ExpenseName;
     constructor(row: RowType<'liability'>, scenario: IFScenario) {
         super(row, scenario);
-        this.rate = row.rate ?? 1;
+        this.rate = row.rate ?? 0;
         this.rateType = row.rateType || CalendarUnit.year;
         this.payment = asMoney(row.payment ?? 0);
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;

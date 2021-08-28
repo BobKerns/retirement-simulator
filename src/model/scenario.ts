@@ -189,14 +189,14 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return Math.round(
             this.asset_list
                 .filter((a) => !a.hasCategory(NON_INCOME_ASSET))
-                .reduce((acc, a) => acc + a.value * (a.rate - 1), 0) +
+                .reduce((acc, a) => acc + a.value * a.rate, 0) +
                 total(this.income_list)
             );
     }
 
     get total_retirement_income_with_fixed() {
         return Math.round(
-            this.asset_list.reduce((acc, a) => acc + a.value * (a.rate - 1), 0) +
+            this.asset_list.reduce((acc, a) => acc + a.value * a.rate, 0) +
             this.income_list.reduce((acc, a) => acc + a.value, 0)
         );
     }
