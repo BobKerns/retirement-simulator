@@ -8,9 +8,13 @@ import { Item } from "./item";
 import {
     IFAsset, IFExpense, IFIncome, IFIncomeStream,
     IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText,
-    IScenarioBase, ItemImpl, NamedIndex, RowType, Type
+    IScenarioBase, ItemImpl, ItemTableType, Name, NamedIndex, RowType, Type
     } from "../types";
 import { Sync } from "genutils";
+
+export type AllItems = {
+    [K in Type]: ItemTableType<K>;
+};
 
 /**
  * The base for both {@link Scenario} and {@link Snapshot} instances. The fields are the same
@@ -107,7 +111,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      */
     abstract texts: NamedIndex<IFText>;
 
-
+    abstract allItems: AllItems;
     constructor(row: RowType<'scenario'>, scenario: IFScenario) {
         super(row, scenario);
     }
@@ -154,6 +158,28 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
             this.tax_list,
             this.text_list
         );
+    }
+
+
+    findItem<T extends Type>(name: Name, type: T): ItemImpl<T> | undefined {
+        return this.allItems[type]?.[name] as unknown as ItemImpl<T>
+    }
+    findItems<T extends Type, R extends Array<ItemImpl<T>>>(type: T): R {
+        switch (type) {
+            case 'asset': return this.asset_list as unknown as R;
+            case 'expense': return this.expense_list as unknown as R;
+            case 'incomeStream': return this.incomeStream_list as unknown as R;
+            case 'incomeTax': return this.tax_list as unknown as R;
+            case 'income': return this.income_list as unknown as R;
+            case 'liability': return this.liability_list as unknown as R;
+            case 'person': return this.person_list as unknown as R;
+            case 'scenario': return [this as IFScenario] as unknown as R;
+            case 'text': return this.text_list as unknown as R;
+        }
+        throw new Error(`Unknown record type: ${type}`);
+    }
+    findText(name: Name): string {
+        return this.findItem(name, 'text')?.text ?? '';
     }
 
     [Symbol.iterator]() {

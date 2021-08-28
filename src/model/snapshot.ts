@@ -10,7 +10,7 @@ import { IncomeState } from "./income";
 import { IncomeStreamState } from "./income-stream";
 import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
-import { ScenarioBase } from "./scenario-base";
+import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
 import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex }from "../types";
 import { classChecks, indexByName } from "../utils";
@@ -47,6 +47,8 @@ export class Snapshot extends ScenarioBase {
 
     readonly scenario: IFScenario;
 
+    allItems: AllItems;
+
     constructor(scenario: IFScenario, period: CalendarStep, previous: ScenarioBase, states: ItemStates) {
         super(scenario, previous.scenario);
         this.scenario = scenario;
@@ -71,6 +73,18 @@ export class Snapshot extends ScenarioBase {
         this.taxes = indexByName(this.tax_list);
         this.incomeStreams = indexByName(this.incomeStream_list);
         this.texts = indexByName(this.text_list);
+
+       this. allItems = {
+            asset: this.assets,
+            expense: this.expenses,
+            incomeStream: this.incomeStreams,
+            incomeTax: this.taxes,
+            income: this.incomes,
+            liability: this.liabilities,
+            person: this.people,
+            scenario: {[this.scenario.name]: this.scenario},
+            text: this.texts
+        };
     }
 
     #tag?: string;

@@ -57,7 +57,7 @@ export interface ItemMethods<T extends Type> {
 /**
  * Additional fields found in specific implementation types.
  */
-interface ItemImplTypes {
+interface ItemImplFieldDefs {
     incomeStream: {
         withdraw(value: Money, purpose: string, states: ItemStates): Money;
     };
@@ -86,15 +86,24 @@ interface ItemImplTypes {
     }
 };
 
+interface ItemImplMethodDefs {
+    scenario: {
+        findItem<T extends Type>(name: Name, type: T): ItemImpl<T> | undefined;
+        findItems<T extends Type>(type: T): Iterable<ItemImpl<T>> | undefined;
+        findText(name: Name): string;
+    }
+}
+
 /**
  * Additional fields found in specific implementation types.
  */
-export type ItemImplType<T extends Type> = T extends keyof ItemImplTypes ? ItemImplTypes[T] : {};
+export type ItemImplFields<T extends Type> = T extends keyof ItemImplFieldDefs ? ItemImplFieldDefs[T] : {};
+export type ItemImplMethods<T extends Type> = T extends keyof ItemImplMethodDefs ? ItemImplMethodDefs[T] : {};
 
 /**
  * The model implementation for each {@link Type}.
  */
-export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplType<T> & {
+export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplFields<T> & ItemImplMethods<T> & {
     id: string;
     prettyName: string;
     temporal: Temporal<ItemImpl<T>>;
@@ -382,6 +391,13 @@ export type IFIncomeStream = ItemImpl<'incomeStream'>;
 export type IFIncomeTax = ItemImpl<'incomeTax'>;
 export type IFPerson = ItemImpl<'person'>;
 export type IFText = ItemImpl<'text'>;
+
+export interface IFScenarioBase {
+    findItem<T extends Type>(name: Name, type: T): ItemImpl<T>;
+    findItems<T extends Type>(type: T): Iterable<ItemImpl<T>>;
+    findText(name: Name): string;
+}
+
 export type IFScenario = ItemImpl<'scenario'>;
 
 /**
@@ -410,4 +426,12 @@ export interface AppliedLoanPayment extends AppliedInterest {
      * Total amount of the payment.
      */
     payment: Money
+}
+
+export interface ItemTableType<T extends Type> {
+    [k: Name]: ItemImpl<T>;
+}
+
+export type ItemTable = {
+    [K in Type]: ItemTableType<K>;
 }

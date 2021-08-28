@@ -5,7 +5,7 @@
  */
 
 import Heap from "heap";
-import { ScenarioBase } from "./scenario-base";
+import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
 import { calendarRange, CalendarStep, incrementDate, TODAY, YEAR } from "../calendar";
 import {
@@ -19,15 +19,12 @@ import {
     ItemMethods,
     ItemState,
     StateItem,
-    IItemState,
     ItemImpl
     } from "../types";
-import { classChecks, heapgen, indexByName, isMonetary, Throw, total } from "../utils";
+import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
 import { START } from "../input";
-import { Item } from "./item";
-
 
 /**
  * Category of assets that do not contribute to retirement income streams.
@@ -62,6 +59,8 @@ export class Scenario extends ScenarioBase implements IFScenario {
     taxes: NamedIndex<IFIncomeTax>;
     texts: NamedIndex<IFText>;
 
+    allItems: AllItems;
+
     /**
      * @internal
      */
@@ -85,8 +84,8 @@ export class Scenario extends ScenarioBase implements IFScenario {
         super(row, undefined as unknown as IFScenario);
         this.data = dataset.filter(i => i.name && i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
-        const spouse1 = this.#find_spouse("spouse1") ?? Throw("No spouse1 specified");
-        const spouse2 = this.#find_spouse("spouse2");
+        const spouse1 = this.#construct_spouse("spouse1") ?? Throw("No spouse1 specified");
+        const spouse2 = this.#construct_spouse("spouse2");
         this.spouse1 = spouse1;
         this.spouse2 = spouse2;
         this.people = {
@@ -97,24 +96,24 @@ export class Scenario extends ScenarioBase implements IFScenario {
                 [spouse2?.name]: spouse2
             },
         };
-        this.asset_list = this.#find_items("asset");
+        this.asset_list = this.#construct_items("asset");
         this.assets = indexByName(this.asset_list);
-        this.expense_list = this.#find_items("expense");
+        this.expense_list = this.#construct_items("expense");
         this.expenses = indexByName(this.expense_list);
-        this.liability_list = this.#find_items("liability");
+        this.liability_list = this.#construct_items("liability");
         /*
         this.liability_list.forEach(
             (l) => (l.payment = this.expenses[l.name]?.value)
         );
         */
         this.liabilities = indexByName(this.liability_list);
-        this.income_list = this.#find_items("income");
+        this.income_list = this.#construct_items("income");
         this.incomes = indexByName(this.income_list);
-        this.tax_list = this.#find_items("incomeTax");
+        this.tax_list = this.#construct_items("incomeTax");
         this.taxes = indexByName(this.tax_list);
-        this.incomeStream_list = this.#find_items("incomeStream");
+        this.incomeStream_list = this.#construct_items("incomeStream");
         this.incomeStreams = indexByName(this.incomeStream_list);
-        this.text_list = this.#find_items("text");
+        this.text_list = this.#construct_items("text");
         this.texts = indexByName(this.text_list);
 
         const timelineCmp = (a: TimeLineItem, b: TimeLineItem) =>
@@ -151,6 +150,17 @@ export class Scenario extends ScenarioBase implements IFScenario {
         scan(this.tax_list);
         scan(this.incomeStream_list);
         this.#timeline = timeline;
+       this. allItems = {
+            asset: this.assets,
+            expense: this.expenses,
+            incomeStream: this.incomeStreams,
+            incomeTax: this.taxes,
+            income: this.incomes,
+            liability: this.liabilities,
+            person: this.people,
+            scenario: {[this.name]: this as IFScenario},
+            text: this.texts
+        };
     }
 
     /**
@@ -205,7 +215,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return `Scenario[${this.name}]`;
     }
 
-    #find_items<T extends Type>(type: T, all: boolean = false): Array<ItemType<T>> {
+    #construct_items<T extends Type>(type: T, all: boolean = false): Array<ItemType<T>> {
         const items: Array<ItemType<T>> = [];
         this.data.forEach((r) => {
             if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
@@ -215,7 +225,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return items;
     }
 
-    #find_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
+    #construct_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
         const items = this.data.filter(
             (r: RowType) =>
                 r.name === name &&
@@ -228,8 +238,8 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return null;
     }
 
-    #find_spouse(name: Name): IFPerson | null {
-        const item = this.#find_item(name, 'person');
+    #construct_spouse(name: Name): IFPerson | null {
+        const item = this.#construct_item(name, 'person');
         if (!item) return null;
         const birth = item.birth ?? Throw(`Birth date for person ${name} is not specified`);
         const age = YEAR - birth.getUTCFullYear();
@@ -273,16 +283,18 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const snapshots = [];
         for (const period of calendarRange(START, incrementDate(START, {year: 50}), {month: 1})) {
             snapshots.push(new Snapshot(this, period, previous, state));
+            // Walk each asset, liability, income, or expense through their internal evolution.
+            // This includes both rate-base calculations and multiple time-based entries.
             const update = <T extends Type, L extends Array<ItemImpl<T>>>(list: L) => {
-                for (const income of this.income_list) {
-                    const item = state[income.id] as StateItem<T>;
-                    const {current, generator} = item;
+                for (const item of list) {
+                    const itemState = state[item.id] as StateItem<T>;
+                    const {current, generator} = itemState;
                     if (current) {
                         const next = generator.next(current);
                         if (next.done) {
-                            delete state[income.id];
+                            delete state[item.id];
                         } else {
-                            item.current = next.value;
+                            itemState.current = next.value;
                         }
                     }
                 }
