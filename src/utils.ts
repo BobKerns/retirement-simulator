@@ -74,7 +74,7 @@ export const Sort = {
  * @param args Array of values for the cells in the row
  * @returns a markdown-formatted string
  */
-export const row = (...args: any[]) => `|${["", ...args, ""].join("|")}|`;
+export const row = (...args: any[]) => `|${args.join("|")}|`;
 
 /**
  * Format a number as US currency.
