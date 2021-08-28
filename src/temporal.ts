@@ -3,10 +3,11 @@
  *
  * Github: https://github.com/BobKerns/retirement-simulator
  */
-/*
- * A utility container that allows looking up items by date.
+/**
+ * A utility container that allows looking up items by date. This is used to pick the appropriate version of an item
+ * by its start date.
  *
- * @module
+ * @module Temporal
  */
 
 
