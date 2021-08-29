@@ -191,7 +191,8 @@ const run = async () => {
     await Promise.all([
         ['CHANGELOG.md', 'Change Log'],
         ['README.md', `Retirement Simulator`],
-        ['README.md', `Retirement Simulator`, join(target, 'README.html')]
+        ['README.md', `Retirement Simulator`, join(target, 'README.html')],
+        ['assets/landing.md', 'Retirement Simulator', join(DOCS, 'index.md')]
     ].map(([f, title, f2]) =>
         convert(join(ROOT, f), f2 || join(docs, f), title)));
     const release_body = await releases();
@@ -202,12 +203,14 @@ ${release_body}`;
     await convertContent(release_page, join(docs, 'index.html'), "Retirement Simulator Releases");
     const release = await thisRelease(TAG);
     const release_landing = `# ${release.name}
-    ${release.body || ''}
 
+${release.body || ''}
+----
 * [API documentation](api/index.html)
 * [CHANGELOG](../CHANGELOG.html)
 * [GitHub](https://github.com/BobKerns/${PROJECT}.git)
 * [GitHub ${TAG} tree](https://github.com/BobKerns/${PROJECT}.git/tree/${TAG}/)
+* [Releases](https://bobkerns.github.io/${PROJECT}/docs/)
 `;
     await convertContent(release_landing, join(target, 'index.html'), release.name);
     const copyTree = async (from, to) => {
