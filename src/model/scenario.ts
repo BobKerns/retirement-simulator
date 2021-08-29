@@ -16,7 +16,6 @@ import {
     IFText,
     IFScenario,
     ItemStates,
-    ItemMethods,
     ItemState,
     StateItem,
     ItemImpl
@@ -30,8 +29,6 @@ import { START, END } from "../input";
  * Category of assets that do not contribute to retirement income streams.
  */
 const NON_INCOME_ASSET: Category = as("non-income");
-
-type foo = ItemMethods<'scenario'>['states']
 
 /**
  * A particular scenario.
