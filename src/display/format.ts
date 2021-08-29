@@ -6,7 +6,7 @@
 
 import { fmt_pct, fmt_usd, typeChecks } from "../utils";
 import { isNumber, round } from "../tagged";
-import { fmt_date, isDate } from "..";
+import { fmt_date, isDate } from "../calendar";
 
 /**
  * Formatters
