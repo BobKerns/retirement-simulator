@@ -14,7 +14,7 @@
 
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import type { MonetaryType, IMonetaryItem, NamedIndex, SortFn, Type, RowType, IMonetary, AnyNamed, Named } from './types';
+import type { MonetaryType, IMonetaryItem, NamedIndex, Type, RowType, IMonetary, AnyNamed, Named } from './types';
 
 export const Heap = HeapIn;
 
@@ -61,17 +61,9 @@ export const indexByName = <T extends AnyNamed>(list: Array<T>) =>
   list.reduce((acc: NamedIndex<T>, item) => ((acc[item.name] = item), acc), {});
 
 /**
- * Format a row of values in a Markdown table.
- *
- * @param args Array of values for the cells in the row
- * @returns a markdown-formatted string
- */
-export const row = (...args: any[]) => `|${args.join("|")}|`;
-
-/**
  * Format a number as US currency.
  *
- * @param d Format a number as US currency
+ * @param d a number as US currency
  * @param frac 0 or 2 (default = 2) positions for cents
  * @returns
  */
@@ -82,6 +74,19 @@ export const fmt_usd = (d: number, frac = 2 | 0) =>
     currency: "USD",
     style: "currency"
   });
+
+/**
+ * Format a number as a percentage.
+ *
+ * @param d Format a number as
+ * @param frac 0 or 2 (default = 2) positions for cents
+ * @returns
+ */
+export const fmt_pct = (d: number, frac: 4 | 3 | 2 | 1 | 0 = 3) =>
+  `${(d * 100).toLocaleString("en", {
+    minimumFractionDigits: frac,
+    maximumFractionDigits: frac
+  })}%`;
 
 /**
  * Assert that the call in the argument cannot return.
@@ -206,19 +211,19 @@ export const classChecks = <T>(cls: new (...args: any[]) => T, coerce?: (a: any)
  * @param is A type guard.
  * @param isNot A string for error messages, when the type guard fails
  * @param coerce an optional coercion function to be tried in the to* (coercion) variant
- * @returns [is, to, as]
+ * @returns [to, as]
  */
-export const typeChecks = <T>(is: (a: any) => a is T, isNot: string, coerce?: (a: any) => T):
+export const typeChecks = <T>(is: (a: any) => a is T, isNot: string, coerce?: (a: any) => T | undefined):
   [(a: any) => T, (a: any) => T] => {
     const as = (a: any) => is(a)
         ? a
         : Throw(`${a} is not ${isNot}`);
-    const c = coerce
+    const to = coerce
         ? (a: any): T => is(a)
             ? a
             : as(coerce(a))
         : as;
-    return [c, as];
+    return [to, as];
   };
 
 export const isFunction = (f: any): f is Function => typeof f === 'function';
@@ -237,3 +242,15 @@ export const identity = <T>(a: T): T => a;
  */
 export const isMonetary = <T extends MonetaryType>(a: any): a is IMonetaryItem<T> => typeof a.value === 'number';
 export const [toMonetary, asMonetary] = typeChecks(isMonetary, "a monetary item");
+
+export const isObject = (o: any): o is {[k: string]: any} => typeof o === 'object';
+
+export const [toObject, asObject] = typeChecks(isObject, 'an object');
+
+export const isBoolean = (a: any): a is boolean => a === true || a === false;
+export const [toBoolean, asBoolean] =
+    typeChecks(
+        isBoolean,
+        "true or false",
+        a => /^\s*(?:false|f)\s*$/i.test(a) ? false : /^\s*(?:true|t)\s*$/i.test(a) ? true : undefined
+        );

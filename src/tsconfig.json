@@ -4,6 +4,7 @@
   "include": [
     "*.ts",
     "calendar/*.ts",
+    "display/*.ts",
     "model/*.ts",
     "tax/*.ts",
     "data/*.json"

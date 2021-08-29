@@ -14,7 +14,7 @@ import { TYPES } from "./item-types";
 import { toMoney, toRate } from "./tagged";
 import { toCalendarUnit, toDate, UTC } from "./calendar";
 import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "./types";
-import { identity, typeChecks } from "./utils";
+import { identity, toBoolean } from "./utils";
 import { Temporal } from "./temporal";
 
 export type Converters = {
@@ -55,14 +55,6 @@ export const optionalDate = optional(toDate);
 export const optionalMoney = optional(t => toMoney(Number(t)));
 export const optionalRate = optional(t => toRate(Number(t)/100));
 export const optionalNumber = optional(Number);
-
-export const isBoolean = (a: any): a is boolean => a === true || a === false;
-export const [toBoolean, asBoolean] =
-    typeChecks(
-        isBoolean,
-        "true or false",
-        a => /^\s*(?:false|f)\s*$/i.test(a) ? false : /^\s*(?:true|t)\s*$/i.test(a) ? true : undefined
-        );
 
 /**
  * Map of fields to converters to convert to the proper type (e.g. number, date, etc.)

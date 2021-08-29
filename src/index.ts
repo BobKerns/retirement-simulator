@@ -7,8 +7,6 @@
 /**
  * [[include:src/README.md]]
  *
- * @packageDocumentation
- * @preferred
  * @module Index
  */
 
@@ -16,6 +14,7 @@ export * from './actuary';
 export * from './calendar';
 export * from './color';
 export * from './construct';
+export * from './display';
 export * from './enums';
 export * from "./input";
 export * from './interest';
