@@ -5,7 +5,8 @@
  */
 
 import { Category, IFScenario, IItem, ItemState, Name, RowType, ScenarioName, Type } from "../types";
-import { CalendarStep, TODAY } from "../calendar";
+import { CalendarStep } from "../calendar";
+import { START } from '../input';
 import { Temporal } from "../temporal";
 import { Throw } from "../utils";
 
@@ -41,7 +42,7 @@ export class Item<T extends Type> implements IItem<T> {
         this.id = `${this.type}/${this.name}`;
         this.prettyName = row.prettyName ?? row.name;
         this.scenario = scenario ?? this as unknown as IFScenario;
-        this.start = row.start ?? TODAY;
+        this.start = row.start ?? scenario?.start ?? START;
         this.end = row.end;
         this.categories = row.categories ?? [];
         this.scenarios = row.scenarios?.length ? row.scenarios : ['Default'];
