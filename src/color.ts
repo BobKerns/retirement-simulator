@@ -7,8 +7,10 @@
 import { Name } from './types';
 import raw_color_scheme from './data/color_scheme.json';
 import { Scenario } from './model';
-import { Throw, uniq, naturalSort} from './utils';
+import { Throw, uniq } from './utils';
 import { asByte, asDegrees, asUnit, Byte, Degrees, isByte, isDegrees, isUnit, Tag, Tagged, Unit } from './tagged';
+import { naturalSort } from './sort';
+import type { ScaleOrdinal } from 'd3';
 /**
  * Colors are strings in the form _#rrggbb_.
  */

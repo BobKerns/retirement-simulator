@@ -21,6 +21,7 @@ export * from "./input";
 export * from './interest';
 export * from './load';
 export * from "./model";
+export * from './sort';
 export * from './states';
 export * from './tagged';
 export * from './tax';

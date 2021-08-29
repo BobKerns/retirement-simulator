@@ -24,8 +24,7 @@ import {
 import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
-import { START } from "../input";
-import { END } from "..";
+import { START, END } from "../input";
 
 /**
  * Category of assets that do not contribute to retirement income streams.

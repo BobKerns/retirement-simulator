@@ -4,8 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { AnyNamed, Name, Named } from "../types";
-import { indexByName, makeSort, uniq } from "../utils";
+import { Name } from "../types";
+import { indexByName, uniq } from "../utils";
+import { makeSort } from '../sort';
 
 describe("Utils", () => {
     test('uniq', () =>
