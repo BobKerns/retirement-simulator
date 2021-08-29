@@ -1,0 +1,613 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>calendar | Retirement Simulator - v0.1.4</title>
+	<meta name="description" content="Documentation for Retirement Simulator - v0.1.4">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Retirement Simulator - v0.1.4</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">Retirement Simulator - v0.1.4</a>
+				</li>
+				<li>
+					<a href="calendar.html">calendar</a>
+				</li>
+			</ul>
+			<h1>Module calendar</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<a href="#calendar" id="calendar" style="color: inherit; text-decoration: none;">
+							<h1>Calendar</h1>
+						</a>
+						<p>A set of utilities for working with dates and periodic events.</p>
+						<p>All dates are represented as UTC dates at <code>00:00:00.000</code></p>
+						<p>Facilities are provided to increment and measure length of time.</p>
+						<p>A <a href="calendar.html#calendarRange">calendarRange</a> describes a period of time which can be iterated over at the specified interval.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>References</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#ANNUAL_PAYMENT_PERIODS" class="tsd-kind-icon">ANNUAL_<wbr>PAYMENT_<wbr>PERIODS</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarInterval" class="tsd-kind-icon">Calendar<wbr>Interval</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarLength" class="tsd-kind-icon">Calendar<wbr>Length</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarPeriod" class="tsd-kind-icon">Calendar<wbr>Period</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarRange" class="tsd-kind-icon">Calendar<wbr>Range</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarStep" class="tsd-kind-icon">Calendar<wbr>Step</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#CalendarUnit" class="tsd-kind-icon">Calendar<wbr>Unit</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#END_OF_TIME" class="tsd-kind-icon">END_<wbr>OF_<wbr>TIME</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#END_OF_YEARS" class="tsd-kind-icon">END_<wbr>OF_<wbr>YEARS</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#END_YEAR" class="tsd-kind-icon">END_<wbr>YEAR</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#ICalendarRange" class="tsd-kind-icon">ICalendar<wbr>Range</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#MONTH_LEMGTH" class="tsd-kind-icon">MONTH_<wbr>LEMGTH</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#MONTH_START" class="tsd-kind-icon">MONTH_<wbr>START</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#THIS_YEAR" class="tsd-kind-icon">THIS_<wbr>YEAR</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#TODAY" class="tsd-kind-icon">TODAY</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#UTC" class="tsd-kind-icon">UTC</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#YEAR" class="tsd-kind-icon">YEAR</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asCalendarInterval" class="tsd-kind-icon">as<wbr>Calendar<wbr>Interval</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asCalendarLength" class="tsd-kind-icon">as<wbr>Calendar<wbr>Length</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asCalendarPeriod" class="tsd-kind-icon">as<wbr>Calendar<wbr>Period</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asCalendarStep" class="tsd-kind-icon">as<wbr>Calendar<wbr>Step</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asCalendarUnit" class="tsd-kind-icon">as<wbr>Calendar<wbr>Unit</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#asDate" class="tsd-kind-icon">as<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#calculate_age" class="tsd-kind-icon">calculate_<wbr>age</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#calendarRange" class="tsd-kind-icon">calendar<wbr>Range</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#day" class="tsd-kind-icon">day</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#dayOfYear" class="tsd-kind-icon">day<wbr>OfYear</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#day_of_year" class="tsd-kind-icon">day_<wbr>of_<wbr>year</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#decodeCalendarInterval" class="tsd-kind-icon">decode<wbr>Calendar<wbr>Interval</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#fmt_date" class="tsd-kind-icon">fmt_<wbr>date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#fmt_datetime" class="tsd-kind-icon">fmt_<wbr>datetime</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#fmt_month" class="tsd-kind-icon">fmt_<wbr>month</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#fmt_time" class="tsd-kind-icon">fmt_<wbr>time</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#incrementDate" class="tsd-kind-icon">increment<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isCalendarInterval" class="tsd-kind-icon">is<wbr>Calendar<wbr>Interval</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isCalendarLength" class="tsd-kind-icon">is<wbr>Calendar<wbr>Length</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isCalendarPeriod" class="tsd-kind-icon">is<wbr>Calendar<wbr>Period</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isCalendarStep" class="tsd-kind-icon">is<wbr>Calendar<wbr>Step</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isCalendarUnit" class="tsd-kind-icon">is<wbr>Calendar<wbr>Unit</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isDate" class="tsd-kind-icon">is<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#isLeapYear" class="tsd-kind-icon">is<wbr>Leap<wbr>Year</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#parseDate" class="tsd-kind-icon">parse<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toCalendarInterval" class="tsd-kind-icon">to<wbr>Calendar<wbr>Interval</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toCalendarLength" class="tsd-kind-icon">to<wbr>Calendar<wbr>Length</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toCalendarPeriod" class="tsd-kind-icon">to<wbr>Calendar<wbr>Period</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toCalendarStep" class="tsd-kind-icon">to<wbr>Calendar<wbr>Step</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toCalendarUnit" class="tsd-kind-icon">to<wbr>Calendar<wbr>Unit</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#toDate" class="tsd-kind-icon">to<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#truncateDate" class="tsd-kind-icon">truncate<wbr>Date</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#year" class="tsd-kind-icon">year</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="calendar.html#yearDays" class="tsd-kind-icon">year<wbr>Days</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>References</h2>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="ANNUAL_PAYMENT_PERIODS" class="tsd-anchor"></a>
+					<h3>ANNUAL_<wbr>PAYMENT_<wbr>PERIODS</h3>
+					Re-exports <a href="calendar_calendar_utils.html#ANNUAL_PAYMENT_PERIODS">ANNUAL_PAYMENT_PERIODS</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarInterval" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Interval</h3>
+					Re-exports <a href="calendar_calendar_types.html#CalendarInterval">CalendarInterval</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarLength" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Length</h3>
+					Re-exports <a href="calendar_calendar_utils.html#CalendarLength">CalendarLength</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarPeriod" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Period</h3>
+					Re-exports <a href="../classes/calendar_calendar_period.CalendarPeriod.html">CalendarPeriod</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarRange" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Range</h3>
+					Re-exports <a href="../classes/calendar_calendar_range.CalendarRange.html">CalendarRange</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarStep" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Step</h3>
+					Re-exports <a href="../classes/calendar_calendar_step.CalendarStep.html">CalendarStep</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="CalendarUnit" class="tsd-anchor"></a>
+					<h3>Calendar<wbr>Unit</h3>
+					Re-exports <a href="../enums/calendar_calendar_types.CalendarUnit.html">CalendarUnit</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="END_OF_TIME" class="tsd-anchor"></a>
+					<h3>END_<wbr>OF_<wbr>TIME</h3>
+					Re-exports <a href="calendar_calendar_fns.html#END_OF_TIME">END_OF_TIME</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="END_OF_YEARS" class="tsd-anchor"></a>
+					<h3>END_<wbr>OF_<wbr>YEARS</h3>
+					Re-exports <a href="calendar_calendar_fns.html#END_OF_YEARS">END_OF_YEARS</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="END_YEAR" class="tsd-anchor"></a>
+					<h3>END_<wbr>YEAR</h3>
+					Re-exports <a href="calendar_calendar_fns.html#END_YEAR">END_YEAR</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="ICalendarRange" class="tsd-anchor"></a>
+					<h3>ICalendar<wbr>Range</h3>
+					Re-exports <a href="../interfaces/calendar_calendar_types.ICalendarRange.html">ICalendarRange</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="MONTH_LEMGTH" class="tsd-anchor"></a>
+					<h3>MONTH_<wbr>LEMGTH</h3>
+					Re-exports <a href="calendar_calendar_utils.html#MONTH_LEMGTH">MONTH_LEMGTH</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="MONTH_START" class="tsd-anchor"></a>
+					<h3>MONTH_<wbr>START</h3>
+					Re-exports <a href="calendar_calendar_utils.html#MONTH_START">MONTH_START</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="THIS_YEAR" class="tsd-anchor"></a>
+					<h3>THIS_<wbr>YEAR</h3>
+					Re-exports <a href="calendar_calendar_fns.html#THIS_YEAR">THIS_YEAR</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="TODAY" class="tsd-anchor"></a>
+					<h3>TODAY</h3>
+					Re-exports <a href="calendar_calendar_fns.html#TODAY">TODAY</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="UTC" class="tsd-anchor"></a>
+					<h3>UTC</h3>
+					Re-exports <a href="calendar_calendar_utils.html#UTC">UTC</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="YEAR" class="tsd-anchor"></a>
+					<h3>YEAR</h3>
+					Re-exports <a href="calendar_calendar_fns.html#YEAR">YEAR</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asCalendarInterval" class="tsd-anchor"></a>
+					<h3>as<wbr>Calendar<wbr>Interval</h3>
+					Re-exports <a href="calendar_calendar_utils.html#asCalendarInterval">asCalendarInterval</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asCalendarLength" class="tsd-anchor"></a>
+					<h3>as<wbr>Calendar<wbr>Length</h3>
+					Re-exports <a href="calendar_calendar_utils.html#asCalendarLength">asCalendarLength</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asCalendarPeriod" class="tsd-anchor"></a>
+					<h3>as<wbr>Calendar<wbr>Period</h3>
+					Re-exports <a href="calendar_calendar_period.html#asCalendarPeriod">asCalendarPeriod</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asCalendarStep" class="tsd-anchor"></a>
+					<h3>as<wbr>Calendar<wbr>Step</h3>
+					Re-exports <a href="calendar_calendar_step.html#asCalendarStep">asCalendarStep</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asCalendarUnit" class="tsd-anchor"></a>
+					<h3>as<wbr>Calendar<wbr>Unit</h3>
+					Re-exports <a href="calendar_calendar_utils.html#asCalendarUnit">asCalendarUnit</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asDate" class="tsd-anchor"></a>
+					<h3>as<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#asDate">asDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="calculate_age" class="tsd-anchor"></a>
+					<h3>calculate_<wbr>age</h3>
+					Re-exports <a href="calendar_calendar_fns.html#calculate_age">calculate_age</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="calendarRange" class="tsd-anchor"></a>
+					<h3>calendar<wbr>Range</h3>
+					Re-exports <a href="calendar_calendar_range.html#calendarRange">calendarRange</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="day" class="tsd-anchor"></a>
+					<h3>day</h3>
+					Re-exports <a href="calendar_calendar_utils.html#day">day</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="dayOfYear" class="tsd-anchor"></a>
+					<h3>day<wbr>OfYear</h3>
+					Re-exports <a href="calendar_calendar_fns.html#dayOfYear">dayOfYear</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="day_of_year" class="tsd-anchor"></a>
+					<h3>day_<wbr>of_<wbr>year</h3>
+					Re-exports <a href="calendar_calendar_fns.html#day_of_year">day_of_year</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="decodeCalendarInterval" class="tsd-anchor"></a>
+					<h3>decode<wbr>Calendar<wbr>Interval</h3>
+					Re-exports <a href="calendar_calendar_utils.html#decodeCalendarInterval">decodeCalendarInterval</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="fmt_date" class="tsd-anchor"></a>
+					<h3>fmt_<wbr>date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#fmt_date">fmt_date</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="fmt_datetime" class="tsd-anchor"></a>
+					<h3>fmt_<wbr>datetime</h3>
+					Re-exports <a href="calendar_calendar_utils.html#fmt_datetime">fmt_datetime</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="fmt_month" class="tsd-anchor"></a>
+					<h3>fmt_<wbr>month</h3>
+					Re-exports <a href="calendar_calendar_utils.html#fmt_month">fmt_month</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="fmt_time" class="tsd-anchor"></a>
+					<h3>fmt_<wbr>time</h3>
+					Re-exports <a href="calendar_calendar_utils.html#fmt_time">fmt_time</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="incrementDate" class="tsd-anchor"></a>
+					<h3>increment<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#incrementDate">incrementDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isCalendarInterval" class="tsd-anchor"></a>
+					<h3>is<wbr>Calendar<wbr>Interval</h3>
+					Re-exports <a href="calendar_calendar_utils.html#isCalendarInterval">isCalendarInterval</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isCalendarLength" class="tsd-anchor"></a>
+					<h3>is<wbr>Calendar<wbr>Length</h3>
+					Re-exports <a href="calendar_calendar_utils.html#isCalendarLength">isCalendarLength</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isCalendarPeriod" class="tsd-anchor"></a>
+					<h3>is<wbr>Calendar<wbr>Period</h3>
+					Re-exports <a href="calendar_calendar_period.html#isCalendarPeriod">isCalendarPeriod</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isCalendarStep" class="tsd-anchor"></a>
+					<h3>is<wbr>Calendar<wbr>Step</h3>
+					Re-exports <a href="calendar_calendar_step.html#isCalendarStep">isCalendarStep</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isCalendarUnit" class="tsd-anchor"></a>
+					<h3>is<wbr>Calendar<wbr>Unit</h3>
+					Re-exports <a href="calendar_calendar_utils.html#isCalendarUnit">isCalendarUnit</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isDate" class="tsd-anchor"></a>
+					<h3>is<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#isDate">isDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isLeapYear" class="tsd-anchor"></a>
+					<h3>is<wbr>Leap<wbr>Year</h3>
+					Re-exports <a href="calendar_calendar_utils.html#isLeapYear">isLeapYear</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="parseDate" class="tsd-anchor"></a>
+					<h3>parse<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#parseDate">parseDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toCalendarInterval" class="tsd-anchor"></a>
+					<h3>to<wbr>Calendar<wbr>Interval</h3>
+					Re-exports <a href="calendar_calendar_utils.html#toCalendarInterval">toCalendarInterval</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toCalendarLength" class="tsd-anchor"></a>
+					<h3>to<wbr>Calendar<wbr>Length</h3>
+					Re-exports <a href="calendar_calendar_utils.html#toCalendarLength">toCalendarLength</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toCalendarPeriod" class="tsd-anchor"></a>
+					<h3>to<wbr>Calendar<wbr>Period</h3>
+					Re-exports <a href="calendar_calendar_period.html#toCalendarPeriod">toCalendarPeriod</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toCalendarStep" class="tsd-anchor"></a>
+					<h3>to<wbr>Calendar<wbr>Step</h3>
+					Re-exports <a href="calendar_calendar_step.html#toCalendarStep">toCalendarStep</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toCalendarUnit" class="tsd-anchor"></a>
+					<h3>to<wbr>Calendar<wbr>Unit</h3>
+					Re-exports <a href="calendar_calendar_utils.html#toCalendarUnit">toCalendarUnit</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toDate" class="tsd-anchor"></a>
+					<h3>to<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#toDate">toDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="truncateDate" class="tsd-anchor"></a>
+					<h3>truncate<wbr>Date</h3>
+					Re-exports <a href="calendar_calendar_utils.html#truncateDate">truncateDate</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="year" class="tsd-anchor"></a>
+					<h3>year</h3>
+					Re-exports <a href="calendar_calendar_fns.html#year">year</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="yearDays" class="tsd-anchor"></a>
+					<h3>year<wbr>Days</h3>
+					Re-exports <a href="calendar_calendar_fns.html#yearDays">yearDays</a>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="calendar.html">calendar</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#ANNUAL_PAYMENT_PERIODS" class="tsd-kind-icon">ANNUAL_<wbr>PAYMENT_<wbr>PERIODS</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarInterval" class="tsd-kind-icon">Calendar<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarLength" class="tsd-kind-icon">Calendar<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarPeriod" class="tsd-kind-icon">Calendar<wbr>Period</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarRange" class="tsd-kind-icon">Calendar<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarStep" class="tsd-kind-icon">Calendar<wbr>Step</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#CalendarUnit" class="tsd-kind-icon">Calendar<wbr>Unit</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#END_OF_TIME" class="tsd-kind-icon">END_<wbr>OF_<wbr>TIME</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#END_OF_YEARS" class="tsd-kind-icon">END_<wbr>OF_<wbr>YEARS</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#END_YEAR" class="tsd-kind-icon">END_<wbr>YEAR</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#ICalendarRange" class="tsd-kind-icon">ICalendar<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#MONTH_LEMGTH" class="tsd-kind-icon">MONTH_<wbr>LEMGTH</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#MONTH_START" class="tsd-kind-icon">MONTH_<wbr>START</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#THIS_YEAR" class="tsd-kind-icon">THIS_<wbr>YEAR</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#TODAY" class="tsd-kind-icon">TODAY</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#UTC" class="tsd-kind-icon">UTC</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#YEAR" class="tsd-kind-icon">YEAR</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asCalendarInterval" class="tsd-kind-icon">as<wbr>Calendar<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asCalendarLength" class="tsd-kind-icon">as<wbr>Calendar<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asCalendarPeriod" class="tsd-kind-icon">as<wbr>Calendar<wbr>Period</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asCalendarStep" class="tsd-kind-icon">as<wbr>Calendar<wbr>Step</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asCalendarUnit" class="tsd-kind-icon">as<wbr>Calendar<wbr>Unit</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#asDate" class="tsd-kind-icon">as<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#calculate_age" class="tsd-kind-icon">calculate_<wbr>age</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#calendarRange" class="tsd-kind-icon">calendar<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#day" class="tsd-kind-icon">day</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#dayOfYear" class="tsd-kind-icon">day<wbr>OfYear</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#day_of_year" class="tsd-kind-icon">day_<wbr>of_<wbr>year</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#decodeCalendarInterval" class="tsd-kind-icon">decode<wbr>Calendar<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#fmt_date" class="tsd-kind-icon">fmt_<wbr>date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#fmt_datetime" class="tsd-kind-icon">fmt_<wbr>datetime</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#fmt_month" class="tsd-kind-icon">fmt_<wbr>month</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#fmt_time" class="tsd-kind-icon">fmt_<wbr>time</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#incrementDate" class="tsd-kind-icon">increment<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isCalendarInterval" class="tsd-kind-icon">is<wbr>Calendar<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isCalendarLength" class="tsd-kind-icon">is<wbr>Calendar<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isCalendarPeriod" class="tsd-kind-icon">is<wbr>Calendar<wbr>Period</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isCalendarStep" class="tsd-kind-icon">is<wbr>Calendar<wbr>Step</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isCalendarUnit" class="tsd-kind-icon">is<wbr>Calendar<wbr>Unit</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isDate" class="tsd-kind-icon">is<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#isLeapYear" class="tsd-kind-icon">is<wbr>Leap<wbr>Year</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#parseDate" class="tsd-kind-icon">parse<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toCalendarInterval" class="tsd-kind-icon">to<wbr>Calendar<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toCalendarLength" class="tsd-kind-icon">to<wbr>Calendar<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toCalendarPeriod" class="tsd-kind-icon">to<wbr>Calendar<wbr>Period</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toCalendarStep" class="tsd-kind-icon">to<wbr>Calendar<wbr>Step</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toCalendarUnit" class="tsd-kind-icon">to<wbr>Calendar<wbr>Unit</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#toDate" class="tsd-kind-icon">to<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#truncateDate" class="tsd-kind-icon">truncate<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#year" class="tsd-kind-icon">year</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="calendar.html#yearDays" class="tsd-kind-icon">year<wbr>Days</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script
+src="https://unpkg.com/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+    mermaid.initialize({
+      startOnLoad: true,
+    });
+    </script>
+</body>
+</html>
