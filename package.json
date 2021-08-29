@@ -1,6 +1,6 @@
 {
     "name": "retirement-simulator",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Retirement Simulator",
     "main": "lib/cjs/index.js",
     "module": "lib/esm/index.js",

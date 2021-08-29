@@ -1,6 +1,12 @@
 # Changes for Retirement Simulator
 
 
+## Version 0.1.6
+
+__date: 2021-08-29__
+
+* Fix some format glitches.
+
 ## Version 0.1.5
 
 __date: 2021-08-29__

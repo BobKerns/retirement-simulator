@@ -31,7 +31,7 @@ const bad = (arg: any) => arg === undefined
 export const roundTo = (n: number) => (arg: number) => round(arg / n) * n;
 
 const fmt = {
-    string: (arg: any) => String(arg),
+    string: (arg: any) => String(arg ?? ''),
     null: (arg: any) => '',
     number: (arg: any) => isNumber(arg) ? roundTo(0.0001)(arg).toLocaleString("en", {maximumFractionDigits: 4}) : bad(arg),
     money: (arg: any) => isNumber(arg) ? fmt_usd(roundTo(0.01)(arg)) : bad(arg),

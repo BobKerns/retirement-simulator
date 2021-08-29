@@ -120,7 +120,7 @@ export const row = (...args: any[]) => `|${args.join("|")}|`;
 type ColMap = {[k: string]: Column};
 
 export const formatCell = (v: any, col: ColumnSpec): string => {
-        if (v === undefined) return '—?-';
+        if (v === undefined) return '-?-';
         const str = col.format(v);
         if (v === '') return '---';
         return col.fixed ? `\`${str}\`` : str;
@@ -133,7 +133,7 @@ export const table = (columns: Column[] | ColMap, ...rows: any) => {
     const header2 = row(...specs.map(s => alignString(s.align)));
     const format = (r: any) => (k: string, i: number) => formatCell(r[k], specs[i]);
     const toRow = (r: any) =>
-        !r || isString(r) ? r : row(...keys.map(format(r)));
+        !r || isString(r) ? (r || ' ') : row(...keys.map(format(r)));
     return [header, header2, ...rows.map(toRow).filter((r: any) => !!r)].join("\n");
 }
 
