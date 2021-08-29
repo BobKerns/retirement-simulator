@@ -26,7 +26,7 @@ export const id = <T extends IItem<Type>>(spec: Partial<T> & any): T =>
 
 export const scenario_1: IFScenario = id({
     name: 'Default',
-    type: 'default'
+    type: 'scenario',
 });
 
 export const expense_1: IExpense = id({
@@ -41,22 +41,20 @@ export const expense_1: IExpense = id({
 });
 
 export const person_1: IPerson = id({
-    name: 'Person 1',
+    name: 'spouse1',
     type: 'person' as const,
     sort: 1,
     categories: [],
-    scenarios: [],
     birth: UTC("1967-01-01"),
     start: UTC("1967-01-01"),
     sex: 'female'
 });
 
 export const person_2: IPerson = id({
-    name: 'Person 2',
+    name: 'spouse2',
     type: 'person' as const,
     sort: 1,
     categories: [],
-    scenarios: [],
     birth: UTC("1967-01-01"),
     start: UTC("1967-01-01"),
     sex: 'male'
