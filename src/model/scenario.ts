@@ -7,7 +7,7 @@
 import Heap from "heap";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, incrementDate, TODAY, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
@@ -25,6 +25,7 @@ import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
 import { START } from "../input";
+import { END } from "..";
 
 /**
  * Category of assets that do not contribute to retirement income streams.
@@ -131,7 +132,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
 
         // Compute the intial timeline.
         const timeline = new Heap(timelineCmp);
-        timeline.push({ date: TODAY, action: "begin", item: this });
+        timeline.push({ date: START, action: "begin", item: this });
         const scan = (list: Array<IItem>) =>
             list.forEach((item) => {
                 if (item && item.start) {
@@ -254,7 +255,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
             type: 'person' as const,
             id,
             prettyName,
-            start: item?.start ?? TODAY,
+            start: item?.start ?? START,
             birth,
             sex,
             sort: item?.sort ?? 0,
@@ -281,7 +282,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
             state[i.id] = {generator, current};
         });
         const snapshots = [];
-        for (const period of calendarRange(START, incrementDate(START, {year: 50}), {month: 1})) {
+        for (const period of calendarRange(START, END, {month: 1})) {
             snapshots.push(new Snapshot(this, period, previous, state));
             // Walk each asset, liability, income, or expense through their internal evolution.
             // This includes both rate-base calculations and multiple time-based entries.

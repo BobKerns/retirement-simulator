@@ -40,6 +40,10 @@ const start = new Date();
  * The default start date.
  */
 export let START = UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
+/**
+ * The default end date.
+ */
+export let END = UTC(START.getUTCFullYear() + 50, START.getUTCMonth(), START.getUTCDate());
 
 export const split = <T>(dflt: T[]) => (c: any): T[] =>
     ((c === undefined || c === '')
