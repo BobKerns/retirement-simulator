@@ -27,7 +27,8 @@
         "docs": "npm run serve",
         "watch:compile": "tsc --build --watch config src src/__tests__",
         "watch:package": "rollup -c --watch",
-        "watch": "(trap 'kill 0' SIGINT; npm run watch:compile & npm run watch:package)"
+        "watch": "(trap 'kill 0' SIGINT; npm run watch:compile & npm run watch:package)",
+        "pubdocs": "bin/deploy-docs.js"
     },
     "bin": {},
     "repository": {
@@ -58,6 +59,7 @@
         "@types/jest": "^27.0.1",
         "@types/node-fetch": "^2.5.12",
         "@types/ramda": "^0.27.44",
+        "highlight.js": "^11.2.0",
         "jest": "^27.1.0",
         "jest-mock-proxy": "^3.0.0",
         "mermaid": "^8.12.0",
