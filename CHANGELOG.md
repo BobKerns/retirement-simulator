@@ -1,5 +1,11 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.3
+
+__date: 2021-08-29__
+
+* Forgot to add the landing page to git in the build.
+
 ## Version 0.1.2
 
 __date: 2021-08-29__

@@ -231,6 +231,7 @@ ${release.body || ''}
     if (github) {
         await exec('git', 'config', 'user.email', '1154903+BobKerns@users.noreply.github.com');
         await exec('git', 'config', 'user.name', 'ReleaseBot');
+        await exec('git', 'add', 'index.html');
         await exec('git', 'add', target);
         await exec('git', 'add', 'docs/index.html');
         await exec('git', 'add', 'docs/CHANGELOG.html');
