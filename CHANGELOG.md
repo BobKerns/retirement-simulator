@@ -1,5 +1,11 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.7
+
+__date: 2021-08-29__
+
+* Let the formatters handle `undefined` and empty strings.
+* Fix circular dependency.
 
 ## Version 0.1.6
 
