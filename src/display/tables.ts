@@ -144,7 +144,8 @@ const coltypes = {
     number: {format: Fmt.number, align: Align.right, fixed: true},
     left: {format: Fmt.string, align: Align.left},
     center: {format: Fmt.string, align: Align.center},
-    right: {format: Fmt.string, align: Align.right}
+    right: {format: Fmt.string, align: Align.right},
+    date: {format: Fmt.date, align: Align.right, fixed: true}
 };
 
 export const ColTypes: {[K in keyof typeof coltypes]: ColumnType} = coltypes;

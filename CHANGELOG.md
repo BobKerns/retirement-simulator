@@ -1,5 +1,12 @@
 # Changes for Retirement Simulator
 
+
+## Version 0.1.5
+
+__date: 2021-08-29__
+
+* Add Fmt.date and ColTypes.date
+
 ## Version 0.1.4
 
 __date: 2021-08-29__

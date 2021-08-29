@@ -6,6 +6,7 @@
 
 import { fmt_pct, fmt_usd, typeChecks } from "../utils";
 import { isNumber, round } from "../tagged";
+import { fmt_date, isDate } from "..";
 
 /**
  * Formatters
@@ -40,7 +41,8 @@ const fmt = {
     pct1: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.1)(arg), 1) : bad(arg),
     pct2: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.01)(arg), 2) : bad(arg),
     pct3: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.001)(arg), 3) : bad(arg),
-    pct4: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.0001)(arg), 4) : bad(arg)
+    pct4: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.0001)(arg), 4) : bad(arg),
+    date: (arg: any) => isDate(arg) ? fmt_date(arg) : bad(arg)
 };
 
 /**
