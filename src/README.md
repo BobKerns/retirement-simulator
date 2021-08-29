@@ -57,4 +57,4 @@ as a class instance.
 
 * [[color]] Provides a stable set of colors for graphing.
 * Interpolated [[actuary]] data [[SS_2017]].
-* [[time]] provides utilities for working with time in relevant ways.
+* [[calendar]] provides utilities for working with time in relevant ways.
