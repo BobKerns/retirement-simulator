@@ -1,5 +1,14 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.4
+
+__date: 2021-08-29__
+
+* `START` and `END` are now controllable parameters
+* More and better sort functions
+* Formatting and table facilities.
+* DOC: Fix bad link and other glitches
+
 ## Version 0.1.3
 
 __date: 2021-08-29__
