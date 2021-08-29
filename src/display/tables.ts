@@ -120,9 +120,8 @@ export const row = (...args: any[]) => `|${args.join("|")}|`;
 type ColMap = {[k: string]: Column};
 
 export const formatCell = (v: any, col: ColumnSpec): string => {
-        if (v === undefined) return '-?-';
         const str = col.format(v);
-        if (v === '') return '---';
+        if (v === '') return ' ';
         return col.fixed ? `\`${str}\`` : str;
 };
 
