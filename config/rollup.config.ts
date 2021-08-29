@@ -129,14 +129,11 @@ const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =
         return isExternal;
     }
 
+const git = (...args: string[]) => child_process.spawnSync('git', args, { encoding: 'utf-8' }).stdout.trim();
 
-function getCommitId() {
-    return child_process.spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf-8' }).stdout.trim();
-}
+const getCommitId = () => git('rev-parse', 'HEAD');
 
-function getBranch() {
-    return child_process.spawnSync('git', ['symbolic-ref', '--short', 'HEAD'], { encoding: 'utf-8' }).stdout.trim();
-}
+const getBranch = () => git('branch', '--show-current');
 
 /**
  * Compute the version information to embed in the package.
@@ -155,7 +152,7 @@ const replaceVersion = () =>
         branch: getBranch(),
         mode,
         author: pkg.author,
-        built: new Date().toISOString(),
+        built: new Date().toUTCString(),
         builtBy: process.env.USER
     });
 

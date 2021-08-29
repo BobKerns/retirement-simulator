@@ -1,6 +1,6 @@
 {
     "name": "retirement-simulator",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Retirement Simulator",
     "main": "lib/cjs/index.js",
     "module": "lib/esm/index.js",
@@ -19,7 +19,7 @@
         "build": "npm run build:package",
         "all": "npm run build && npm run build:test && npm run build:docs",
         "clean": "rm -rf build lib docs",
-        "prepublishOnly": "NODE_ENV=production npm run build",
+        "prepublishOnly": "NODE_ENV=production npm run build && npm run build:docs && npm run pubdocs",
         "build:docs": "GRAPHVIZ_DOT=\"$(which dot)\" typedoc --out build/docs/api src/",
         "preserve": "npm run build:compile",
         "serve": "serve -l 3035 -C",
