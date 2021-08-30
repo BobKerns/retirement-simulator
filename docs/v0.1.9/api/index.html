@@ -1,0 +1,322 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Retirement Simulator - v0.1.9</title>
+	<meta name="description" content="Documentation for Retirement Simulator - v0.1.9">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">Retirement Simulator - v0.1.9</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>Retirement Simulator - v0.1.9</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#retirement-simulator" id="retirement-simulator" style="color: inherit; text-decoration: none;">
+					<h1>Retirement Simulator</h1>
+				</a>
+				<p>Retirement-simulator library. It is intended to be used in an exploratory manner in an
+				<a href="https://observablehq.com">ObservableHQ</a> notebook.</p>
+				<a href="#key-modelling-concepts" id="key-modelling-concepts" style="color: inherit; text-decoration: none;">
+					<h2>Key Modelling Concepts</h2>
+				</a>
+				<a href="#balance-sheet" id="balance-sheet" style="color: inherit; text-decoration: none;">
+					<h3>Balance Sheet</h3>
+				</a>
+				<p>These concepts are what you have; together, they determine your <em>net worth</em>.</p>
+				<pre><code class="language-javascript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">net_worth</span><span style="color: #000000"> = </span><span style="color: #001080">assets</span><span style="color: #000000"> - </span><span style="color: #001080">liabilities</span>
+</code></pre>
+				<ul>
+					<li><a href="classes/model_asset.Asset.html">Asset</a>: What you own</li>
+					<li><a href="classes/model_liability.Liability.html">Liability</a>: What you owe. Loans, mortages, debts.</li>
+				</ul>
+				<a href="#cash-flow" id="cash-flow" style="color: inherit; text-decoration: none;">
+					<h3>Cash Flow</h3>
+				</a>
+				<p>Cash flow is money in or out. Together, they determine your <em>net income</em>, which can be positive or negative.</p>
+				<pre><code class="language-javascript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">net_income</span><span style="color: #000000"> = </span><span style="color: #001080">income</span><span style="color: #000000"> - </span><span style="color: #001080">expense</span>
+</code></pre>
+				<ul>
+					<li><a href="classes/model_expense.Expense.html">Expense</a></li>
+					<li><a href="classes/model_income.Income.html">Income</a></li>
+				</ul>
+				<p>While technically, asset growth is reinvested investment income, we do not need to model it
+					that way, as it would complicate the picture with details. With investments in a protected tax-deferred retirement account,
+					with dividends and interest automatically reinvested, it is simpler to model as compound growth. However, nothing prevents
+				you from modeling it as an income stream adding to the asset.</p>
+				<a href="#other" id="other" style="color: inherit; text-decoration: none;">
+					<h3>Other</h3>
+				</a>
+				<ul>
+					<li><a href="classes/model_income_stream.IncomeStream.html">IncomeStream</a> connects sources (<a href="classes/model_income.Income.html">Income</a> or withdrawal from <a href="classes/model_asset.Asset.html">Asset</a>) to <a href="classes/model_expense.Expense.html">Expense</a></li>
+					<li><a href="classes/model_income_tax.IncomeTax.html">IncomeTax</a> a tax based on income. Other taxes are an <a href="classes/model_expense.Expense.html">Expense</a>.</li>
+					<li><a href="classes/model_scenario.Scenario.html">Scenario</a> a particular configuration of the above</li>
+					<li><a href="classes/model_snapshot.Snapshot.html">Snapshot</a> the state of a scenario at a point in time.</li>
+				</ul>
+				<a href="#interfaces" id="interfaces" style="color: inherit; text-decoration: none;">
+					<h2>Interfaces</h2>
+				</a>
+				<p>The key modeling classes have corresponding interface types, to facilitate working with the raw data without instantiation
+				as a class instance.</p>
+				<ul>
+					<li><a href="interfaces/types.IAsset.html">IAsset</a></li>
+					<li><a href="interfaces/types.ILiability.html">ILiability</a></li>
+					<li><a href="interfaces/types.IExpense.html">IExpense</a></li>
+					<li><a href="interfaces/types.IIncome.html">IIncome</a></li>
+					<li><a href="interfaces/types.IIncomeStream.html">IIncomeStream</a> connects sources (<a href="classes/model_income.Income.html">Income</a> or withdrawal from <a href="classes/model_asset.Asset.html">Asset</a>) to <a href="classes/model_expense.Expense.html">Expense</a></li>
+					<li><a href="interfaces/types.IIncomeTax.html">IIncomeTax</a> a tax based on income. Other taxes are an <a href="classes/model_expense.Expense.html">Expense</a>.</li>
+					<li><a href="interfaces/types.IScenario.html">IScenario</a> a particular configuration of the above</li>
+					<li><a href="interfaces/types.ISnapshot.html">ISnapshot</a> the state of a scenario at a point in time.</li>
+				</ul>
+				<a href="#other-facilities" id="other-facilities" style="color: inherit; text-decoration: none;">
+					<h2>Other Facilities</h2>
+				</a>
+				<ul>
+					<li><a href="modules/color.html">color</a> Provides a stable set of colors for graphing.</li>
+					<li>Interpolated <a href="modules/actuary.html">actuary</a> data <a href="modules/actuary.html#SS_2017">SS_2017</a>.</li>
+					<li><a href="modules/calendar.html">calendar</a> provides utilities for working with time in relevant ways.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Modules</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/Index.html">Index</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/Sort.html">Sort</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/Temporal.html">Temporal</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/actuary.html">actuary</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar.html">calendar</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_fns.html">calendar/calendar-<wbr>fns</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_period.html">calendar/calendar-<wbr>period</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_range.html">calendar/calendar-<wbr>range</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_step.html">calendar/calendar-<wbr>step</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_types.html">calendar/calendar-<wbr>types</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/calendar_calendar_utils.html">calendar/calendar-<wbr>utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/color.html">color</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/construct.html">construct</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/display.html">display</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/display_format.html">display/format</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/display_tables.html">display/tables</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/enums.html">enums</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/input.html">input</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interest.html">interest</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/item_types.html">item-<wbr>types</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/load.html">load</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model.html">model</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_asset.html">model/asset</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_cashflow.html">model/cashflow</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_expense.html">model/expense</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_income.html">model/income</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_income_stream.html">model/income-<wbr>stream</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_income_tax.html">model/income-<wbr>tax</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_item.html">model/item</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_liability.html">model/liability</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_monetary.html">model/monetary</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_person.html">model/person</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_scenario.html">model/scenario</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_scenario_base.html">model/scenario-<wbr>base</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_snapshot.html">model/snapshot</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_state_mixin.html">model/state-<wbr>mixin</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_text.html">model/text</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/states.html">states</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tagged.html">tagged</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tax.html">tax</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tax_california.html">tax/california</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tax_federal.html">tax/federal</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tax_tax_tables.html">tax/tax-<wbr>tables</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/tax_tax_util.html">tax/tax-<wbr>util</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/types.html">types</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils.html">utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/validate.html">validate</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script
+src="https://unpkg.com/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+    mermaid.initialize({
+      startOnLoad: true,
+    });
+    </script>
+</body>
+</html>

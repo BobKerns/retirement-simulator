@@ -1,0 +1,654 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>model | Retirement Simulator - v0.1.9</title>
+	<meta name="description" content="Documentation for Retirement Simulator - v0.1.9">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Retirement Simulator - v0.1.9</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">Retirement Simulator - v0.1.9</a>
+				</li>
+				<li>
+					<a href="model.html">model</a>
+				</li>
+			</ul>
+			<h1>Module model</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<a href="#our-data-model" id="our-data-model" style="color: inherit; text-decoration: none;">
+							<h1>Our Data Model</h1>
+						</a>
+						<p>This needs some diagrams and explanation.</p>
+						<a href="#the-model-elements" id="the-model-elements" style="color: inherit; text-decoration: none;">
+							<h2>The Model Elements</h2>
+						</a>
+						<ul>
+							<li><a href="model.html#Scenario">Scenario</a> A distinct scenario to be simulated.<ul>
+									<li><a href="model.html#Snapshot">Snapshot</a> captures the state of an entire <a href="model.html#Scenario">Scenario</a> at a point in time.</li>
+								</ul>
+							</li>
+							<li><a href="model.html#Person">Person</a>, typically individual or spouses or domestic partners.</li>
+							<li><a href="model.html#Income">Income</a>, a source of new income</li>
+							<li><a href="model.html#Expense">Expense</a>, something that costs money</li>
+							<li><a href="model.html#Asset">Asset</a>, something that we own. This can be something that can be potentially sold, such as a house or car, or an investment.</li>
+							<li><a href="model.html#Liability">Liability</a>, something that we need to pay in the future or over time. This can be loan, or a committed expense, such as needed maintenance.</li>
+							<li><a href="model.html#IncomeStream">IncomeStream</a>, a plan combining <a href="model.html#Income">Income</a> and drawing down <a href="model.html#Asset">Assets</a>, to supply funds to meet <a href="model.html#Expense">Expenses</a>.</li>
+							<li><a href="model.html#IncomeTax">IncomeTax</a>, information to estimate income-based taxes that will need to be paid.</li>
+							<li>[[Text]], arbitrary user-supplied text to be used where needed.</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>References</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Asset" class="tsd-kind-icon">Asset</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#AssetState" class="tsd-kind-icon">Asset<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Constructor" class="tsd-kind-icon">Constructor</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Expense" class="tsd-kind-icon">Expense</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#ExpenseState" class="tsd-kind-icon">Expense<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#G" class="tsd-kind-icon">G</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Income" class="tsd-kind-icon">Income</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#IncomeState" class="tsd-kind-icon">Income<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#IncomeStream" class="tsd-kind-icon">Income<wbr>Stream</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#IncomeStreamState" class="tsd-kind-icon">Income<wbr>Stream<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#IncomeTax" class="tsd-kind-icon">Income<wbr>Tax</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#IncomeTaxState" class="tsd-kind-icon">Income<wbr>Tax<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Item" class="tsd-kind-icon">Item</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Liability" class="tsd-kind-icon">Liability</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#LiabilityState" class="tsd-kind-icon">Liability<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Monetary" class="tsd-kind-icon">Monetary</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Person" class="tsd-kind-icon">Person</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Scenario" class="tsd-kind-icon">Scenario</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#Snapshot" class="tsd-kind-icon">Snapshot</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#State" class="tsd-kind-icon">State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#StateMixin" class="tsd-kind-icon">State<wbr>Mixin</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#StateMixinConstructor" class="tsd-kind-icon">State<wbr>Mixin<wbr>Constructor</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#TextItem" class="tsd-kind-icon">Text<wbr>Item</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#TextItemState" class="tsd-kind-icon">Text<wbr>Item<wbr>State</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asAsset" class="tsd-kind-icon">as<wbr>Asset</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asExpense" class="tsd-kind-icon">as<wbr>Expense</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asIncome" class="tsd-kind-icon">as<wbr>Income</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asIncomeStream" class="tsd-kind-icon">as<wbr>Income<wbr>Stream</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asIncomeTax" class="tsd-kind-icon">as<wbr>Income<wbr>Tax</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asLiability" class="tsd-kind-icon">as<wbr>Liability</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asPerson" class="tsd-kind-icon">as<wbr>Person</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asScenario" class="tsd-kind-icon">as<wbr>Scenario</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asSnapshot" class="tsd-kind-icon">as<wbr>Snapshot</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#asTextItem" class="tsd-kind-icon">as<wbr>Text<wbr>Item</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isAsset" class="tsd-kind-icon">is<wbr>Asset</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isExpense" class="tsd-kind-icon">is<wbr>Expense</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isIncome" class="tsd-kind-icon">is<wbr>Income</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isIncomeStream" class="tsd-kind-icon">is<wbr>Income<wbr>Stream</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isIncomeTax" class="tsd-kind-icon">is<wbr>Income<wbr>Tax</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isLiability" class="tsd-kind-icon">is<wbr>Liability</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isPerson" class="tsd-kind-icon">is<wbr>Person</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isScenario" class="tsd-kind-icon">is<wbr>Scenario</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isSnapshot" class="tsd-kind-icon">is<wbr>Snapshot</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#isTextItem" class="tsd-kind-icon">is<wbr>Text<wbr>Item</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toAsset" class="tsd-kind-icon">to<wbr>Asset</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toExpense" class="tsd-kind-icon">to<wbr>Expense</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toIncome" class="tsd-kind-icon">to<wbr>Income</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toIncomeStream" class="tsd-kind-icon">to<wbr>Income<wbr>Stream</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toIncomeTax" class="tsd-kind-icon">to<wbr>Income<wbr>Tax</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toLiability" class="tsd-kind-icon">to<wbr>Liability</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toPerson" class="tsd-kind-icon">to<wbr>Person</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toScenario" class="tsd-kind-icon">to<wbr>Scenario</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toSnapshot" class="tsd-kind-icon">to<wbr>Snapshot</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="model.html#toTextItem" class="tsd-kind-icon">to<wbr>Text<wbr>Item</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>References</h2>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Asset" class="tsd-anchor"></a>
+					<h3>Asset</h3>
+					Re-exports <a href="../classes/model_asset.Asset.html">Asset</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="AssetState" class="tsd-anchor"></a>
+					<h3>Asset<wbr>State</h3>
+					Re-exports <a href="../classes/model_asset.AssetState.html">AssetState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Constructor" class="tsd-anchor"></a>
+					<h3>Constructor</h3>
+					Re-exports <a href="model_state_mixin.html#Constructor">Constructor</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Expense" class="tsd-anchor"></a>
+					<h3>Expense</h3>
+					Re-exports <a href="../classes/model_expense.Expense.html">Expense</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="ExpenseState" class="tsd-anchor"></a>
+					<h3>Expense<wbr>State</h3>
+					Re-exports <a href="../classes/model_expense.ExpenseState.html">ExpenseState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="G" class="tsd-anchor"></a>
+					<h3>G</h3>
+					Re-exports <a href="Index.G.html">G</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Income" class="tsd-anchor"></a>
+					<h3>Income</h3>
+					Re-exports <a href="../classes/model_income.Income.html">Income</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="IncomeState" class="tsd-anchor"></a>
+					<h3>Income<wbr>State</h3>
+					Re-exports <a href="../classes/model_income.IncomeState.html">IncomeState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="IncomeStream" class="tsd-anchor"></a>
+					<h3>Income<wbr>Stream</h3>
+					Re-exports <a href="../classes/model_income_stream.IncomeStream.html">IncomeStream</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="IncomeStreamState" class="tsd-anchor"></a>
+					<h3>Income<wbr>Stream<wbr>State</h3>
+					Re-exports <a href="../classes/model_income_stream.IncomeStreamState.html">IncomeStreamState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="IncomeTax" class="tsd-anchor"></a>
+					<h3>Income<wbr>Tax</h3>
+					Re-exports <a href="../classes/model_income_tax.IncomeTax.html">IncomeTax</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="IncomeTaxState" class="tsd-anchor"></a>
+					<h3>Income<wbr>Tax<wbr>State</h3>
+					Re-exports <a href="../classes/model_income_tax.IncomeTaxState.html">IncomeTaxState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Item" class="tsd-anchor"></a>
+					<h3>Item</h3>
+					Re-exports <a href="../classes/model_item.Item.html">Item</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Liability" class="tsd-anchor"></a>
+					<h3>Liability</h3>
+					Re-exports <a href="../classes/model_liability.Liability.html">Liability</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="LiabilityState" class="tsd-anchor"></a>
+					<h3>Liability<wbr>State</h3>
+					Re-exports <a href="../classes/model_liability.LiabilityState.html">LiabilityState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Monetary" class="tsd-anchor"></a>
+					<h3>Monetary</h3>
+					Re-exports <a href="../classes/model_monetary.Monetary.html">Monetary</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Person" class="tsd-anchor"></a>
+					<h3>Person</h3>
+					Re-exports <a href="../classes/model_person.Person.html">Person</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Scenario" class="tsd-anchor"></a>
+					<h3>Scenario</h3>
+					Re-exports <a href="../classes/model_scenario.Scenario.html">Scenario</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="Snapshot" class="tsd-anchor"></a>
+					<h3>Snapshot</h3>
+					Re-exports <a href="../classes/model_snapshot.Snapshot.html">Snapshot</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="State" class="tsd-anchor"></a>
+					<h3>State</h3>
+					Re-exports <a href="model_state_mixin.html#State">State</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="StateMixin" class="tsd-anchor"></a>
+					<h3>State<wbr>Mixin</h3>
+					Re-exports <a href="model_state_mixin.html#StateMixin">StateMixin</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="StateMixinConstructor" class="tsd-anchor"></a>
+					<h3>State<wbr>Mixin<wbr>Constructor</h3>
+					Re-exports <a href="model_state_mixin.html#StateMixinConstructor">StateMixinConstructor</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="TextItem" class="tsd-anchor"></a>
+					<h3>Text<wbr>Item</h3>
+					Re-exports <a href="../classes/model_text.TextItem.html">TextItem</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="TextItemState" class="tsd-anchor"></a>
+					<h3>Text<wbr>Item<wbr>State</h3>
+					Re-exports <a href="../classes/model_text.TextItemState.html">TextItemState</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asAsset" class="tsd-anchor"></a>
+					<h3>as<wbr>Asset</h3>
+					Re-exports <a href="model_asset.html#asAsset">asAsset</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asExpense" class="tsd-anchor"></a>
+					<h3>as<wbr>Expense</h3>
+					Re-exports <a href="model_expense.html#asExpense">asExpense</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asIncome" class="tsd-anchor"></a>
+					<h3>as<wbr>Income</h3>
+					Re-exports <a href="model_income.html#asIncome">asIncome</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asIncomeStream" class="tsd-anchor"></a>
+					<h3>as<wbr>Income<wbr>Stream</h3>
+					Re-exports <a href="model_income_stream.html#asIncomeStream">asIncomeStream</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asIncomeTax" class="tsd-anchor"></a>
+					<h3>as<wbr>Income<wbr>Tax</h3>
+					Re-exports <a href="model_income_tax.html#asIncomeTax">asIncomeTax</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asLiability" class="tsd-anchor"></a>
+					<h3>as<wbr>Liability</h3>
+					Re-exports <a href="model_liability.html#asLiability">asLiability</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asPerson" class="tsd-anchor"></a>
+					<h3>as<wbr>Person</h3>
+					Re-exports <a href="model_person.html#asPerson">asPerson</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asScenario" class="tsd-anchor"></a>
+					<h3>as<wbr>Scenario</h3>
+					Re-exports <a href="model_scenario.html#asScenario">asScenario</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asSnapshot" class="tsd-anchor"></a>
+					<h3>as<wbr>Snapshot</h3>
+					Re-exports <a href="model_snapshot.html#asSnapshot">asSnapshot</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="asTextItem" class="tsd-anchor"></a>
+					<h3>as<wbr>Text<wbr>Item</h3>
+					Re-exports <a href="model_text.html#asTextItem">asTextItem</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isAsset" class="tsd-anchor"></a>
+					<h3>is<wbr>Asset</h3>
+					Re-exports <a href="model_asset.html#isAsset">isAsset</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isExpense" class="tsd-anchor"></a>
+					<h3>is<wbr>Expense</h3>
+					Re-exports <a href="model_expense.html#isExpense">isExpense</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isIncome" class="tsd-anchor"></a>
+					<h3>is<wbr>Income</h3>
+					Re-exports <a href="model_income.html#isIncome">isIncome</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isIncomeStream" class="tsd-anchor"></a>
+					<h3>is<wbr>Income<wbr>Stream</h3>
+					Re-exports <a href="model_income_stream.html#isIncomeStream">isIncomeStream</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isIncomeTax" class="tsd-anchor"></a>
+					<h3>is<wbr>Income<wbr>Tax</h3>
+					Re-exports <a href="model_income_tax.html#isIncomeTax">isIncomeTax</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isLiability" class="tsd-anchor"></a>
+					<h3>is<wbr>Liability</h3>
+					Re-exports <a href="model_liability.html#isLiability">isLiability</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isPerson" class="tsd-anchor"></a>
+					<h3>is<wbr>Person</h3>
+					Re-exports <a href="model_person.html#isPerson">isPerson</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isScenario" class="tsd-anchor"></a>
+					<h3>is<wbr>Scenario</h3>
+					Re-exports <a href="model_scenario.html#isScenario">isScenario</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isSnapshot" class="tsd-anchor"></a>
+					<h3>is<wbr>Snapshot</h3>
+					Re-exports <a href="model_snapshot.html#isSnapshot">isSnapshot</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="isTextItem" class="tsd-anchor"></a>
+					<h3>is<wbr>Text<wbr>Item</h3>
+					Re-exports <a href="model_text.html#isTextItem">isTextItem</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toAsset" class="tsd-anchor"></a>
+					<h3>to<wbr>Asset</h3>
+					Re-exports <a href="model_asset.html#toAsset">toAsset</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toExpense" class="tsd-anchor"></a>
+					<h3>to<wbr>Expense</h3>
+					Re-exports <a href="model_expense.html#toExpense">toExpense</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toIncome" class="tsd-anchor"></a>
+					<h3>to<wbr>Income</h3>
+					Re-exports <a href="model_income.html#toIncome">toIncome</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toIncomeStream" class="tsd-anchor"></a>
+					<h3>to<wbr>Income<wbr>Stream</h3>
+					Re-exports <a href="model_income_stream.html#toIncomeStream">toIncomeStream</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toIncomeTax" class="tsd-anchor"></a>
+					<h3>to<wbr>Income<wbr>Tax</h3>
+					Re-exports <a href="model_income_tax.html#toIncomeTax">toIncomeTax</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toLiability" class="tsd-anchor"></a>
+					<h3>to<wbr>Liability</h3>
+					Re-exports <a href="model_liability.html#toLiability">toLiability</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toPerson" class="tsd-anchor"></a>
+					<h3>to<wbr>Person</h3>
+					Re-exports <a href="model_person.html#toPerson">toPerson</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toScenario" class="tsd-anchor"></a>
+					<h3>to<wbr>Scenario</h3>
+					Re-exports <a href="model_scenario.html#toScenario">toScenario</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toSnapshot" class="tsd-anchor"></a>
+					<h3>to<wbr>Snapshot</h3>
+					Re-exports <a href="model_snapshot.html#toSnapshot">toSnapshot</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="toTextItem" class="tsd-anchor"></a>
+					<h3>to<wbr>Text<wbr>Item</h3>
+					Re-exports <a href="model_text.html#toTextItem">toTextItem</a>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="model.html">model</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Asset" class="tsd-kind-icon">Asset</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#AssetState" class="tsd-kind-icon">Asset<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Constructor" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Expense" class="tsd-kind-icon">Expense</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#ExpenseState" class="tsd-kind-icon">Expense<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#G" class="tsd-kind-icon">G</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Income" class="tsd-kind-icon">Income</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#IncomeState" class="tsd-kind-icon">Income<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#IncomeStream" class="tsd-kind-icon">Income<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#IncomeStreamState" class="tsd-kind-icon">Income<wbr>Stream<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#IncomeTax" class="tsd-kind-icon">Income<wbr>Tax</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#IncomeTaxState" class="tsd-kind-icon">Income<wbr>Tax<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Item" class="tsd-kind-icon">Item</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Liability" class="tsd-kind-icon">Liability</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#LiabilityState" class="tsd-kind-icon">Liability<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Monetary" class="tsd-kind-icon">Monetary</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Person" class="tsd-kind-icon">Person</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Scenario" class="tsd-kind-icon">Scenario</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#Snapshot" class="tsd-kind-icon">Snapshot</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#State" class="tsd-kind-icon">State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#StateMixin" class="tsd-kind-icon">State<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#StateMixinConstructor" class="tsd-kind-icon">State<wbr>Mixin<wbr>Constructor</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#TextItem" class="tsd-kind-icon">Text<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#TextItemState" class="tsd-kind-icon">Text<wbr>Item<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asAsset" class="tsd-kind-icon">as<wbr>Asset</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asExpense" class="tsd-kind-icon">as<wbr>Expense</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asIncome" class="tsd-kind-icon">as<wbr>Income</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asIncomeStream" class="tsd-kind-icon">as<wbr>Income<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asIncomeTax" class="tsd-kind-icon">as<wbr>Income<wbr>Tax</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asLiability" class="tsd-kind-icon">as<wbr>Liability</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asPerson" class="tsd-kind-icon">as<wbr>Person</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asScenario" class="tsd-kind-icon">as<wbr>Scenario</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asSnapshot" class="tsd-kind-icon">as<wbr>Snapshot</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#asTextItem" class="tsd-kind-icon">as<wbr>Text<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isAsset" class="tsd-kind-icon">is<wbr>Asset</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isExpense" class="tsd-kind-icon">is<wbr>Expense</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isIncome" class="tsd-kind-icon">is<wbr>Income</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isIncomeStream" class="tsd-kind-icon">is<wbr>Income<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isIncomeTax" class="tsd-kind-icon">is<wbr>Income<wbr>Tax</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isLiability" class="tsd-kind-icon">is<wbr>Liability</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isPerson" class="tsd-kind-icon">is<wbr>Person</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isScenario" class="tsd-kind-icon">is<wbr>Scenario</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isSnapshot" class="tsd-kind-icon">is<wbr>Snapshot</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#isTextItem" class="tsd-kind-icon">is<wbr>Text<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toAsset" class="tsd-kind-icon">to<wbr>Asset</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toExpense" class="tsd-kind-icon">to<wbr>Expense</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toIncome" class="tsd-kind-icon">to<wbr>Income</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toIncomeStream" class="tsd-kind-icon">to<wbr>Income<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toIncomeTax" class="tsd-kind-icon">to<wbr>Income<wbr>Tax</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toLiability" class="tsd-kind-icon">to<wbr>Liability</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toPerson" class="tsd-kind-icon">to<wbr>Person</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toScenario" class="tsd-kind-icon">to<wbr>Scenario</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toSnapshot" class="tsd-kind-icon">to<wbr>Snapshot</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="model.html#toTextItem" class="tsd-kind-icon">to<wbr>Text<wbr>Item</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script
+src="https://unpkg.com/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+    mermaid.initialize({
+      startOnLoad: true,
+    });
+    </script>
+</body>
+</html>
