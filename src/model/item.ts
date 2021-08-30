@@ -75,7 +75,7 @@ export class Item<T extends Type> implements IItem<T> {
     get [Symbol.toStringTag]() {
         try {
             return (
-                this.#tag ?? (this.#tag = `${this.constructor.name}[${this.name}]`)
+                this.#tag ?? (this.#tag = `${this.type}[${this.name}]`)
             );
         } catch {
             return `${this.constructor.name}.prototype`;

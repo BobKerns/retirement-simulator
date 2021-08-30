@@ -46,13 +46,13 @@ export function StateMixin<
         get [Symbol.toStringTag]() {
             try {
                 return this.#tag
-                    ?? (this.#tag = `${Base.name}State[${this.name} #${this.state?.step?.step ?? '??'}]`);
+                    ?? (this.#tag = `${this.type}State[${this.name} #${this.state?.step?.step ?? '??'}]`);
             } catch {
                 // This can happen when viewing the prototype, because #tag isn't declared
                 // on the prototype. That screws up ObservableHQ's inspector, which gets an unhandled
                 // failed promise and never completes if you try to expand the real instance, because
                 // it died on the prototype.
-                return `${Base.name}State.prototype`;
+                return `${this.type}State.prototype`;
             }
         }
     }
