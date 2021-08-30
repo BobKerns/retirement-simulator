@@ -1,26 +1,29 @@
 #!/usr/bin/env node
 /*
- * @module physics-math
  * Copyright 2020 by Bob Kerns. Licensed under MIT license.
  *
- * Github: https://github.com/BobKerns/physics-math
+ * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-/*
+/**
  * This file handles documentation releases. In the context of a github release workflow,
- * it expects the gh-pages branch to be checked out into build/docdest. The generated API
- * documentation will be installed into build/docdest/docs/{tag}/api, and the site glue
+ * it expects the `gh-pages` branch to be checked out into `build/gh-pages`. The generated API
+ * documentation will be installed into `build/gh-pages/docs/{`_tag_`}/api`, and the site glue
  * will be updated with appropriate links.
  *
  * We do a bit of shuffling:
- * * The project CHANGELOG.md is at the global (top) in the target.
- * * The project README.md is versioned to each release tag, and the most
+ * * The project `CHANGELOG.md` is at the global (top) in the target.
+ * * The project `README.md` is versioned to each release tag, and the most
  *   recent one is also put at top level.
  *
  * They are converted to HTML, and links adjusted accordingly.
  *
- * The observablehq/ directory is copied to the release tag, and its README.md
+ * The `observablehq/` directory is copied to the release tag, and its README.md
  * is translated to HTML.
+ *
+ * When run locally, the results are not checked in, but are left in `build/gh-pages`
+ * for inspection.
+ * @module
  */
 
 const pkg = require('../package.json');
@@ -73,15 +76,29 @@ const ROOT = join(process.mainModule.path, '..');
 // In the workflow, point this to where we checked out the gh-pages branch.
 const DOCS =
     github
-        ? join(github, 'build/docdest')
-        : ROOT;
+        ? join(github, 'build/gh-pages')
+        : join(ROOT, 'build/gh-pages');
 
 const SITEBASE =
     github
         ? `/${PROJECT}`
         : '/';
 
-const DOCBASE = `${SITEBASE}/docs`
+const DOCBASE = `${SITEBASE}/docs`;
+const mkexec = wd => async (cmd, ...args) => {
+    const { stdout, stderr } = await execFile(cmd, args, { cwd: wd });
+    stderr && process.stderr.write(stderr);
+    stdout && process.stdout.write(stdout);
+};
+const mkexecRead = wd => async (cmd, ...args) => {
+    const { stdout, stderr } = await execFile(cmd, args, { cwd: wd });
+    stderr && process.stderr.write(stderr);
+    return stdout;
+};
+
+const exec = mkexec(DOCS);
+const rootExec = mkexec(ROOT);
+const rootExecRead = mkexecRead(ROOT);
 
 const marked = require('marked');
 marked.setOptions({
@@ -109,12 +126,6 @@ const renderer = {
 };
 
 marked.use({renderer });
-
-const exec = async (cmd, ...args) => {
-    const {stdout, stderr} = await execFile(cmd, args, {cwd: DOCS});
-    stderr && process.stderr.write(stderr);
-    stdout && process.stdout.write(stdout);
-};
 
 const copy = async (from, to) => {
     const dir = dirname(to);
@@ -175,7 +186,20 @@ const thisRelease = async(tag) =>
             [0] || Throw(`No release tagged ${tag} found.`)
         : {name: 'Local Build', body: 'Local build'} // fake release
 
+const hasDocdest = async () => {
+    const worktrees = await rootExecRead('git', 'worktree', 'list', '--porcelain');
+    return /\/build\/gh-pages/m.test(worktrees);
+};
+
 const run = async () => {
+    await rootExec('git', 'remote', '-v');
+    if (!github) {
+        await rootExec('git', 'fetch', 'origin', 'gh-pages');
+        if (await hasDocdest()) {
+            await rootExec('git', 'worktree', 'remove', '--force', 'build/gh-pages');
+        }
+        await rootExec('git', 'worktree', 'add', 'build/gh-pages', 'refs/remotes/origin/gh-pages');
+    }
     const source = join(ROOT, 'build', 'docs');
     const docs = join(DOCS, 'docs');
     const target = join(docs, TAG);

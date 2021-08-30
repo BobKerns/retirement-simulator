@@ -1,5 +1,13 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.9
+
+__date: 2021-08-30__
+
+* BUILD: put the landing page in the right place
+* BUILD: Use `git workflow` to pull in the `gh-pages` branch for local builds
+* BUILD: Investigate using `git workflow` for the CI builds as well.
+
 ## Version 0.1.8
 
 __date: 2021-08-29__
