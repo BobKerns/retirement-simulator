@@ -7,11 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: 'Checkout gh-pages'
-        uses: actions/checkout@v2
-        with:
-          ref: 'gh-pages'
-          path: 'build/gh-pages'
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v1
         with:

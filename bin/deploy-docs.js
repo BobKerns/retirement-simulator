@@ -73,18 +73,15 @@ const fetch = require('node-fetch');
  */
 const ROOT = join(process.mainModule.path, '..');
 
-// In the workflow, point this to where we checked out the gh-pages branch.
-const DOCS =
-    github
-        ? join(github, 'build/gh-pages')
-        : join(ROOT, 'build/gh-pages');
+// Point this to where we checked out the gh-pages branch.
+const DOCS = join(ROOT, 'build/gh-pages');
 
 const SITEBASE =
     github
-        ? `/${PROJECT}`
+        ? `/${PROJECT}/`
         : '/';
 
-const DOCBASE = `${SITEBASE}/docs`;
+const DOCBASE = `${SITEBASE}docs`;
 const mkexec = wd => async (cmd, ...args) => {
     const { stdout, stderr } = await execFile(cmd, args, { cwd: wd });
     stderr && process.stderr.write(stderr);
@@ -208,6 +205,8 @@ const run = async () => {
     process.stdout.write(`ROOT: ${ROOT}\n`);
     process.stdout.write(`DOCS: ${DOCS}\n`);
     process.stdout.write(`docs: ${docs}\n`);
+    process.stdout.write(`SITEBASE: ${SITEBASE}\n`);
+    process.stdout.write(`DOCBASE: ${DOCBASE}\n`);
     process.stdout.write(`Destination: ${target}\n`);
     await mkdir(DOCS);
     await mkdir(docs);
