@@ -1,5 +1,11 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.11
+
+__date: 2021-08-30__
+
+* FIX: Loans end when paid off.
+
 ## Version 0.1.10
 
 __date: 2021-08-30__
