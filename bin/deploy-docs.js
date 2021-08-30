@@ -259,7 +259,7 @@ ${release.body || ''}
         await exec('git', 'add', '-f', 'docs/index.html');
         await exec('git', 'add', '-f', 'docs/CHANGELOG.html');
         await exec('git', 'commit', '-m', `Deploy documentation for ${TAG}.`);
-        await exec('git', 'push');
+        await exec('git', 'push', 'origin', 'HEAD:gh-pages');
     }
 }
 run().catch(e => {
