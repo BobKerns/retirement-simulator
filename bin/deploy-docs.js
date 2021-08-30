@@ -190,13 +190,11 @@ const hasDocdest = async () => {
 
 const run = async () => {
     await rootExec('git', 'remote', '-v');
-    if (!github) {
-        await rootExec('git', 'fetch', 'origin', 'gh-pages');
-        if (await hasDocdest()) {
-            await rootExec('git', 'worktree', 'remove', '--force', 'build/gh-pages');
-        }
-        await rootExec('git', 'worktree', 'add', 'build/gh-pages', 'refs/remotes/origin/gh-pages');
+    await rootExec('git', 'fetch', 'origin', 'gh-pages');
+    if (await hasDocdest()) {
+        await rootExec('git', 'worktree', 'remove', '--force', 'build/gh-pages');
     }
+    await rootExec('git', 'worktree', 'add', 'build/gh-pages', 'refs/remotes/origin/gh-pages');
     const source = join(ROOT, 'build', 'docs');
     const docs = join(DOCS, 'docs');
     const target = join(docs, TAG);
