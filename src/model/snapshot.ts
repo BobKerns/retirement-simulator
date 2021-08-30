@@ -12,7 +12,7 @@ import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex }from "../types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex, Type }from "../types";
 import { classChecks, indexByName } from "../utils";
 import { CalendarStep, fmt_date } from "../calendar";
 
@@ -59,13 +59,21 @@ export class Snapshot extends ScenarioBase {
             const val = generator.next({...current, step: period});
             return state.current = val.value;
         };
-        this.asset_list = scenario.asset_list.map(a => new AssetState(a, scenario, next(a)));
-        this.liability_list = scenario.liability_list.map(a => new LiabilityState(a, scenario, next(a)));
-        this.income_list = scenario.income_list.map(a => new IncomeState(a, scenario, next(a)));
-        this.expense_list = scenario.expense_list.map(a => new ExpenseState(a, scenario, next(a)));
-        this.tax_list = scenario.tax_list.map(a => new IncomeTaxState(a, scenario, next(a)));
-        this.incomeStream_list = scenario.incomeStream_list.map(a => new IncomeStreamState(a, scenario, next(a)));
-        this.text_list = scenario.text_list.map(a => new TextItemState(a, scenario, next(a)));
+        const active = (a: IItem<Type>) => {
+            const state = states[a.id]
+            if (!state) return [];
+            const n = next(a);
+            if (!n) return [];
+            return [[a, n]];
+        };
+
+        this.asset_list = scenario.asset_list.flatMap(active).map(([a, n]) => new AssetState(a, scenario, n));
+        this.liability_list = scenario.liability_list.flatMap(active).map(([a, n]) => new LiabilityState(a, scenario, n));
+        this.income_list = scenario.income_list.flatMap(active).map(([a, n]) => new IncomeState(a, scenario, n));
+        this.expense_list = scenario.expense_list.flatMap(active).map(([a, n]) => new ExpenseState(a, scenario, n));
+        this.tax_list = scenario.tax_list.flatMap(active).map(([a, n]) => new IncomeTaxState(a, scenario, n));
+        this.incomeStream_list = scenario.incomeStream_list.flatMap(active).map(([a, n]) => new IncomeStreamState(a, scenario, n));
+        this.text_list = scenario.text_list.flatMap(active).map(([a, n]) => new TextItemState(a, scenario, n));
         this.assets = indexByName(this.asset_list);
         this.liabilities = indexByName(this.liability_list);
         this.incomes = indexByName(this.income_list);

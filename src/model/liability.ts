@@ -41,6 +41,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
             const payment = asMoney(Math.min(this.value, this.payment ?? 0));
             const principal = asMoney(payment - interest);
             value = asMoney(value - payment);
+            if (value <= 0) return;
             const next = yield {item, step, value, interest, principal, payment, rate};
             step = next.step;
             value = next.value;
