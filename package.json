@@ -1,6 +1,6 @@
 {
     "name": "retirement-simulator",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "description": "Retirement Simulator",
     "main": "lib/cjs/index.js",
     "module": "lib/esm/index.js",
@@ -47,7 +47,7 @@
     "bugs": {
         "url": "https://github.com/BobKerns/retirement-simulator/issues"
     },
-    "homepage": "https://github.com/BobKerns/retirement-simulator#readme",
+    "homepage": "https://bobkerns.github.io/retirement-simulator/",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^20.0.0",
         "@rollup/plugin-json": "^4.1.0",

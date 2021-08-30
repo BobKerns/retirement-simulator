@@ -1,5 +1,13 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.10
+
+__date: 2021-08-30__
+
+* BUILD: Use `git worktree` to bring the `gh-pages` branch into the CI build.
+* Point the NPM homepage link to our Github Pages site.
+* BUILD: Update typedoc
+
 ## Version 0.1.9
 
 __date: 2021-08-30__
