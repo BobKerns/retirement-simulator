@@ -6,7 +6,8 @@
 
 import { Monetary } from "./monetary";
 import { asRate, Rate } from "../tagged";
-import { day_of_year, TODAY, YEAR } from "../calendar";
+import { day_of_year, YEAR } from "../calendar";
+import { START } from '../input';
 import { CashFlowType, ICashFlowItem, IFScenario, RowType } from "../types";
 
 /**
@@ -26,7 +27,7 @@ export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> imple
     #item_fraction() {
         const this_year = YEAR;
         const next_year = YEAR + 1;
-        const start = this.start ?? TODAY;
+        const start = this.start ?? this.scenario?.start ?? START;
         const start_year = start.getUTCFullYear();
         const end = undefined // this.end;
         const end_year = undefined // end?.getUTCFullYear();

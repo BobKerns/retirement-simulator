@@ -37,13 +37,17 @@ export const optional = <T>(fn: (a: any) => T) =>
 
 const start = new Date();
 /**
- * The default start date.
+ * The default start date is the start of the next month.
  */
-export let START = UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
+export let START = start.getUTCDate() === 1
+    ? UTC(start.getUTCFullYear(), start.getUTCMonth())
+    : start.getUTCMonth() <= 11
+    ? UTC(start.getUTCFullYear(), start.getUTCMonth() + 1)
+    : UTC(start.getUTCFullYear() + 1, 0);
 /**
  * The default end date.
  */
-export let END = UTC(START.getUTCFullYear() + 50, START.getUTCMonth(), START.getUTCDate());
+export let END = UTC(START.getUTCFullYear() + 50, START.getUTCMonth());
 
 export const split = <T>(dflt: T[]) => (c: any): T[] =>
     ((c === undefined || c === '')
