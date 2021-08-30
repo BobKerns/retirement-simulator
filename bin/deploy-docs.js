@@ -254,10 +254,10 @@ ${release.body || ''}
     if (github) {
         await exec('git', 'config', 'user.email', '1154903+BobKerns@users.noreply.github.com');
         await exec('git', 'config', 'user.name', 'ReleaseBot');
-        await exec('git', 'add', 'index.html');
-        await exec('git', 'add', target);
-        await exec('git', 'add', 'docs/index.html');
-        await exec('git', 'add', 'docs/CHANGELOG.html');
+        await exec('git', 'add', '-f', 'index.html');
+        await exec('git', 'add', '-f', target);
+        await exec('git', 'add', '-f', 'docs/index.html');
+        await exec('git', 'add', '-f', 'docs/CHANGELOG.html');
         await exec('git', 'commit', '-m', `Deploy documentation for ${TAG}.`);
         await exec('git', 'push');
     }
