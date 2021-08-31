@@ -7,7 +7,9 @@
 import SS_2017_raw from './data/SS_2017.json';
 import { floor } from './tagged';
 import { calculate_age } from './calendar';
-import { IPerson, Sex } from './types';
+import { IFPerson, IPerson, Sex } from './types';
+import { START, END } from './input';
+import { range } from 'genutils';
 
 
 export type ActuaryDatum = {
@@ -80,4 +82,17 @@ export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): A
         const age = calculate_age(birth, date);
         return actuary(age, spouseOrAge.sex)
     }
+}
+
+export const compute_probabilities = (spouse: IFPerson, date: Date = END) => {
+    if (!spouse) return undefined;
+    const age = spouse.age(date);
+    let p = 1;
+    let years = date.getUTCFullYear() - START.getUTCFullYear();
+    return range(0, years + 1)
+        .map((y) => {
+            p *= 1 - actuary(age + y, spouse.sex)?.p;
+            return p;
+        })
+        .asArray();
 }

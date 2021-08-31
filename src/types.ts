@@ -5,7 +5,7 @@
  */
 
 import type { StateCode } from "./states";
-import type { Money, Rate, Tagged } from "./tagged";
+import type { Age, Money, Rate, Tagged, Year } from "./tagged";
 import type { Temporal } from "./temporal";
 import type { RateType, Types } from "./enums";
 import { CalendarStep, CalendarUnit } from "./calendar";
@@ -61,6 +61,18 @@ interface ItemImplFieldDefs {
     incomeStream: {
         withdraw(value: Money, purpose: string, states: ItemStates): Money;
     };
+    person: {
+        /**
+         * Get the fractional age on the date of interest.
+         * @param date the date of interest.
+         */
+        age(date: Date): Age;
+        /**
+         * Obtain the integer age reached on the birthday occurring in the specified year.
+         * @param year Year as an integer
+         */
+        age(year: Year): Age;
+    }
     scenario: {
         readonly spouse1: IFPerson;
         readonly spouse2: IFPerson | null
