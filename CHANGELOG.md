@@ -1,5 +1,11 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.14
+
+__date: 2021-08-31__
+
+* Revert update node-fetch library (change to ES modules breaks doc publishing.
+
 ## Version 0.1.13
 
 __date: 2021-08-31__
