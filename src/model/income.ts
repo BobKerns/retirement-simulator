@@ -25,12 +25,10 @@ export class Income extends CashFlow<'income'> implements IIncome {
         let value: Money = as(0);
         while (true) {
             value = asMoney(value + this.value);
-            let next = yield {item, step, value};
-            step = next.step;
-            value = next.value;
-            if (step.start < this.start) {
-                next = yield {item, step, value};
-            } else {
+            let next = yield { item, step, value };
+            if (this.start < step.start) {
+                step = next.step;
+                value = next.value;
                 item = (item.temporal.onDate(step.start) as this) ?? null;
                 if (item === null) return;
             }

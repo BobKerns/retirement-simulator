@@ -29,11 +29,13 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
         let value = this.value;
         while (true) {
             value = this.value;
-            const next = yield {item, step, value};
-            step = next.step;
-            value = next.value;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            const next = yield { item, step, value };
+            if (this.start < step.start) {
+                step = next.step;
+                value = next.value;
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+                if (item === null) return;
+            }
         }
     }
 }
