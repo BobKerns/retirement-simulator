@@ -1,5 +1,14 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.13
+
+__date: 2021-08-31__
+
+* Bring in the rest of the actuary functionality.
+* Fix how expenses and income handle their start dates
+* Make the snapshots update on Scenario.setEnd(_date_)
+* Update node-fetch library.
+
 ## Version 0.1.12
 
 __date: 2021-08-30__
