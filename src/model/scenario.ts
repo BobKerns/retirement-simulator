@@ -7,7 +7,7 @@
 import Heap from "heap";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, toDate, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType, ScenarioName,
@@ -69,6 +69,18 @@ export class Scenario extends ScenarioBase implements IFScenario {
     /**
      * @internal
      */
+    #start: Date;
+    /**
+     * @internal
+     */
+    #end: Date;
+    /**
+     * @internal
+     */
+    #currentEnd?: Date;
+    /**
+     * @internal
+     */
     #final?: Snapshot;
     /**
      * @internal
@@ -81,6 +93,8 @@ export class Scenario extends ScenarioBase implements IFScenario {
         super(row, undefined as unknown as IFScenario);
         this.data = dataset.filter(i => i.name && i.scenarios?.find(s => s === this.name));
         this.#end_year = end_year;
+        this.#start = START;
+        this.#end = END;
         const spouse1 = this.#construct_spouse("spouse1") ?? Throw("No spouse1 specified");
         const spouse2 = this.#construct_spouse("spouse2");
         this.spouse1 = spouse1;
@@ -171,7 +185,11 @@ export class Scenario extends ScenarioBase implements IFScenario {
      * Get the snapshots for the scenario period.
      */
     get snapshots() {
-        return this.#snapshots || (this.#snapshots = this.run());
+        if (!this.#snapshots) {
+            this.#snapshots = this.#run();
+            this.#currentEnd = this.#end;
+        }
+        return this.#snapshots;
     }
 
     /**
@@ -262,23 +280,29 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return x;
     }
 
+    setEnd(end: Date) {
+        this.#end = toDate(end);
+        this.#snapshots = undefined;
+        return this.snapshots;
+    }
+
     *states() {}
 
     /**
      * Run the simulation for the scenario's period.
      * @returns
      */
-    run() {
+    #run() {
         const previous = this;
         let state: ItemStates = {};
-        const start = new CalendarStep(START, START, as(0));
+        const start = new CalendarStep(this.#start, this.#start, as(0));
         this.items().forEach(i => {
             const generator = i.states(start);
             const current = generator.next().value;
             state[i.id] = {generator, current};
         });
         const snapshots = [];
-        for (const period of calendarRange(START, END, {month: 1})) {
+        for (const period of calendarRange(this.#start, this.#end, {month: 1})) {
             snapshots.push(new Snapshot(this, period, previous, state));
             // Walk each asset, liability, income, or expense through their internal evolution.
             // This includes both rate-base calculations and multiple time-based entries.
