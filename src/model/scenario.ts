@@ -24,6 +24,7 @@ import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
 import { START, END } from "../input";
+import { Item } from "./item";
 
 /**
  * Category of assets that do not contribute to retirement income streams.
@@ -231,24 +232,27 @@ export class Scenario extends ScenarioBase implements IFScenario {
     }
 
     #construct_items<T extends Type>(type: T, all: boolean = false): Array<ItemType<T>> {
-        const items: Array<ItemType<T>> = [];
-        this.data.forEach((r) => {
-            if (r.type === type && (all || r.scenarios?.find((rs) => rs === this.name))) {
-                items.push(Scenario.construct([r as RowType<T>], type, this, this.#end_year));
-            }
-        });
-        return items;
+        const groups = this.data.reduce(
+            (acc: Record<Name, Array<RowType<T>>>, d): Record<Name, Array<RowType<T>>> => {
+                if (d.type === type && Item.inScenario(this.name, d)) {
+                    const list = (acc[d.name] || (acc[d.name] = []));
+                    list.push(d as RowType<T>);
+                }
+                return acc;
+            },
+            {});
+        return Object.values(groups).map(items => Scenario.construct(items, type, this, this.#end_year));
     }
 
-    #construct_item<T extends Type>(name: Name, type: T, all = false): ItemType<T> | null {
+    #construct_item<T extends Type>(name: Name, type: T): ItemType<T> | null {
         const items = this.data.filter(
-            (r: RowType) =>
+            (r: RowType): r is RowType<T> =>
                 r.name === name &&
                 r.type === type &&
-                (all || r.scenarios?.find((rs: ScenarioName) => rs === this.name))
+                Item.inScenario(this.name, r)
         );
         if (items.length) {
-            return Scenario.construct(items as Array<RowType<T>>, type, this, this.#end_year);
+            return Scenario.construct(items, type, this, this.#end_year);
         }
         return null;
     }
