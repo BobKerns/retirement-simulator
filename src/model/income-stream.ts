@@ -6,7 +6,7 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncomeStream, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Writeable } from "../types";
+import { Constraint, IFScenario, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Writeable } from "../types";
 import { classChecks, isMonetary, Throw } from "../utils";
 import { asMoney, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
@@ -17,73 +17,86 @@ import { Monetary } from "./monetary";
 export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStream {
 
     #rawSpec: IncomeStreamSpec;
-    #boundSpec?: IncomeStreamSpec;
+    #boundSpec?: IncomeStreamBoundSpec;
 
     constructor(row: RowType<'incomeStream'>, scenario: IFScenario) {
         super(row, scenario);
-        const parse = (spec: string | IncomeStreamSpec): IncomeStreamSpec => {
-            if (typeof spec === 'string') {
-                // Fix curly-quotes
-                const nspec = spec.replace(/[“”]/g, '"');
-                if (/^["\[{]/.test(nspec)) {
-                    try {
-                        return JSON.parse(nspec);
-                    } catch (e: any) {
-                        throw new Error(`Error parsing incomeStream ${this.name}: ${e.message}`);
-                    }
+        this.#rawSpec = IncomeStream.parse(row.spec);
+    }
+
+    /**
+     * @internal
+     * @param spec
+     * @param name
+     * @returns
+     */
+    static parse(spec: string | IncomeStreamSpec, name?: IncomeStreamName): IncomeStreamSpec {
+        if (typeof spec === 'string') {
+            // Fix curly-quotes
+            const nspec = spec.replace(/[“”]/g, '"');
+            if (/^["\[{]/.test(nspec)) {
+                try {
+                    return JSON.parse(nspec);
+                } catch (e: any) {
+                    throw new Error(`Error parsing incomeStream ${name ?? `unknown`}: ${e.message}`);
                 }
             }
-            return spec;
-        };
-        this.#rawSpec = parse(row.spec);
-    }
+        }
+        return spec;
+    };
 
     /**
      * @internal
      * @param spec
      * @returns
      */
-    get spec(): IncomeStreamSpec {
-        const bind = (spec: any): IncomeStreamSpec => {
-            const id = (spec: string) =>
-                spec.startsWith('@')
-                    ? this.scenario.incomeStreams[spec.substring(1)].id
-                        ?? Throw(`There is no IncomeStream named ${spec.substring(1)}`)
-                    : (
-                        this.scenario.incomes[spec]
-                        ?? this.scenario.assets[spec]
-                        ?? this.scenario.liabilities[spec]
-                      )?.id
-                      ?? Throw(`There is no income, asset, or liability named "${spec}"`);
-            if (isString(spec)) {
-                if (spec.startsWith('@')) {
-                    const name = spec.substring(1);
-                    return this.scenario.incomeStreams[name].id;
-                }
-                return id(spec);
-            } else if (Array.isArray(spec)) {
-                return spec.map(bind);
-            } else if (typeof spec === 'object') {
-                const result: {[k: string]: number} = {};
-                let total = 0;
-                for (const k in spec) {
-                    total += spec[k];
-                }
-                for (const k in spec) {
-                    const src = id(k);
-                    // Normalized fraction
-                    result[src] = spec[k] / total;
-                }
-                return result;
-            } else {
-                throw new Error(`Unknown income stream spec: ${spec}`);
+    get spec(): IncomeStreamBoundSpec {
+        return this.#boundSpec ?? (this.#boundSpec = this.bind(this.#rawSpec));
+    }
+
+    /**
+     * @internal
+     * @param spec
+     * @returns an IncomeStreamSpec with all the references resolved to IDs and the weights/constraints canonicalized.
+     */
+    bind(spec: IncomeStreamSpec): IncomeStreamBoundSpec {
+        const id = (spec: string) =>
+            spec.startsWith('@')
+                ? this.scenario.incomeStreams[spec.substring(1)].id as IncomeStreamId
+                ?? Throw(`There is no IncomeStream named ${spec.substring(1)}`)
+                : (
+                    this.scenario.incomes[spec]
+                    ?? this.scenario.assets[spec]
+                    ?? this.scenario.liabilities[spec]
+                )?.id as IncomeStreamId
+                ?? Throw(`There is no income, asset, or liability named "${spec}"`);
+        if (isString(spec)) {
+            if (spec.startsWith('@')) {
+                const name = spec.substring(1);
+                return this.scenario.incomeStreams[name].id as IncomeStreamId;
             }
-        };
-        return this.#boundSpec ?? (this.#boundSpec = bind(this.#rawSpec));
+            return id(spec);
+        } else if (Array.isArray(spec)) {
+            return spec.map(s => this.bind(s));
+        } else if (typeof spec === 'object') {
+            const result: { [k: string]: Constraint; } = {};
+            let total = 0;
+            for (const k in spec) {
+                total += (spec as any)[k];
+            }
+            for (const k in spec) {
+                const src = id(k);
+                // Normalized fraction
+                result[src] = { weight: (spec as any)[k] / total };
+            }
+            return result;
+        } else {
+            throw new Error(`Unknown income stream spec: ${spec}`);
+        }
     }
 
     withdraw(value: Money, id: string, state: ItemStates): Money {
-        const withdrawFrom = (amount: number, spec: IncomeStreamSpec) => {
+        const withdrawFrom = (amount: number, spec: IncomeStreamBoundSpec): Money => {
             if (isString(spec)) {
                 const current = state[spec].current;
                 if (current) {
@@ -110,10 +123,16 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 }
                 return asMoney(total);
             } else if (typeof spec === 'object') {
-                const shares: {[k: string]: number} = spec;
+                const shares: {[k: string]: Constraint} = spec;
+                // TODO: Enforce min and max
+                // First apply min amounts, subtracting from amount to distribute.
+                // Then apply max amounts (if met), and add excess to the amount to
+                // distribute.
+                // Repeat (w/ higher distribution) until no new stream max amounts are met.
+                // Then distribute by weight.
                 let total = 0;
                 for (const k in spec) {
-                    total += withdrawFrom(amount * shares[k], k);
+                    total += withdrawFrom(amount * shares[k].weight, k as IncomeStreamId);
                 }
                 return asMoney(total);
             }

@@ -337,10 +337,27 @@ export interface IText extends IItem<'text'> {
  */
 export type Reference<Str extends string> = `@${Str}`;
 
+export type Weight = number;
+
+export interface Constraint {
+    min?: Money,
+    max?: Money,
+    weight: Weight
+}
+
 /**
  * Specs are prrovided as JSON.
  */
-export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName | Array<IncomeStreamSpec> | {[k in Reference<IncomeStreamName>]: number};
+export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName
+    | Reference<IncomeStreamName>
+    | Array<IncomeStreamSpec>
+    | {[k in Reference<IncomeName|AssetName|LiabilityName|IncomeStreamName>]: Weight | Constraint};
+
+export type IncomeStreamId = `income/${IncomeName}` | `asset/${AssetName}` | `liability/${LiabilityName}` | `incomeStream/${IncomeStreamName}`;
+
+export type IncomeStreamBoundSpec = IncomeStreamId
+    | Array<IncomeStreamBoundSpec>
+    | {[K in IncomeStreamId]: Constraint};
 
 export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
     readonly spec: IncomeStreamSpec;
