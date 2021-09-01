@@ -10,7 +10,7 @@ __date: 2021-09-01__
 * DOCS: Add [CODE_OF_CONDUCT.md](ODE_OF_CONDUCT.md)
 * DOCS: Add [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### Work in
+### Work in Progress
 
 Internal changes toward future enhancements.
 
