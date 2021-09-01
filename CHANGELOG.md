@@ -1,5 +1,22 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.15
+
+__date: 2021-09-01__
+
+* FIX: [#19](https://github.com/BobKerns/retirement-simulator/issues/19), Time series items are
+  only picking up the last one.
+* FIX: Actuary probability data was starting with future age, rather than current.
+* DOCS: Add [CODE_OF_CONDUCT.md](ODE_OF_CONDUCT.md)
+* DOCS: Add [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### Work in
+
+Internal changes toward future enhancements.
+
+* WIP: [#21](https://github.com/BobKerns/retirement-simulator/issues/21), Scenario Inheritance
+* WIP: [#14](https://github.com/BobKerns/retirement-simulator/issues/14), Support min/max amounts in incomeStream
+
 ## Version 0.1.14
 
 __date: 2021-08-31__

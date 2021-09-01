@@ -211,6 +211,12 @@ const run = async () => {
     await mkdir(target);
     await Promise.all([
         ['CHANGELOG.md', 'Change Log'],
+        ['CODE_OF_CONDUCT.md', 'Code of Conduct'],
+        ['CODE_OF_CONDUCT.md', 'Code of Conduct', join(target, 'CODE_OF_CONDUCT.html')],
+        ['CODE_OF_CONDUCT.md', 'Code of Conduct', join(DOCS, 'CODE_OF_CONDUCT.html')],
+        ['CONTRIBUTING.md', "Contributor's guide."],
+        ['CONTRIBUTING.md', "Contributor's guide.", join(target, 'CONTRIBUTING.html')],
+        ['CONTRIBUTING.md', "Contributor's guide.", join(DOCS, 'CONTRIBUTING.html')],
         ['README.md', `Retirement Simulator`],
         ['README.md', `Retirement Simulator`, join(target, 'README.html')],
         ['assets/landing.md', 'Retirement Simulator', join(DOCS, 'index.md')]
