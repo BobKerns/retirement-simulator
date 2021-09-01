@@ -97,4 +97,11 @@ export class Item<T extends Type> implements IItem<T> {
     inScenario(scenario: ScenarioName): boolean {
         return !!this.scenarios.find(s => s === scenario);
     }
+
+    static inScenario(scenario: ScenarioName, scenarios: ScenarioName[] | IItem<Type>): boolean {
+        if (Array.isArray(scenarios)) {
+            return !!scenarios.find(s => s === scenario);
+        }
+        return this.inScenario(scenario, scenarios.scenarios);
+    }
 }
