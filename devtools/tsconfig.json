@@ -18,7 +18,6 @@
     "rootDir": ".",
 
     // Generation of .d.ts files. and debugging source maps.
-    "declaration": false,
     "declarationMap": false,
     "sourceMap": false,
     "inlineSourceMap": true,
