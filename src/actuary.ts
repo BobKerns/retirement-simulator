@@ -86,7 +86,7 @@ export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): A
 
 export const compute_probabilities = (spouse: IFPerson, date: Date = END) => {
     if (!spouse) return undefined;
-    const age = spouse.age(date);
+    const age = spouse.age(START);
     let p = 1;
     let years = date.getUTCFullYear() - START.getUTCFullYear();
     return range(0, years + 1)
