@@ -17,7 +17,7 @@
         "build:package": "rollup -c",
         "postbuild:package": "rsync -a --delete --include='*.d.ts*' build/src/ lib/types/",
         "build": "npm run build:package",
-        "all": "npm run build && npm run build:test && npm run build:docs",
+        "all": "npm run build && npm run build:test && npm run build:docs && npm run pubdocs",
         "clean": "git worktree remove --force build/gh-pages 2&>/dev/null ; rm -rf build lib docs",
         "prepublishOnly": "NODE_ENV=production npm run build && npm run build:docs && npm run pubdocs",
         "build:docs": "GRAPHVIZ_DOT=\"$(which dot)\" typedoc --out build/docs/api src/",
