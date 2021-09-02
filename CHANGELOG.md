@@ -1,5 +1,12 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.16
+
+__date: 2021-09-01__
+
+* Fix [#20](https://github.com/BobKerns/retirement-simulator/issues/20), implementing time series everywhere and
+  making the actuary data available via the snapshots.
+
 ## Version 0.1.15
 
 __date: 2021-09-01__
