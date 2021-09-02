@@ -6,10 +6,11 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { Constraint, IFScenario, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Writeable } from "../types";
+import { Constraint, IFScenario, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, Writeable } from "../types";
 import { classChecks, isMonetary, Throw } from "../utils";
 import { asMoney, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
+import { CalendarStep } from "../calendar";
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
@@ -139,6 +140,17 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
             throw new Error(`Unknown spec: ${spec}`);
         }
         return withdrawFrom(value, this.spec);
+    }
+
+    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeStream'>, any, ItemState<'incomeStream'>> {
+        let item: ItemImpl<'incomeStream'> | null = this as ItemImpl<'incomeStream'>;
+        let step = start;
+        while (true) {
+            const next = yield { item, step };
+            step = next.step;
+            item = (item.temporal.onDate(step.start) as this) ?? null;
+            if (item === null) return;
+        }
     }
 }
 

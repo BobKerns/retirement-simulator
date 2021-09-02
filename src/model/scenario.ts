@@ -175,6 +175,10 @@ export class Scenario extends ScenarioBase implements IFScenario {
         };
     }
 
+    get dateRange(): [start: Date, end: Date] {
+        return [this.#start, this.#end];
+    }
+
     /**
      * Get the full timeline in sorted order as a generator.
      */

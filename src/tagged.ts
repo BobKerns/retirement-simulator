@@ -330,11 +330,18 @@ export const mod360 = (n: number) => {
         ? remainder + 360 as Degrees
         : remainder as Degrees;
 }
+
 /**
  * The unit interval: a number between 0 and 1, inclusive.
  */
 export type Unit = Tagged<'Unit'>;
-export const {is: isUnit, as: asUnit, to: toUnit} = numberRange('Unit', {min: 0, max: 1});
+export const { is: isUnit, as: asUnit, to: toUnit } = numberRange('Unit', { min: 0, max: 1 });
+/**
+ * The unit interval: a number between 0 and 1, inclusive.
+ */
+
+export type Probability = Tagged<'Probability'>;
+export const { is: isProbability, as: asProbability, to: toProbability } = numberRange('Probability', { min: 0, max: 1 });
 
 /**
  * An integer.

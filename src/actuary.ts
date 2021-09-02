@@ -5,18 +5,19 @@
  */
 
 import SS_2017_raw from './data/SS_2017.json';
-import { floor } from './tagged';
+import { as, asProbability, floor } from './tagged';
 import { calculate_age } from './calendar';
 import { IFPerson, IPerson, Sex } from './types';
 import { START, END } from './input';
 import { range } from 'genutils';
+import { Probability } from '.';
 
 
 export type ActuaryDatum = {
     /**
      * Probability of surviving one year (birthday to next birthday).
      */
-    readonly p: number,
+    readonly p: Probability,
     /**
      * Number of people surviving to this age.
      */
@@ -41,7 +42,7 @@ export type ActuaryAnnualData = {
  *
  * Source: [Actuarial Life Table](https://www.ssa.gov/oact/STATS/table4c6.html) ([Archive](https://web.archive.org/web/20210719152530/https://www.ssa.gov/oact/STATS/table4c6.html))
  */
-export const SS_2017: Array<ActuaryAnnualData> = SS_2017_raw;
+export const SS_2017: Array<ActuaryAnnualData> = SS_2017_raw as Array<ActuaryAnnualData>;
 
 /**
  * Obtain actuarial data for a person on a particular date.
@@ -60,7 +61,7 @@ export function actuary(spouse: IPerson, date: Date): ActuaryDatum;
  */
 export function actuary(age: number, sex: Sex): ActuaryDatum;
 export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): ActuaryDatum {
-    const eol = {p: 0, n: 0, years: 0};
+    const eol: ActuaryDatum = {p: as(0), n: 0, years: 0};
     if (typeof spouseOrAge == 'number') {
         const idx = floor(spouseOrAge);
         const frac = spouseOrAge - idx;
@@ -72,7 +73,7 @@ export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): A
         if (!next) return eol;
         const interpolate = (a: number, b: number, frac: number) => (a * (1 - frac) + b * frac);
         return {
-            p: interpolate(base.p, next.p, frac),
+            p: asProbability(interpolate(base.p, next.p, frac)),
             n: Math.round(interpolate(base.n, next.n, frac)),
             years: interpolate(base.years, next.years, frac)
         };
@@ -84,14 +85,16 @@ export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): A
     }
 }
 
-export const compute_probabilities = (spouse: IFPerson, date: Date = END) => {
+export function compute_probabilities(spouse: IFPerson, date: Date): Probability[];
+export function compute_probabilities(spouse: undefined, date: Date): undefined;
+export function compute_probabilities(spouse: IFPerson | undefined, date: Date = END): Probability[] | undefined {
     if (!spouse) return undefined;
     const age = spouse.age(START);
-    let p = 1;
+    let p = asProbability(1);
     let years = date.getUTCFullYear() - START.getUTCFullYear();
     return range(0, years + 1)
         .map((y) => {
-            p *= 1 - actuary(age + y, spouse.sex)?.p;
+            p = as(p * (1 - actuary(age + y, spouse.sex)?.p ?? 1));
             return p;
         })
         .asArray();

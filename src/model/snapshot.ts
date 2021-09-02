@@ -12,9 +12,10 @@ import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFScenario, IFText, IItem, ItemStates, NamedIndex, Type }from "../types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText, IItem, ItemStates, NamedIndex, Type }from "../types";
 import { classChecks, indexByName } from "../utils";
 import { CalendarStep, fmt_date } from "../calendar";
+import { PersonState } from "./person";
 
 /**
  * A snapshot at a point in time of a {@link Scenario}.
@@ -26,7 +27,8 @@ import { CalendarStep, fmt_date } from "../calendar";
 export class Snapshot extends ScenarioBase {
     get spouse1() { return this.scenario.spouse1; }
     get spouse2() { return this.scenario.spouse2; }
-    get person_list() { return this.scenario.person_list; }
+    #person_list: IFPerson[];
+    get person_list() { return this.#person_list; }
     period: CalendarStep;
     asset_list: IFAsset[];
     liability_list: IFLiability[];
@@ -36,7 +38,8 @@ export class Snapshot extends ScenarioBase {
     incomeStream_list: IFIncomeStream[];
     text_list: IFText[];
 
-    get people() { return this.scenario.people; }
+    #people: NamedIndex<IFPerson>;
+    get people() { return this.#people; }
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;
@@ -73,7 +76,8 @@ export class Snapshot extends ScenarioBase {
         this.expense_list = scenario.expense_list.flatMap(active).map(([a, n]) => new ExpenseState(a, scenario, n));
         this.tax_list = scenario.tax_list.flatMap(active).map(([a, n]) => new IncomeTaxState(a, scenario, n));
         this.incomeStream_list = scenario.incomeStream_list.flatMap(active).map(([a, n]) => new IncomeStreamState(a, scenario, n));
-        this.text_list = scenario.text_list.flatMap(active).map(([a, n]) => new TextItemState(a, scenario, n));
+        this.text_list = scenario.text_list.flatMap(active).map(([a, n]) => new TextItemState(a, scenario, n))
+        this.#person_list = scenario.person_list.flatMap(active).map(([a, n]) => new PersonState(a, scenario, n));
         this.assets = indexByName(this.asset_list);
         this.liabilities = indexByName(this.liability_list);
         this.incomes = indexByName(this.income_list);
@@ -81,6 +85,7 @@ export class Snapshot extends ScenarioBase {
         this.taxes = indexByName(this.tax_list);
         this.incomeStreams = indexByName(this.incomeStream_list);
         this.texts = indexByName(this.text_list);
+        this.#people = indexByName(this.#person_list);
 
        this. allItems = {
             asset: this.assets,
@@ -93,6 +98,11 @@ export class Snapshot extends ScenarioBase {
             scenario: {[this.scenario.name]: this.scenario},
             text: this.texts
         };
+    }
+
+
+    get dateRange(): [start: Date, end: Date] {
+        return this.scenario.dateRange;
     }
 
     #tag?: string;

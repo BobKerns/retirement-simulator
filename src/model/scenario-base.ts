@@ -112,6 +112,9 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
     abstract texts: NamedIndex<IFText>;
 
     abstract allItems: AllItems;
+
+    abstract readonly dateRange: [start: Date, end: Date];
+    
     constructor(row: RowType<'scenario'>, scenario: IFScenario) {
         super(row, scenario);
     }

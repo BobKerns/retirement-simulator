@@ -5,23 +5,24 @@
  */
 
 import { Item } from "./item";
-import { Age, asAge, asIAge, floor, IAge, Year } from "../tagged";
-import { calculate_age, END_YEAR, TODAY, UTC, YEAR } from "../calendar";
-import { IFScenario, IPerson, RowType, Sex } from "../types";
+import { Age, asAge, asIAge, floor, IAge, Probability, Year } from "../tagged";
+import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar";
+import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, Type } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
-import { actuary, SS_2017 } from "../actuary";
+import { actuary, compute_probabilities, SS_2017 } from "../actuary";
+import { StateMixin } from "./state-mixin";
 
 /**
  * A person (typically a spouse or domestic partner). Birth date and sex must be specified
  * for correct actuarial data.
  */
-export class Person extends Item<'person'> implements IPerson {
+export class Person extends Item<'person'> implements IFPerson {
     birth: Date;
     sex: Sex;
     expectency: number;
     expectencies: number[];
-    probabiliies: number[];
+    #survivalProbabilities?: Probability[];
     constructor(row: RowType<'person'>, scenario: IFScenario) {
         super(row, scenario);
         this.birth = row.birth;
@@ -31,7 +32,22 @@ export class Person extends Item<'person'> implements IPerson {
         this.expectencies = range(0, END_YEAR - YEAR + 1)
                 .map((y) => SS_2017[asIAge(age + y)]?.[this.sex].years)
                 .asArray()
-        this.probabiliies = this.#compute_probabilities();
+    }
+
+    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'person'>, any, ItemState<'person'>> {
+        let item: ItemImpl<'person'> | null = this as ItemImpl<'person'>;
+        const survivalProbabilities = this.survivalProbabilities;
+        let step = start;
+        while (true) {
+            const age = this.age(step.start);
+            const survival = survivalProbabilities[step.step];
+            const {n, p, years} = actuary(this, step.start);
+            const next = yield { item, step, age, survival, n, mortality: p, expected: years,  };
+            step = next.step;
+            item = (item.temporal.onDate(step.start) as this) ?? null;
+            if (item === null) return;
+            if (n === 0 && p === 1 && years === 0) return;
+        }
     }
 
     /**
@@ -52,6 +68,14 @@ export class Person extends Item<'person'> implements IPerson {
     }
 
     /**
+     * An array of the probabilities of dying in the nth subsequent year.
+     */
+    get survivalProbabilities(): Probability[] {
+        const [start, end] = this.scenario.dateRange;
+        return this.#survivalProbabilities ?? (this.#survivalProbabilities = compute_probabilities(this, end));
+    }
+
+    /**
      * Obtain the integer age on a specified date. This is used for things like tax computation
      * where the age is treated as a year-based threshold or as a table index.
      * @param date Date of interest
@@ -68,18 +92,12 @@ export class Person extends Item<'person'> implements IPerson {
         }
         return asIAge(date - this.birth.getUTCFullYear());
     }
+}
 
 
-    #compute_probabilities() {
-        const years = END_YEAR - YEAR;
-        let p = 1;
-        return range(0, years + 1)
-            .map((y) => {
-                const nyear = UTC(YEAR + y);
-                p *= 1 - actuary(this, nyear)?.p ?? 0;
-                return p;
-            })
-            .asArray();
+export class PersonState extends StateMixin(Person) {
+    constructor(row: ItemImpl<'person'>, scenario: IFScenario, state: ItemState<'person'>) {
+        super(row, scenario, state);
     }
 }
 

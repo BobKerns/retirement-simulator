@@ -5,7 +5,7 @@
  */
 
 import type { StateCode } from "./states";
-import type { Age, Money, Rate, Tagged, Year } from "./tagged";
+import type { Age, Money, Probability, Rate, Tagged, Year } from "./tagged";
 import type { Temporal } from "./temporal";
 import type { RateType, Types } from "./enums";
 import { CalendarStep, CalendarUnit } from "./calendar";
@@ -62,16 +62,7 @@ interface ItemImplFieldDefs {
         withdraw(value: Money, purpose: string, states: ItemStates): Money;
     };
     person: {
-        /**
-         * Get the fractional age on the date of interest.
-         * @param date the date of interest.
-         */
-        age(date: Date): Age;
-        /**
-         * Obtain the integer age reached on the birthday occurring in the specified year.
-         * @param year Year as an integer
-         */
-        age(year: Year): Age;
+        readonly survivalProbabilities:  Probability[];
     }
     scenario: {
         readonly spouse1: IFPerson;
@@ -95,15 +86,29 @@ interface ItemImplFieldDefs {
         readonly texts: NamedIndex<IFText>;
 
         readonly scenario: IFScenario;
-    }
+
+        readonly dateRange: [start: Date, end: Date];
+    };
 };
 
 interface ItemImplMethodDefs {
+    person: {
+        /**
+         * Get the fractional age on the date of interest.
+         * @param date the date of interest.
+         */
+        age(date: Date): Age;
+        /**
+         * Obtain the integer age reached on the birthday occurring in the specified year.
+         * @param year Year as an integer
+         */
+        age(year: Year): Age;
+    };
     scenario: {
         findItem<T extends Type>(name: Name, type: T): ItemImpl<T> | undefined;
         findItems<T extends Type>(type: T): Iterable<ItemImpl<T>> | undefined;
         findText(name: Name): string;
-    }
+    };
 }
 
 /**
@@ -179,6 +184,16 @@ type ItemStateTypes = {
     };
     income: {
         value: Money;
+    };
+    person: {
+        age: Age;
+        n: number;
+        mortality: Probability;
+        survival: Probability;
+        expected: number;
+    };
+    text: {
+        text: string;
     };
 };
 
@@ -339,6 +354,11 @@ export type Reference<Str extends string> = `@${Str}`;
 
 export type Weight = number;
 
+/**
+ * An object in an {@link IncomeStreamSpec} represents a set of constraints. On input,
+ * a single number is equivalent to a {@link Constraint} with only {@link Constraint.weight|weight}
+ * specified.
+ */
 export interface Constraint {
     min?: Money,
     max?: Money,
@@ -346,7 +366,8 @@ export interface Constraint {
 }
 
 /**
- * Specs are prrovided as JSON.
+ * Specs are prrovided as JSON. This describes the input form. See {@link IncomeStreamBoundSpec}
+ * for the bound form.
  */
 export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName
     | Reference<IncomeStreamName>
