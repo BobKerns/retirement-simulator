@@ -11,6 +11,9 @@ import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
 /**
  * A configured item of text used in model explanations, etc.
+ *
+ * **Key fields:**
+ * * {@link text}
  */
 export class TextItem extends Item<'text'> implements IText {
     text: string;

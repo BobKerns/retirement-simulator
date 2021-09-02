@@ -16,6 +16,11 @@ import { StateMixin } from "./state-mixin";
 /**
  * A person (typically a spouse or domestic partner). Birth date and sex must be specified
  * for correct actuarial data.
+ *
+ * **Key fields:**
+ * * {@link prettyName}
+ * * {@link birth}
+ * * {@link sex}
  */
 export class Person extends Item<'person'> implements IFPerson {
     birth: Date;

@@ -1,5 +1,11 @@
 # Changes for Retirement Simulator
 
+## Version 0.1.17
+
+__date: 2021-09-02__
+
+* FIX #4: Document the model.
+
 ## Version 0.1.16
 
 __date: 2021-09-01__

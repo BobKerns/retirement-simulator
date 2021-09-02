@@ -13,8 +13,14 @@ import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../interest";
 
 /**
- * A liability (generally, a loan or mortgage). If not interest-free, `rate` should be supplied with
- * 1 + the simple annual interest rate.
+ * A liability (generally, a loan or mortgage).
+ *
+ * **Key fields:**
+ * * {@link value}
+ * * {@link rate}
+ * * {@link rateType}
+ * * {@link paymentPeriod}
+ * * {@link paymentPeriod}
  */
 export class Liability extends Monetary<'liability'> implements ILiability {
     rate: Rate;

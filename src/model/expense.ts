@@ -16,6 +16,10 @@ import { asMoney } from "../tagged";
  *
  * The `fromStream` parameter must be specified; it is the other end of the flow, where the money to
  * pay the expense comes from (an {@link IncomeStream}).
+ *
+ * **Key fields:**
+ * * {@link value}
+ * * {@link fromStream}
  */
 export class Expense extends CashFlow<'expense'> implements IExpense {
     fromStream: IncomeStreamName;

@@ -13,6 +13,10 @@ import { as, asMoney, Money } from "../tagged";
 
 /**
  * An income item. By default, annual, but can be constrained to a particular period of time.
+ *
+ *
+ * **Key fields:**
+ * * {@link value}
  */
 export class Income extends CashFlow<'income'> implements IIncome {
     constructor(row: RowType<'income'>, scenario: IFScenario) {

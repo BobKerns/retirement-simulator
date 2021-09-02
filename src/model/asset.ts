@@ -4,6 +4,12 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+/**
+ * Assets and related.
+ *
+ * @module
+ */
+
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { asMoney, Rate } from "../tagged";
@@ -14,6 +20,12 @@ import { CalendarStep, CalendarUnit } from "../calendar";
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value
  * will change by that factor each period (currently, always annually, pro-rated).
+ *
+ * **Key fields:**
+ * * {@link value}
+ * * {@link rate}
+ * * {@link rateType}
+ * * {@link paymentPeriod}
  */
 export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'> {
     rate: Rate;
