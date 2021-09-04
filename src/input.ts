@@ -7,6 +7,7 @@
 /**
  * Input processing, invoked by {@link loadData}. A separate file because {@link loadData} triggers loading problems
  * for jest unit tests.
+ *
  * @module
  */
 
@@ -23,11 +24,21 @@ export type Converters = {
     src: (a: any) => string | undefined;
     temporal: (a: any) => Temporal<TemporalItem> | undefined;
 }
-
+/**
+ * A higher-order function that returns a @{link Converters} provides a default in cases where a value is not supplied in the input.
+ * @param dflt Default value
+ * @returns
+ */
 export const or = <T>(dflt: T) =>
     (a: any):T =>
         (a !== undefined && a !== '') ? a : dflt;
 
+/**
+ * A higher-order function that takes a converter function and gives a higher-order function that takes a default,
+ * which returns a converter that uses the default when no value is supplied, instead of invoking the converter.
+ * @param fn a converter function
+ * @returns
+ */
 export const optional = <T>(fn: (a: any) => T) =>
     <D>(dflt: D) =>
         (a: any) =>
@@ -49,6 +60,11 @@ export let START = start.getUTCDate() === 1
  */
 export let END = UTC(START.getUTCFullYear() + 50, START.getUTCMonth());
 
+/**
+ * Split a comma-separated field.
+ * @param dflt
+ * @returns
+ */
 export const split = <T>(dflt: T[]) => (c: any): T[] =>
     ((c === undefined || c === '')
         ? dflt
