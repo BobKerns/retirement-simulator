@@ -4,7 +4,7 @@
 
    // Project layout. Changes not recommended.
   "include": ["*.ts", "**/*.ts"],
-  "exclude": ["build", "lib"],
+  "exclude": ["../build", "../lib"],
 
   "compilerOptions": {
     // Module and Node interoperability section. Do not change.

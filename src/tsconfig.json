@@ -9,7 +9,7 @@
     "tax/*.ts",
     "data/*.json"
   ],
-  "exclude": ["node_modules", "build", "__test__"],
+  "exclude": ["../node_modules", "../build", "__test__"],
 
   "compilerOptions": {
     "composite": true,

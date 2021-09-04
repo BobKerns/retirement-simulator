@@ -3,10 +3,12 @@
   "extends": "../tsconfig.json",
   "include": [
       "*.ts",
-      "data/samples.ts"
+      "data/samples.ts",
+      "../display/plot.d.ts"
     ],
   "exclude": [
-    "node_modules"
+    "../../node_modules",
+    "../../build"
   ],
 
   "references": [
