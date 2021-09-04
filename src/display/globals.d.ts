@@ -18,14 +18,12 @@ declare var invalidation: Promise<void>;
 
 declare function visibility<T>(value?: T): T;
 
-declare type TemplateLiteralArg0 = string[] & {raw: string};
-declare type TemplateLiteral<T> = (template: TemplateLiteralArg0, ...args: any[]) => T;
-declare function md(template: TemplateLiteralArg0, ...args: any[]): Element;
+declare function md(template: TemplateStringsArray, ...args: any[]): Element;
 
-declare function html(template: TemplateLiteralArg0, ...args: any[]): Element;
+declare function html(template: TemplateStringsArray, ...args: any[]): Element;
 
-declare function svg(template: TemplateLiteralArg0, ...args: any[]): Element;
+declare function svg(template: TemplateStringsArray, ...args: any[]): Element;
 
-declare function dot(template: TemplateLiteralArg0, ...args: any[]): Element;
+declare function dot(template: TemplateStringsArray, ...args: any[]): Element;
 
-declare function tex(template: TemplateLiteralArg0, ...args: any[]): Element;
+declare function tex(template: TemplateStringsArray, ...args: any[]): Element;
