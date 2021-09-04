@@ -10,7 +10,7 @@ import { Scenario } from './model';
 import { Throw, uniq } from './utils';
 import { asByte, asDegrees, asUnit, Byte, Degrees, isByte, isDegrees, isUnit, Tag, Tagged, Unit } from './tagged';
 import { naturalSort } from './sort';
-import type { ScaleOrdinal } from 'd3';
+import { scaleOrdinal, ScaleOrdinal } from 'd3';
 /**
  * Colors are strings in the form _#rrggbb_.
  */
@@ -177,14 +177,10 @@ export const default_colors = compute_colors(color_scheme);
  * @param subdomain
  * @returns a d3 ordinal interpolator.
  */
-export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, subdomain: Color[]) => {
-  const uniq_domain = uniq(subdomain);
-  const subcolors = (color: Color) => {
-    return colors(color);
-  };
-  subcolors.domain = () => uniq_domain;
-  subcolors.range = () => subdomain.map(colors);
-  return subcolors;
+export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Color>, subdomain: Name[]): d3.ScaleOrdinal<Name, Color, Color> => {
+    let uniq_domain = uniq(subdomain);
+    let range = subdomain.map(colors);
+    return scaleOrdinal(uniq_domain, range);
 };
 
 /**
@@ -195,24 +191,9 @@ export const subcolors = (colors: d3.ScaleOrdinal<Name, Color, Name>, subdomain:
  * @param unknown the color to use for unknown keys
  * @returns an object equivalent to a d3 ordinal interpolator.
  */
-export const colorsFor = (color_scheme: Color[], unknown: Color = asColor("#000000")) => <T>(keys: Iterable<T>) => {
+export const colorsFor = (color_scheme: Color[], unknown: Color = asColor("#000000")) => (keys: Iterable<Name>) => {
     const map = new Map();
     const ordered = naturalSort(keys);
-    ordered.forEach((k, i) => map.set(k, color_scheme[i % color_scheme.length]))
-    const color = (k: T) => {
-        let val = map.get(k);
-        if (val === undefined) {
-            map.set(k, val = unknown);
-        }
-        return val;
-    };
-    color.range = () => [...map.values()];
-    color.domain = () => ordered;
-    color.unknown = (nv?: Color) => {
-        if (nv !== undefined) {
-            unknown = nv;
-        }
-        return unknown;
-    };
-    return color;
+    const range = ordered.map((k, i) => color_scheme[i % color_scheme.length]);
+    return scaleOrdinal<Name,Color,Color>(ordered, range).unknown(unknown);
 }
