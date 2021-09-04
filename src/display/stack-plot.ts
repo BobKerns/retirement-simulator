@@ -7,10 +7,10 @@
 import { subcolors, Color } from "../color";
 import { box } from "./box";
 import { areaY, plot, stackY } from '@observablehq/plot';
-import { uniq } from 'Ramda';
+import { uniq } from 'ramda';
 import type {ScaleOrdinal} from 'd3';
 import { isFunction } from "../utils";
-import { Name, Named } from '../types';
+import { Name } from '../types';
 
 export interface StackPlotOptions {
     caption?: string,
