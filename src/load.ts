@@ -9,7 +9,7 @@
  * @module
  */
 
-import { csvParse, DSVRowArray } from 'd3-dsv';
+import { csvParse, DSVRowArray } from 'd3';
 import { construct } from './construct';
 import { convert } from './input';
 import { asYear, isString } from './tagged';

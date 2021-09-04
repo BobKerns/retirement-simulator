@@ -12,7 +12,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import {terser} from 'rollup-plugin-terser';
 import visualizerNoName, {VisualizerOptions} from 'rollup-plugin-visualizer';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import {OutputOptions, RollupOptions} from "rollup";
+import {OutputOptions, RollupOptions, Plugin} from "rollup";
 import {chain as flatMap} from 'ramda';
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace';
@@ -57,7 +57,9 @@ const pkg: Package  = require('../package.json');
  * Mapping of module names to variable names for UMD modules.
  */
 const globals: {[k: string]: string} = {
-}
+    d3: 'd3',
+    'plot': 'Plot'
+};
 
 /**
  * Compute the list of outputs from [[package.json]]'s fields
@@ -114,7 +116,7 @@ const globalsChecked: {[k:string]: string | false} = {};
  */
 const checkExternal = (id: string, from?: string, resolved?: boolean): boolean =>
     {
-        const isExternal = !/d3|d3-dsv|genutils|heap|\/build\/src\/.+\.(?:js|json)$/.test(id) && (resolved
+    const isExternal = !/|genutils|heap|\/build\/src\/.+\.(?:js|json)$/.test(id) && (resolved
             ? /\/node_modules\//.test(id)
             : !/^\./.test(id));
         const ext = globals[id] ?? '(missing)';
