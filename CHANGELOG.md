@@ -6,6 +6,7 @@ __date: 2021-09-02__
 
 * FIX [#4](https://github.com/BobKerns/retirement-simulator/issues/20) Document the model.
 * FIX [#16](https://github.com/BobKerns/retirement-simulator/issues/20) Add plot routines to library.
+* BUILD: We only need to build in Node 16.x. This way we can find build problems more quickly.
 
 ## Version 0.1.16
 
