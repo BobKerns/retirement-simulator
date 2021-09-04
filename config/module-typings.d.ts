@@ -8,9 +8,9 @@
 // We supply the missing type information for the terser plugin.
 
 
+import { Plugin } from "rollup";
+import { MinifyOptions } from "terser";
 declare module "rollup-plugin-terser" {
-    import {Plugin} from "rollup";
-    import {MinifyOptions} from "terser";
     interface TerserPluginOptions extends MinifyOptions {
         sourcemap: boolean;
         numWorkers: number;
