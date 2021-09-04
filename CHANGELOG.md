@@ -4,7 +4,8 @@
 
 __date: 2021-09-02__
 
-* FIX #4: Document the model.
+* FIX [#4](https://github.com/BobKerns/retirement-simulator/issues/20) Document the model.
+* FIX [#16](https://github.com/BobKerns/retirement-simulator/issues/20) Add plot routines to library.
 
 ## Version 0.1.16
 

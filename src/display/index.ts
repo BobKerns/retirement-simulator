@@ -12,3 +12,6 @@
 
 export * from './format';
 export * from './tables';
+export * from './line-plot';
+export * from './stack-plot';
+export * from './box';
