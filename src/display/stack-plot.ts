@@ -6,7 +6,7 @@
 
 import { subcolors, Color } from "../color";
 import { box } from "./box";
-import { areaY, plot, stackY } from '@observablehq/plot';
+import {O} from '../setup';
 import { uniq } from 'ramda';
 import type {ScaleOrdinal} from 'd3';
 import { isFunction } from "../utils";
@@ -21,6 +21,7 @@ export interface StackPlotOptions {
     tickFormat?: string;
     colors: ScaleOrdinal<Name,Color,Color>;
     years: number;
+    width: number;
 }
 
 /**
@@ -34,15 +35,15 @@ export const stackPlot = (
     options: StackPlotOptions
 ) => {
     const { caption, y, x = "year", offset = null, title = "name", tickFormat = "",
-        colors, years } = options;
+        colors, years, width } = options;
     const yFn = (a: any) => {
         const v = isFunction(y) ? y(a) : a[y];
         return v === undefined ? v : v / 1000;
     };
-    return box(md`${swatches({
+    return box(O.md`${O.swatches({
         color: subcolors(colors, uniq(series.filter(yFn).map((s) => s.name)))
     })}
-${plot({
+${O.Plot.plot({
         caption,
         style: {
             "max-width": width - 20
@@ -63,9 +64,9 @@ ${plot({
             domain: colors.domain()
         },
         marks: [
-            areaY(
+            O.Plot.areaY(
                 series,
-                stackY({
+                O.Plot.stackY({
                     x,
                     y: yFn,
                     fill: "name",

@@ -4,6 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { O } from "../setup";
+
 /**
  * Box wrapper
  *
@@ -21,4 +23,4 @@
  * @returns
  */
 export const box = (content: Element | string) =>
-    html`<div style='border: 1px solid blue; padding: 5px; margin-right: 1px;'> ${content} </div>`;
+    O.html`<div style='border: 1px solid blue; padding: 5px; margin-right: 1px;'> ${content} </div>`;

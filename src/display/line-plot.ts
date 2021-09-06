@@ -10,16 +10,17 @@
  * @module
  */
 
-import * as Plot from '@observablehq/plot';
 import { ScaleOrdinal } from 'd3';
 import { subcolors, Color } from '../color';
+import { O } from '../setup';
 import { Name } from '../types';
 import {box} from './box';
+import { PlotOptions } from './plot';
 
 export interface LinePlotOptions {
     caption?: string;
     label?: string;
-    options: Plot.PlotOptions;
+    options: PlotOptions;
     names?: Name[];
     tickformat?: string;
     years?: number;
@@ -27,7 +28,7 @@ export interface LinePlotOptions {
     colors: ScaleOrdinal<Name,Color,Color>
 };
 export const linePlot = (data: any[][], { caption, label, options, names, years = 25, width = 800, colors}: LinePlotOptions) => {
-    const doPlot = () => Plot.plot({
+    const doPlot = () => O.Plot.plot({
         caption,
         style: {
             "max-width": width - 20
@@ -40,11 +41,11 @@ export const linePlot = (data: any[][], { caption, label, options, names, years 
             grid: true,
             label
         },
-        marks: [...data.map(m => Plot.line(m, options)), Plot.ruleY([0])]
+        marks: [...data.map(m => O.Plot.line(m, options)), O.Plot.ruleY([0])]
     });
     return box(
-        md`${names
-                ? swatches({
+        O.md`${names
+                ? O.swatches({
                     color: subcolors(colors, names)
                 })
                 : ""
