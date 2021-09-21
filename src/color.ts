@@ -155,12 +155,13 @@ export const compute_colors =
     (scenario_list: Scenario[]) =>
     colorsFor(color_scheme, unknown)(
             scenario_list.flatMap((s) => [
-                ...s.asset_list.map((d) => d.name),
-                ...s.income_list.map((d) => d.name),
-                ...s.expense_list.map((d) => d.name),
-                ...s.liability_list.map((d) => d.name),
-                ...s.tax_list.map((d) => d.name),
-                ...s.incomeStream_list.map((d) => d.name)
+                ...s.asset_list.map((d) => d.id),
+                ...s.income_list.map((d) => d.id),
+                ...s.expense_list.map((d) => d.id),
+                ...s.liability_list.map((d) => d.id),
+                ...s.tax_list.map((d) => d.id),
+                ...s.incomeStream_list.map((d) => d.id),
+                ...s.person_list.map(d => d.id)
             ]));
 
 /**

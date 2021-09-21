@@ -25,7 +25,8 @@ export interface LinePlotOptions {
     tickformat?: string;
     years?: number;
     width?: number;
-    colors: ScaleOrdinal<Name,Color,Color>
+    colors: ScaleOrdinal<Name,Color,Color>;
+    xformat?: Formatter;
 };
 export const linePlot = (data: any[][], { caption, label, options, names, years = 25, width = 800, colors}: LinePlotOptions) => {
     const doPlot = () => O.Plot.plot({
