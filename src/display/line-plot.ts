@@ -11,11 +11,15 @@
  */
 
 import { ScaleOrdinal } from 'd3';
+import { Formatter } from './format';
 import { subcolors, Color } from '../color';
-import { O } from '../setup';
+import { O } from '../observablehq';
 import { Name } from '../types';
 import {box} from './box';
 import { PlotOptions } from './plot';
+import { Fmt } from '.';
+
+type LabelFormatter = (x: string) => string;
 
 export interface LinePlotOptions {
     caption?: string;
@@ -27,16 +31,18 @@ export interface LinePlotOptions {
     width?: number;
     colors: ScaleOrdinal<Name,Color,Color>;
     xformat?: Formatter;
+    labelFormat: LabelFormatter;
 };
-export const linePlot = (data: any[][], { caption, label, options, names, years = 25, width = 800, colors}: LinePlotOptions) => {
+
+export const linePlot = (data: any[][], { caption, label, options, names, years = 25, colors, xformat = Fmt.month, labelFormat = x => x}: LinePlotOptions) => {
     const doPlot = () => O.Plot.plot({
         caption,
         style: {
-            "max-width": width - 20
+            "max-width": O.width - 20
         },
-        width: width - 20,
+        width: O.width - 20,
         x: {
-            transform: (y: number) => (years ?? 0 > 35 ? y - 2000 : y)
+            tickFormat: xformat
         },
         y: {
             grid: true,
@@ -47,7 +53,8 @@ export const linePlot = (data: any[][], { caption, label, options, names, years 
     return box(
         O.md`${names
                 ? O.swatches({
-                    color: subcolors(colors, names)
+                    color: subcolors(colors, names),
+                    format: labelFormat
                 })
                 : ""
             }${doPlot()}`

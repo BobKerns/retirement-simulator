@@ -5,8 +5,8 @@
  */
 
 import { fmt_pct, fmt_usd, typeChecks } from "../utils";
-import { isNumber, round } from "../tagged";
-import { fmt_date, isDate } from "../calendar";
+import { isNumber, round, roundTo } from "../tagged";
+import { fmt_date, fmt_month, fmt_year, fmt_year_abbrev, fmt_year_short, isDate } from "../calendar";
 
 /**
  * Formatters
@@ -22,14 +22,6 @@ const bad = (arg: any) => arg === undefined
     ? '-NaN-'
     : '-?-';
 
-/**
- * A higher-order-function that produces a rounding function that rounds to the nearest _n_.
- * @param n scale of rounding
- * @param arg The number being rounded
- * @returns
- */
-export const roundTo = (n: number) => (arg: number) => round(arg / n) * n;
-
 const fmt = {
     string: (arg: any) => String(arg ?? ''),
     null: (arg: any) => '',
@@ -42,7 +34,11 @@ const fmt = {
     pct2: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.01)(arg), 2) : bad(arg),
     pct3: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.001)(arg), 3) : bad(arg),
     pct4: (arg: any) => isNumber(arg) ? fmt_pct(roundTo(0.0001)(arg), 4) : bad(arg),
-    date: (arg: any) => isDate(arg) ? fmt_date(arg) : bad(arg)
+    date: (arg: any) => isDate(arg) ? fmt_date(arg) : bad(arg),
+    month: (arg: any) => isDate(arg) ? fmt_month(arg) : bad(arg),
+    year: (arg: any) => isDate(arg) ? fmt_year(arg) : bad(arg),
+    year_abbrev: (arg: any) => isDate(arg) ? fmt_year_abbrev(arg) : bad(arg),
+    year_short: (arg: any) => isDate(arg) ? fmt_year_short(arg) : bad(arg)
 };
 
 /**

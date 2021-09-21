@@ -42,6 +42,12 @@ export interface Generators {
     worker: (source: string) => Worker;
 };
 
+export interface UID {
+    id: string;
+    href: string;
+    toString(): string;
+}
+
 export interface O {
     d3: typeof D3;
     swatches(options: SwatchesOptions): Element;
@@ -64,7 +70,10 @@ export interface O {
         when: <T>(duration: Date, value?: T) => T;
     };
     Plot: Plot;
-    // DOM, File, FileAttachments, require, SQLite
+    DOM: {
+        uid(name?: string): UID;
+    };
+    // File, FileAttachments, require, SQLite
 }
 
 

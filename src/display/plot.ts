@@ -17,7 +17,7 @@ export interface Mark {
     plot(options?: PlotOptions): PlotResult;
 };
 
-export type Extractor = string | Scale | ((a: any) => any);
+export type Channel = string | Scale | ((a: any) => any);
 
 export type Side = 'top' | 'bottom' | 'left' | 'right';
 export interface Scale {
@@ -52,6 +52,8 @@ export interface Scale {
     transform?: Function;
 }
 
+export type Offset = 'expand' | 'normalize' | 'center' | 'silhouette' | 'whiggle' | null;;
+
 export interface PlotOptions {
     marks?: Mark[];
     marginTop?: number;
@@ -61,19 +63,20 @@ export interface PlotOptions {
     width?: number;
     height?: number;
     caption?: string | Element;
-    x?: Extractor;
-    y?: Extractor;
-    r?: Extractor;
-    color?: Extractor;
-    opacity?: Extractor;
-    fill?: Extractor;
+    x?: Channel;
+    y?: Channel;
+    r?: Channel;
+    z?: Channel;
+    color?: Channel;
+    opacity?: Channel;
+    fill?: Channel;
     style?: {
         "max-width"?: number;
     };
     "margin-left"?: Pixels;
     "margin-bottom"?: Pixels;
-    title?: Extractor;
-    offset?: number | null;
+    title?: Channel;
+    offset?: Offset;
 }
 
 export interface Plot {

@@ -10,8 +10,9 @@
  * @module
  */
 
-export * from './format';
-export * from './tables';
-export * from './line-plot';
-export * from './stack-plot';
 export * from './box';
+export * from './format';
+export * from './line-plot';
+export * from './plot';
+export * from './stack-plot';
+export * from './tables';

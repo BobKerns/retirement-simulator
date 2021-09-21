@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { O } from "../setup";
+import { O } from "../observablehq";
 
 /**
  * Box wrapper

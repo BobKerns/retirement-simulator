@@ -225,11 +225,41 @@ export function incrementDate(date: Date|string, unitOrInterval: CalendarUnit|Re
 const p2 = (n: any) => String(n).padStart(2, '0');
 
 /**
+ * Format the date as '_year_
+ * @param date
+ * @returns
+ */
+export const fmt_year_short = (date: Date | string): string =>
+    isDate(date)
+        ? `${date.getUTCFullYear() - 2000}}`
+        : fmt_year(toDate(date));
+
+/**
+ * Format the date as '_year_
+ * @param date
+ * @returns
+ */
+export const fmt_year_abbrev = (date: Date | string): string =>
+    isDate(date)
+        ? `'${date.getUTCFullYear() - 2000}}`
+        : fmt_year(toDate(date));
+
+/**
+ * Format the date as _year_
+ * @param date
+ * @returns
+ */
+export const fmt_year = (date: Date | string): string =>
+    isDate(date)
+        ? `${date.getUTCFullYear()}}`
+        : fmt_year(toDate(date));
+
+/**
  * Format the date as _year-mo_
  * @param date
  * @returns
  */
-export const fmt_month = (date: Date|string): string =>
+export const fmt_month = (date: Date | string): string =>
     isDate(date)
         ? `${date.getUTCFullYear()}-${p2(date.getUTCMonth() + 1)}`
         : fmt_month(toDate(date));

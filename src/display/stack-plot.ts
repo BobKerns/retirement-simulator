@@ -6,22 +6,32 @@
 
 import { subcolors, Color } from "../color";
 import { box } from "./box";
-import {O} from '../setup';
+import {O} from '../observablehq';
 import { uniq } from 'ramda';
 import type {ScaleOrdinal} from 'd3';
-import { isFunction } from "../utils";
+import { isFunction, Throw } from "../utils";
 import { Name } from '../types';
+import { Formatter } from "./format";
+import { Fmt } from ".";
+import { Channel, Offset } from "./plot";
+import { isString } from "../tagged";
+
+type LabelFormatter = (x: string) => string;
 
 export interface StackPlotOptions {
     caption?: string,
-    x?: string,
-    y: string | ((a: any) => number | undefined);
-    offset?: number | null;
-    title?: string;
+    x?: Channel,
+    y: Channel;
+    z: Channel;
+    fill: Channel;
+    offset?: Offset;
+    title?: Channel;
     tickFormat?: string;
     colors: ScaleOrdinal<Name,Color,Color>;
     years: number;
     width: number;
+    xformat?: Formatter;
+    labelFormat: LabelFormatter;
 }
 
 /**
@@ -34,30 +44,37 @@ export const stackPlot = (
     series: any[],
     options: StackPlotOptions
 ) => {
-    const { caption, y, x = "year", offset = null, title = "name", tickFormat = "",
-        colors, years, width } = options;
-    const yFn = (a: any) => {
-        const v = isFunction(y) ? y(a) : a[y];
-        return v === undefined ? v : v / 1000;
-    };
+    const { caption, y = "value", x = "date", z = 'id', fill = z, offset = null, title = "name", tickFormat = "",
+        colors, years = 25, xformat = Fmt.month,
+        labelFormat = x => x } = options;
+    const value = isFunction(y)
+        ? (s: any) => y(s)
+        : isString(y)
+        ? (s: any) => s[y]
+        : Throw(`Bad y channel: ${y}`);
+    const validValue = (v: any) => y !== null && y !== undefined;
+    const valid = (v: any) => validValue(value(v));
     return box(O.md`${O.swatches({
-        color: subcolors(colors, uniq(series.filter(yFn).map((s) => s.name)))
+        color: subcolors(colors, uniq(series.filter(valid).map((s: any) => isFunction(z) ? z(s) : (s[z as string] ?? s.id)))),
+        format: labelFormat
     })}
 ${O.Plot.plot({
         caption,
         style: {
-            "max-width": width - 20
+            "max-width": O.width - 20
         },
-        width: width - 20,
+        width: O.width - 20,
         "margin-left": "40px",
         "margin-bottom": "0px",
         x: {
-            transform: (y: number) => (years > 35 ? y - 2000 : y),
-            tickFormat
+            label: "date",
+            grid: true,
+            tickFormat: xformat
         },
         y: {
             grid: true,
-            label: "$1K"
+            label: "$1K",
+            transform: (n: number) => n / 1000
         },
         color: {
             range: colors.range(),
@@ -67,11 +84,7 @@ ${O.Plot.plot({
             O.Plot.areaY(
                 series,
                 O.Plot.stackY({
-                    x,
-                    y: yFn,
-                    fill: "name",
-                    title: title,
-                    offset
+                    x, y, z, fill, title, offset
                 })
             )
         ]
