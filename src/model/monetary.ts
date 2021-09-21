@@ -11,7 +11,7 @@ import { RowType, MonetaryType, IMonetaryItem, IFScenario } from "../types";
 /**
  * An item with a monetary value, supplied as `value`.
  */
-export class Monetary<T extends MonetaryType> extends Item<T> implements IMonetaryItem<T> {
+export abstract class Monetary<T extends MonetaryType> extends Item<T> implements IMonetaryItem<T> {
     readonly value: Money;
     constructor(row: RowType<T>, scenario: IFScenario) {
         super(row, scenario);

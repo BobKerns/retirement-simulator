@@ -8,8 +8,8 @@ import { IExpense, IFScenario, IncomeStreamName, ItemImpl, ItemState, RowType, T
 import { CashFlow } from "./cashflow";
 import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
-import { CalendarStep } from "../calendar";
-import { asMoney } from "../tagged";
+import { CalendarStep, CalendarUnit } from "../calendar";
+import { convertPeriods } from "../interest";
 
 /**
  * A flow of money out.
@@ -30,11 +30,10 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
     *states<T extends Type>(start: CalendarStep): Generator<ItemState<'expense'>, any, ItemState<'expense'>> {
         let item: ItemImpl<'expense'> | null = this as  ItemImpl<'expense'>;
         let step = start;
-        let value = this.value;
+        let value = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);
         while (true) {
-            value = this.value;
-            const next = yield { item, step, value };
-            if (this.start < step.start) {
+            const next = yield this.makeState(step, { value });
+            if (step.start >= this.start) {
                 step = next.step;
                 value = next.value;
                 item = (item.temporal.onDate(step.start) as this) ?? null;

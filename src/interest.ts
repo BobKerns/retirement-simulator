@@ -6,8 +6,7 @@
 
 import { Sync } from "genutils";
 import { ANNUAL_PAYMENT_PERIODS, CalendarUnit, isCalendarUnit } from "./calendar";
-import { RateType } from "./enums";
-import { isNumber, Money, Rate } from "./tagged";
+import { Money, Rate } from "./tagged";
 import { AppliedInterest, AppliedLoanPayment } from "./types";
 
 /*
@@ -104,4 +103,13 @@ export const convertInterestPerPeriod = (rate: Rate, fromPeriod: number|Calendar
         return convertInterestPerPeriod(rate, fromPeriod, ANNUAL_PAYMENT_PERIODS[newPeriod]);
     }
     return (Math.pow(1 + rate / fromPeriod, fromPeriod / newPeriod) - 1) as Rate;
-}
+};
+
+export const convertPeriods = (amt: Money, fromPeriod: number | CalendarUnit, newPeriod: number | CalendarUnit): Money => {
+    if (isCalendarUnit(fromPeriod)) {
+        return convertPeriods(amt, ANNUAL_PAYMENT_PERIODS[fromPeriod], newPeriod);
+    } else if (isCalendarUnit(newPeriod)) {
+        return convertPeriods(amt, fromPeriod, ANNUAL_PAYMENT_PERIODS[newPeriod]);
+    }
+    return amt * fromPeriod / newPeriod as Money;
+};

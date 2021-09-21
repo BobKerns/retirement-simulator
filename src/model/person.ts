@@ -47,11 +47,13 @@ export class Person extends Item<'person'> implements IFPerson {
             const age = this.age(step.start);
             const survival = survivalProbabilities[step.step];
             const {n, p, years} = actuary(this, step.start);
-            const next = yield { item, step, age, survival, n, mortality: p, expected: years,  };
+            const next = yield this.makeState(step, { age, survival, n, mortality: p, expected: years });
             step = next.step;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
-            if (n === 0 && p === 1 && years === 0) return;
+            if (step.start >= this.start) {
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+                if (item === null) return;
+                if (n === 0 && p === 1 && years === 0) return;
+            }
         }
     }
 

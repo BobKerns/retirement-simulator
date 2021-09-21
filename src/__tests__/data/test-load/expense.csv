@@ -1,2 +1,2 @@
-Name,PrettyName,Start,End,Value
-car,MY CAR!,,,250.0
+Name,PrettyName,Start,End,PaymentPeriod,Value
+car,MY CAR!,,,month,250.0

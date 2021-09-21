@@ -25,10 +25,12 @@ export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
         let item: ItemImpl<'incomeTax'> | null = this as ItemImpl<'incomeTax'>;
         let step = start;
         while (true) {
-            const next = yield { item, step };
+            const next = yield this.makeState(step, {});
             step = next.step;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            if (step.start >= this.start) {
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+                if (item === null) return;
+            }
         }
     }
 }

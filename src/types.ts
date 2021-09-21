@@ -31,6 +31,8 @@ export interface Named<T extends Type = Type> {
     prettyName?: string;
 }
 
+export type ItemTypeOf<I extends Named> = I extends Named<infer T> ? T : never;
+
 /**
  * A non-specific object which satisfies @{link Named}. Useful for object literals in test cases
  */
@@ -46,6 +48,7 @@ export interface NamedIndex<T extends Named> {
 export type BalanceType = 'asset' | 'liability';
 export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
+export type IncomeSourceType = BalanceType | 'income';
 export type Type = `${Types}`;
 
 export interface ItemMethods<T extends Type> {
@@ -117,11 +120,13 @@ interface ItemImplMethodDefs {
 export type ItemImplFields<T extends Type> = T extends keyof ItemImplFieldDefs ? ItemImplFieldDefs[T] : {};
 export type ItemImplMethods<T extends Type> = T extends keyof ItemImplMethodDefs ? ItemImplMethodDefs[T] : {};
 
+export type Id<T extends Type> = `${T}/${Name}`;
+
 /**
  * The model implementation for each {@link Type}.
  */
 export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplFields<T> & ItemImplMethods<T> & {
-    id: string;
+    id: Id<T>;
     prettyName: string;
     temporal: Temporal<ItemImpl<T>>;
     scenario: ItemImpl<'scenario'>;
@@ -147,6 +152,9 @@ type RowTypes = {
  * Common fields for item states.
  * */
 export type IItemState<T extends Type> = {
+    date: Date;
+    type: T;
+    id: Id<T>;
     item: ItemImpl<T>;
     step: CalendarStep;
 }
@@ -163,14 +171,17 @@ export interface ItemStates {
 /**
  * The type of a particlar item type.
  */
-export type ItemState<T extends Type|'any' = 'any'> = ItemStateTypes[T];
+export type ItemState<T extends Type = Type> = ItemStateTypes[T];
 
 // Fill in as we flesh out implementations
 type ItemStateTypes = {
-    [k in Type|'any']: k extends 'any' ? IItemState<Type> : IItemState<Exclude<k, 'any'>>;
+    [k in Type]: k extends 'any' ? IItemState<Type> : IItemState<k>;
 } & {
     asset: {
         value: Money;
+        interest: Money;
+        rate: Rate;
+        used?: Money;
     };
     liability: {
         value: Money;
@@ -178,12 +189,14 @@ type ItemStateTypes = {
         principal: Money;
         interest: Money;
         rate: Rate;
+        used?: Money;
     };
     expense: {
         value: Money;
     };
     income: {
         value: Money;
+        used?: Money;
     };
     person: {
         age: Age;
@@ -216,7 +229,7 @@ export type Sex = 'male' | 'female';
  * A basic data item, with a value.
  */
 export interface IItem<T extends Type = Type> extends Named<T>, TemporalItem<T> {
-    id: string;
+    id: Id<T>;
     sort: number,
     categories: Category[];
     scenarios: ScenarioName[];
@@ -282,6 +295,10 @@ export interface IBalanceItem<T extends BalanceType> extends IMonetaryItem<T> {
  * Items which represent flows of money.
  */
 export interface ICashFlowItem<T extends CashFlowType> extends IMonetaryItem<T> {
+    /**
+     * Payment frequency
+     */
+    readonly paymentPeriod: CalendarUnit;
 }
 
 /**
@@ -380,7 +397,7 @@ export type IncomeStreamBoundSpec = IncomeStreamId
     | Array<IncomeStreamBoundSpec>
     | {[K in IncomeStreamId]: Constraint};
 
-export interface IIncomeStream extends IMonetaryItem<'incomeStream'> {
+export interface IIncomeStream extends ICashFlowItem<'incomeStream'> {
     readonly spec: IncomeStreamSpec;
 }
 
@@ -409,7 +426,7 @@ export interface TemporalItem<T extends Type = Type> {
 
 export type RowLabel = keyof AnyRow;
 export type ItemType<T extends Type = Type> = ItemTypes[T] & {type: T};
-export type RowType<T extends Type = Type> = RowTypes[T] & {type: T};
+export type RowType<T extends Type = Type> = RowTypes[T];
 
 export type InputColumn = Capitalize<RowLabel>;
 

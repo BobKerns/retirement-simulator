@@ -6,7 +6,11 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { Constraint, IFScenario, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec, ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, Writeable } from "../types";
+import {
+    Constraint, IFScenario,
+    IncomeSourceType, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec,
+    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, Writeable
+    } from "../types";
 import { classChecks, isMonetary, Throw } from "../utils";
 import { asMoney, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
@@ -99,20 +103,27 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
     withdraw(value: Money, id: string, state: ItemStates): Money {
         const withdrawFrom = (amount: number, spec: IncomeStreamBoundSpec): Money => {
             if (isString(spec)) {
-                const current = state[spec].current;
+                const current = state[spec]?.current;
                 if (current) {
                     const item = current.item;
                     if (isIncomeStream(item)) {
                         return item.withdraw(asMoney(amount), id, state);
-                    } else if (isMonetaryState(current)) {
+                    } else if (isIncomeSource(current)) {
                         const amt = Math.min(amount, current.value);
-                        current.value = asMoney(current.value - amt);
+                        current.used = asMoney(current.used ?? 0 + amt);
+                        if (item.type === 'liability') {
+                            // Really should flip the sign on liabilities and expenses.
+                            current.value = asMoney(current.value + amt);
+                        } else {
+                            current.value = asMoney(current.value - amt);
+                        }
                         return asMoney(amt);
                     } else {
                         throw new Error(`${spec} is not a valid source of income.`);
                     }
                 } else {
-                    throw new Error(`IncomeStream spec ${spec} was not found.`);
+                    console.log(`The income source ${spec} is not available at ${state.date}.`);
+                    return asMoney(0);
                 }
             } else if (Array.isArray(spec)) {
                 let total = 0;
@@ -146,10 +157,12 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         let item: ItemImpl<'incomeStream'> | null = this as ItemImpl<'incomeStream'>;
         let step = start;
         while (true) {
-            const next = yield { item, step };
+            const next = yield this.makeState(step, {});
             step = next.step;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            if (step.start >= this.start) {
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+             if (item === null) return;
+            }
         }
     }
 }
@@ -160,6 +173,8 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
  * @returns
  */
 export const isMonetaryState = <T extends MonetaryType>(a: any): a is Writeable<Monetary<T>> => a.item && isMonetary(a);
+
+export const isIncomeSource = <T extends IncomeSourceType>(a: any): a is Writeable<ItemState<'asset'  | 'liability' | 'income'>> => a.item && (a.item.type === 'asset' || a.item.type === 'liability' || a.item.type === 'income');
 
 export class IncomeStreamState extends StateMixin(IncomeStream) {
     constructor(row: ItemImpl<'incomeStream'>, scenario: IFScenario, state: ItemState<'incomeStream'>) {

@@ -12,7 +12,7 @@ import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText, IItem, ItemStates, NamedIndex, Type }from "../types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText, ItemImpl, ItemState, ItemStates, ItemTypeOf, NamedIndex, Type }from "../types";
 import { classChecks, indexByName } from "../utils";
 import { CalendarStep, fmt_date } from "../calendar";
 import { PersonState } from "./person";
@@ -56,18 +56,11 @@ export class Snapshot extends ScenarioBase {
         super(scenario, previous.scenario);
         this.scenario = scenario;
         this.period = period;
-        const next = (item: IItem) => {
-            const state = states[item.id];
-            const {current, generator} = state;
-            const val = generator.next({...current, step: period});
-            return state.current = val.value;
-        };
-        const active = (a: IItem<Type>) => {
+        const active = <I extends ItemImpl<Type>, S extends ItemState<ItemTypeOf<I>>>(a: I): [[I, S]] | [] => {
             const state = states[a.id]
             if (!state) return [];
-            const n = next(a);
-            if (!n) return [];
-            return [[a, n]];
+            const current = state.current;
+            return [[a, current as S]];
         };
 
         this.asset_list = scenario.asset_list.flatMap(active).map(([a, n]) => new AssetState(a, scenario, n));
@@ -112,6 +105,10 @@ export class Snapshot extends ScenarioBase {
         } catch {
             return `Snapshot.prototype`;
         }
+    }
+
+    *states() {
+
     }
 }
 

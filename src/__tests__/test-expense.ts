@@ -6,7 +6,7 @@
 
 import {Expense} from '../model/expense';
 import { construct as bareConstruct } from '../construct';
-import { dataset, expense_1, id, scenario_1 } from './data/samples';
+import { dataset, expense_1, scenario_1 } from './data/samples';
 import { as, asYear } from '../tagged';
 import { Scenario } from '../model';
 

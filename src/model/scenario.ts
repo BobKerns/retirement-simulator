@@ -7,10 +7,10 @@
 import Heap from "heap";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, toDate, YEAR } from "../calendar";
+import { calendarRange, CalendarStep, toDate, TODAY, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
-    TimeLineItem, RowType, ItemType, ScenarioName,
+    TimeLineItem, RowType, ItemType,
     Category, IFLiability, IFAsset, IFIncome,
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
     IFText,
@@ -301,29 +301,34 @@ export class Scenario extends ScenarioBase implements IFScenario {
      * @returns
      */
     #run() {
-        const previous = this;
-        let state: ItemStates = {};
-        const start = new CalendarStep(this.#start, this.#start, as(0));
+        let previous: ScenarioBase = this;
+        let states: ItemStates = {};
+        const start = new CalendarStep(TODAY, this.#start, as(0));
         this.items().forEach(i => {
             const generator = i.states(start);
             const current = generator.next().value;
-            state[i.id] = {generator, current};
+            states[i.id] = {generator, current};
         });
+        // preroll would go here.
         const snapshots = [];
+        if (TODAY !== this.#start) {
+            snapshots.push(previous = new Snapshot(this, start, previous, states));
+        }
         for (const period of calendarRange(this.#start, this.#end, {month: 1})) {
-            snapshots.push(new Snapshot(this, period, previous, state));
             // Walk each asset, liability, income, or expense through their internal evolution.
             // This includes both rate-base calculations and multiple time-based entries.
             const update = <T extends Type, L extends Array<ItemImpl<T>>>(list: L) => {
                 for (const item of list) {
-                    const itemState = state[item.id] as StateItem<T>;
-                    const {current, generator} = itemState;
-                    if (current) {
-                        const next = generator.next(current);
-                        if (next.done) {
-                            delete state[item.id];
-                        } else {
-                            itemState.current = next.value;
+                    const itemState = states[item.id] as StateItem<T>;
+                    if (itemState) {
+                        const {current, generator} = itemState;
+                        if (current) {
+                            const next = generator.next(current);
+                            if (next.done) {
+                                delete states[item.id];
+                            } else {
+                                itemState.current = next.value;
+                            }
                         }
                     }
                 }
@@ -332,14 +337,28 @@ export class Scenario extends ScenarioBase implements IFScenario {
             update(this.asset_list);
             update(this.expense_list);
             update(this.liability_list);
+            // Needs to handle tax and loan payments.
             for (const expense of this.expense_list) {
                 const inStream = this.incomeStreams[expense.fromStream]
                     ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
-                const current = (state[expense.id].current) as ItemState<'expense'>;
+                const current = (states[expense.id]?.current) as ItemState<'expense'> | undefined;
                 if (current) {
-                    current.value = asMoney(current.value = inStream.withdraw(current.value, expense.id, state));
+                    const used = inStream.withdraw(current.value, expense.id, states);
+                    current.value = asMoney(current.value - used)
                 }
             }
+            // Income sweep goes here.
+            snapshots.push(previous = new Snapshot(this, period, previous, states));
+
+            const next = (item: IItem) => {
+                const state = states[item.id];
+                if (state) {
+                    const { current, generator } = state;
+                    const val = generator.next({ ...current, step: period });
+                    return state.current = val.value;
+                }
+            };
+            this.items().forEach(next);
         }
         return snapshots;
     }

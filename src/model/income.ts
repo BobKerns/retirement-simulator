@@ -28,11 +28,10 @@ export class Income extends CashFlow<'income'> implements IIncome {
         let step = start;
         let value: Money = as(0);
         while (true) {
-            value = asMoney(value + this.value);
-            let next = yield { item, step, value };
-            if (this.start < step.start) {
-                step = next.step;
-                value = next.value;
+            let next = yield this.makeState(step, { value });
+            step = next.step;
+            if (step.start >= this.start) {
+                value = asMoney(value + this.value);
                 item = (item.temporal.onDate(step.start) as this) ?? null;
                 if (item === null) return;
             }

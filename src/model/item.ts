@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, IFScenario, IItem, ItemState, Name, RowType, ScenarioName, Type } from "../types";
+import { Category, Id, IFScenario, IItem, ItemState, Name, RowType, ScenarioName, Type } from "../types";
 import { CalendarStep } from "../calendar";
 import { START } from '../input';
 import { Temporal } from "../temporal";
@@ -13,8 +13,8 @@ import { Throw } from "../utils";
 /**
  * Base class for all items. Holds all the common fields.
  */
-export class Item<T extends Type> implements IItem<T> {
-    readonly id: string;
+export abstract class Item<T extends Type> implements IItem<T> {
+    readonly id: Id<T>;
     prettyName: string;
     readonly start: Date;
     readonly end?: boolean;
@@ -37,7 +37,7 @@ export class Item<T extends Type> implements IItem<T> {
     #temporal?: Temporal<this> = undefined;
 
     constructor(row: RowType<T>, scenario: IFScenario) {
-        this.type = row.type;
+        this.type = row.type as T;
         this.name = row.name;
         this.id = `${this.type}/${this.name}`;
         this.prettyName = row.prettyName ?? row.name;
@@ -59,14 +59,7 @@ export class Item<T extends Type> implements IItem<T> {
         return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
-    *states(start: CalendarStep): Generator<ItemState, any, ItemState> {
-        const item: IItem<Type> = this;
-        let step = start;
-        while (true) {
-            const next = yield {item, step} as ItemState<'any'>;
-            step = next.step;
-        }
-    }
+    abstract states(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
 
     /**
      * Tag instances with the type and name for easy recognition.
@@ -103,5 +96,9 @@ export class Item<T extends Type> implements IItem<T> {
             return !!scenarios.find(s => s === scenario);
         }
         return this.inScenario(scenario, scenarios.scenarios);
+    }
+
+    makeState(step: CalendarStep, params: Omit<ItemState<T>, 'date' | 'type' | 'id' | 'item' | 'step'>): ItemState<T> {
+        return { date: step.start, id: this.id, ...params, type: this.type, item: this, step} as unknown as ItemState<T>;
     }
 }

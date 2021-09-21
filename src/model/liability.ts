@@ -6,7 +6,7 @@
 
 import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
 import { Monetary } from "./monetary";
-import { asMoney, Money, Rate } from "../tagged";
+import { asMoney, Money, Rate, roundTo } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
@@ -40,19 +40,24 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         let item: ItemImpl<'liability'> | null = this as  ItemImpl<'liability'>;
         let step = start;
         let value = this.value;
-        const rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), this.paymentPeriod)
+        let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
         while (true) {
-            const interest = asMoney(value * rate);
-            value = asMoney(value + interest);
-            const payment = asMoney(Math.min(this.value, this.payment ?? 0));
-            const principal = asMoney(payment - interest);
-            value = asMoney(value - payment);
             if (value <= 0) return;
-            const next = yield {item, step, value, interest, principal, payment, rate};
+            const payment = asMoney(Math.min(value, this.payment ?? 0));
+            const interest: Money = asMoney(roundTo(0.01)(rate * value));
+            const principal = asMoney(payment - interest);
+            const next = yield this.makeState(step, {value, interest, principal, payment, rate});
             step = next.step;
-            value = next.value;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            if (step.start >= this.start) {
+                value = asMoney(next.value - principal);
+                rate = next.rate;
+                const nitem: ItemImpl<'liability'> | null = (item.temporal.onDate(step.start) as this) ?? null;
+                if (nitem === null) return;
+                if (nitem !== item) {
+                    item = nitem;
+                    rate = convertInterestPerPeriod(nitem.rate, asCalendarUnit(nitem.rateType), CalendarUnit.month)
+                }
+            }
         }
     }
 }

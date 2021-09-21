@@ -28,10 +28,12 @@ export class TextItem extends Item<'text'> implements IText {
         let step = start;
         while (true) {
             let text = this.text;
-            const next = yield { item, step, text };
+            const next = yield this.makeState(step, { text });
             step = next.step;
-            item = (item.temporal.onDate(step.start) as this) ?? null;
-            if (item === null) return;
+            if (step.start <= this.start) {
+                item = (item.temporal.onDate(step.start) as this) ?? null;
+                if (item === null) return;
+            }
         }
     }
 }
