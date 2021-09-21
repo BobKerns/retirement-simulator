@@ -68,6 +68,7 @@ interface ItemImplFieldDefs {
         readonly survivalProbabilities:  Probability[];
     }
     scenario: {
+        readonly byId: {[k: string]: IItem};
         readonly spouse1: IFPerson;
         readonly spouse2: IFPerson | null
         readonly person_list: IFPerson[];

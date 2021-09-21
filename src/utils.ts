@@ -14,7 +14,7 @@
 
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
-import type { MonetaryType, IMonetaryItem, NamedIndex, Type, RowType, IMonetary, AnyNamed, Named } from './types';
+import type { MonetaryType, IMonetaryItem, NamedIndex, Type, RowType, IMonetary, AnyNamed, Named, Name, Id } from './types';
 
 export const Heap = HeapIn;
 
@@ -254,3 +254,12 @@ export const [toBoolean, asBoolean] =
         "true or false",
         a => /^\s*(?:false|f)\s*$/i.test(a) ? false : /^\s*(?:true|t)\s*$/i.test(a) ? true : undefined
         );
+
+export function id<T extends Type>(type: T): (name: Name) => Id<T>;
+export function id<T extends Type>(type: T, name: Name): Id<T>;
+export function id<T extends Type>(type: T, name?: Name): ((name: Name) => Id<T>) | Id<T> {
+    if (name) {
+        return `${type}/${name}`;
+    }
+    return (name: Name): Id<T> => `${type}/${name}`;
+}

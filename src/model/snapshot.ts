@@ -98,6 +98,10 @@ export class Snapshot extends ScenarioBase {
         return this.scenario.dateRange;
     }
 
+    get byId() {
+        return this.scenario.byId;
+    }
+
     #tag?: string;
     get [Symbol.toStringTag]() {
         try {

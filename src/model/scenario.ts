@@ -20,7 +20,7 @@ import {
     StateItem,
     ItemImpl
     } from "../types";
-import { classChecks, heapgen, indexByName, Throw, total } from "../utils";
+import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
 import { START, END } from "../input";
@@ -89,6 +89,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
     #end_year: Year;
 
     static scenarios: NamedIndex<Scenario> = {};
+    readonly byId: { [k: string]: IItem<Type>; } = {};
 
     constructor(row: RowType<'scenario'>, dataset: Array<RowType<Type>>, end_year: Year) {
         super(row, undefined as unknown as IFScenario);
@@ -146,6 +147,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         timeline.push({ date: START, action: "begin", item: this });
         const scan = (list: Array<IItem>) =>
             list.forEach((item) => {
+                this.byId[item.id] = item;
                 if (item && item.start) {
                     timeline.push({ date: item.start, action: "begin", item });
                 }
@@ -271,7 +273,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         const categories = item?.categories ?? [];
         const scenarios = item?.scenarios ?? ['Default'];
         const prettyName = item?.prettyName ?? name;
-        const id = `person/${name}`;
+        const id = makeId('person', name);
         const row = {
             name,
             type: 'person' as const,

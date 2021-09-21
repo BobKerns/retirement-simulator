@@ -8,6 +8,7 @@ import { Item } from "./item";
 import {
     IFAsset, IFExpense, IFIncome, IFIncomeStream,
     IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText,
+    IItem,
     IScenarioBase, ItemImpl, ItemTableType, Name, NamedIndex, RowType, Type
     } from "../types";
 import { Sync } from "genutils";
@@ -114,7 +115,9 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
     abstract allItems: AllItems;
 
     abstract readonly dateRange: [start: Date, end: Date];
-    
+
+    abstract readonly byId: { [k: string]: IItem<Type>; };
+
     constructor(row: RowType<'scenario'>, scenario: IFScenario) {
         super(row, scenario);
     }
