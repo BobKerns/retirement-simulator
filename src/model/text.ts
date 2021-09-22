@@ -23,7 +23,7 @@ export class TextItem extends Item<'text'> implements IText {
     }
 
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'text'>, any, ItemState<'text'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'text'>, any, ItemState<'text'>> {
         let item: ItemImpl<'text'> | null = this as ItemImpl<'text'>;
         let step = start;
         while (true) {

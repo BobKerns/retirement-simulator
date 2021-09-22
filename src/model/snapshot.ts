@@ -111,7 +111,7 @@ export class Snapshot extends ScenarioBase {
         }
     }
 
-    *states() {
+    *step() {
 
     }
 }

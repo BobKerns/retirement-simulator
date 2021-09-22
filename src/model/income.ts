@@ -23,7 +23,7 @@ export class Income extends CashFlow<'income'> implements IIncome {
         super(row, scenario);
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'income'>, any, ItemState<'income'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'income'>, any, ItemState<'income'>> {
         let item: ItemImpl<'income'> | null = this as  ItemImpl<'income'>;
         let step = start;
         let value: Money = as(0);

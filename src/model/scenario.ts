@@ -296,7 +296,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return this.snapshots;
     }
 
-    *states() {}
+    *step() {}
 
     /**
      * Run the simulation for the scenario's period.
@@ -307,7 +307,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         let states: ItemStates = {};
         const start = new CalendarStep(TODAY, this.#start, as(0));
         this.items().forEach(i => {
-            const generator = i.states(start);
+            const generator = i.step(start);
             const current = generator.next().value;
             states[i.id] = {generator, current};
         });

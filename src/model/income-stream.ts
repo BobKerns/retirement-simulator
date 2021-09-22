@@ -153,7 +153,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return withdrawFrom(value, this.spec);
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeStream'>, any, ItemState<'incomeStream'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeStream'>, any, ItemState<'incomeStream'>> {
         let item: ItemImpl<'incomeStream'> | null = this as ItemImpl<'incomeStream'>;
         let step = start;
         while (true) {

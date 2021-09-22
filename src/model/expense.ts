@@ -27,7 +27,7 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
         super(row, scenario);
         this.fromStream = row.fromStream ?? Throw(`fromStream must be specified for ${this.name}.`);
     }
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'expense'>, any, ItemState<'expense'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'expense'>, any, ItemState<'expense'>> {
         let item: ItemImpl<'expense'> | null = this as  ItemImpl<'expense'>;
         let step = start;
         let value = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);

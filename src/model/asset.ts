@@ -39,7 +39,7 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
         this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'asset'>, any, ItemState<'asset'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'asset'>, any, ItemState<'asset'>> {
         let item: ItemImpl<'asset'> | null = this as  ItemImpl<'asset'>;
         let step = start;
         let value = this.value;

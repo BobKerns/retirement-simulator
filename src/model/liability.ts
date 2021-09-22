@@ -36,7 +36,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'liability'>, any, ItemState<'liability'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'liability'>, any, ItemState<'liability'>> {
         let item: ItemImpl<'liability'> | null = this as  ItemImpl<'liability'>;
         let step = start;
         let value = this.value;

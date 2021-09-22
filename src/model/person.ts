@@ -39,7 +39,7 @@ export class Person extends Item<'person'> implements IFPerson {
                 .asArray()
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'person'>, any, ItemState<'person'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'person'>, any, ItemState<'person'>> {
         let item: ItemImpl<'person'> | null = this as ItemImpl<'person'>;
         const survivalProbabilities = this.survivalProbabilities;
         let step = start;

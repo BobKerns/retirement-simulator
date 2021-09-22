@@ -54,7 +54,7 @@ export type Type = `${Types}`;
 export interface ItemMethods<T extends Type> {
     hasCategory(category: Category): boolean;
     inScenario(scenario: ScenarioName): boolean;
-    states(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
+    step(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
 };
 
 /**

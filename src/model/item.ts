@@ -59,7 +59,7 @@ export abstract class Item<T extends Type> implements IItem<T> {
         return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
-    abstract states(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
+    abstract step(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
 
     /**
      * Tag instances with the type and name for easy recognition.

@@ -21,7 +21,7 @@ export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
         this.state = row.state;
     }
 
-    *states<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeTax'>, any, ItemState<'incomeTax'>> {
+    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeTax'>, any, ItemState<'incomeTax'>> {
         let item: ItemImpl<'incomeTax'> | null = this as ItemImpl<'incomeTax'>;
         let step = start;
         while (true) {
