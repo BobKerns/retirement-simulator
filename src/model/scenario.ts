@@ -23,7 +23,7 @@ import {
 import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, asMoney, Year } from "../tagged";
-import { START, END } from "../input";
+import { START, END } from "../time";
 import { Item } from "./item";
 
 /**

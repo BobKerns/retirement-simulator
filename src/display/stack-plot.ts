@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { subcolors, Color } from "../color";
+import { subcolors, Color } from "./color";
 import { box } from "./box";
 import {O} from '../observablehq';
 import { uniq } from 'ramda';

@@ -10,11 +10,11 @@
  */
 
 import { csvParse, DSVRowArray } from 'd3';
-import { construct } from './construct';
+import { construct } from '../construct';
 import { convert } from './input';
-import { asYear, isString } from './tagged';
-import { InputRow, RowType, Type } from './types';
-import { assertRow, uniq } from './utils';
+import { asYear, isString } from '../tagged';
+import { InputRow, RowType, Type } from '../types';
+import { assertRow, uniq } from '../utils';
 
 export const parse = (text: string) => {
     return csvParse(text);

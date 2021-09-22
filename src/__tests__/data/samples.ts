@@ -5,7 +5,7 @@
  */
 
 import { UTC } from "../../calendar";
-import { START } from "../../input";
+import { START } from "../../time";
 import { as, asMoney } from "../../tagged";
 import { Category, IFExpense, IFScenario, IItem, IPerson, RowType, Type } from "../../types";
 

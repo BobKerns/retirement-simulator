@@ -9,7 +9,7 @@ import { CashFlow } from "./cashflow";
 import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
 import { CalendarStep, CalendarUnit } from "../calendar";
-import { convertPeriods } from "../interest";
+import { convertPeriods } from "../sim/interest";
 
 /**
  * A flow of money out.

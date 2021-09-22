@@ -5,9 +5,9 @@
  */
 
 import { Sync } from "genutils";
-import { ANNUAL_PAYMENT_PERIODS, CalendarUnit, isCalendarUnit } from "./calendar";
-import { Money, Rate } from "./tagged";
-import { AppliedInterest, AppliedLoanPayment } from "./types";
+import { ANNUAL_PAYMENT_PERIODS, CalendarUnit, isCalendarUnit } from "../calendar";
+import { Money, Rate } from "../tagged";
+import { AppliedInterest, AppliedLoanPayment } from "../types";
 
 /*
  * Interest calculations.

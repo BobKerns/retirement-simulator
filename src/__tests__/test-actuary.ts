@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { actuary, ActuaryDatum } from "../actuary";
+import { actuary, ActuaryDatum } from "../sim/actuary";
 import { UTC } from "../calendar";
 import { person_1, person_2 } from "./data/samples";
 

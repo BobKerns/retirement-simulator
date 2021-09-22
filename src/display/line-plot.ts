@@ -12,7 +12,7 @@
 
 import { ScaleOrdinal } from 'd3';
 import { Formatter } from './format';
-import { subcolors, Color } from '../color';
+import { subcolors, Color } from './color';
 import { O } from '../observablehq';
 import { Name } from '../types';
 import {box} from './box';

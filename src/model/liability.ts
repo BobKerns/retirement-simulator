@@ -10,7 +10,7 @@ import { asMoney, Money, Rate, roundTo } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
-import { convertInterestPerPeriod } from "../interest";
+import { convertInterestPerPeriod } from "../sim/interest";
 
 /**
  * A liability (generally, a loan or mortgage).

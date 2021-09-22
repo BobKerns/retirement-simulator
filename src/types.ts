@@ -6,7 +6,7 @@
 
 import type { StateCode } from "./states";
 import type { Age, Money, Probability, Rate, Tagged, Year } from "./tagged";
-import type { Temporal } from "./temporal";
+import type { Temporal } from "./sim";
 import type { RateType, Types } from "./enums";
 import { CalendarStep, CalendarUnit } from "./calendar";
 

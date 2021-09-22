@@ -16,7 +16,7 @@ import { asMoney, Rate, Money } from "../tagged";
 import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
-import { convertInterestPerPeriod } from "../interest";
+import { convertInterestPerPeriod } from "../sim/interest";
 
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value

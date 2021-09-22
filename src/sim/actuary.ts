@@ -4,13 +4,13 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import SS_2017_raw from './data/SS_2017.json';
-import { as, asProbability, floor } from './tagged';
-import { calculate_age } from './calendar';
-import { IFPerson, IPerson, Sex } from './types';
-import { START, END } from './input';
+import SS_2017_raw from '../data/SS_2017.json';
+import { as, asProbability, floor } from '../tagged';
+import { calculate_age } from '../calendar';
+import { IFPerson, IPerson, Sex } from '../types';
+import { START, END } from '../time';
 import { range } from 'genutils';
-import { Probability } from '.';
+import { Probability } from '..';
 
 
 export type ActuaryDatum = {

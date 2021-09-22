@@ -10,22 +10,19 @@
  * @module Index
  */
 
-export * from './actuary';
 export * from './calendar';
-export * from './color';
 export * from './construct';
 export * from './display';
 export * from './enums';
-export * from "./input";
-export * from './interest';
-export * from './load';
+export * from "./io";
 export * from "./model";
 export * from './observablehq';
 export * from './sort';
 export * from './states';
 export * from './tagged';
+export * from './sim';
 export * from './tax';
-export * from './temporal';
+export * from './time';
 export * from './types';
 export * from './utils';
 

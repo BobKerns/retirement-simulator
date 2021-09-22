@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { TypeCoercion } from "./tagged";
+import { TypeCoercion } from "../tagged";
 
 export type ValidationSpec<T extends any> = {
     [k in keyof T & string]: TypeCoercion<T[k]>;

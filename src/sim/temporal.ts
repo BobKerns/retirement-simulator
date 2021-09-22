@@ -11,8 +11,8 @@
  */
 
 
-import { TemporalItem, Type } from "./types";
-import { makeSort } from "./sort";
+import { TemporalItem, Type } from "../types";
+import { makeSort } from "../sort";
 
 const numericalCmp = (a: number, b: number) =>
     a < b

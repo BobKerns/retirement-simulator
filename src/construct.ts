@@ -8,7 +8,7 @@ import { Type, RowType, ItemType, AnyRow, TemporalItem } from './types';
 import { Asset, Expense, Liability, Income, IncomeStream, IncomeTax, Person, TextItem, Scenario } from './model';
 import { assertRow } from './utils';
 import { Year } from './tagged';
-import { Temporal } from './temporal';
+import { Temporal } from './sim';
 
 /**
  * Construct an item from a row object

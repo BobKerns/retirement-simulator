@@ -10,7 +10,7 @@ import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar"
 import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, Type } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
-import { actuary, compute_probabilities, SS_2017 } from "../actuary";
+import { actuary, compute_probabilities, SS_2017 } from "../sim/actuary";
 import { StateMixin } from "./state-mixin";
 
 /**

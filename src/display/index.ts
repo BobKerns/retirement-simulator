@@ -11,6 +11,7 @@
  */
 
 export * from './box';
+export * from './color';
 export * from './format';
 export * from './line-plot';
 export * from './plot';

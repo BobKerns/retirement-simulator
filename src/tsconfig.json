@@ -5,10 +5,12 @@
     "*.ts",
     "calendar/*.ts",
     "display/*.ts",
+    "io/*.ts",
     "model/*.ts",
+    "sim/*.ts",
     "tax/*.ts",
     "data/*.json"
-  ],
+, "io/validate.ts", "io/input.ts"  ],
   "exclude": ["../node_modules", "../build", "__test__"],
 
   "compilerOptions": {

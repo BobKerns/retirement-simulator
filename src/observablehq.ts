@@ -11,8 +11,8 @@
   */
 
 import type * as D3 from 'd3';
-import { loadData } from '.';
-import { Plot } from './display/plot';
+import { loadData } from './io';
+import { Plot } from './display';
 
 type Inputable<T> = EventTarget & ({
     value: T;
