@@ -188,35 +188,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return heapgen(this.#timeline);
     }
 
-    /**
-     * Get the snapshots for the scenario period.
-     */
-    get snapshots() {
-        if (!this.#snapshots) {
-            this.#snapshots = this.#run();
-            this.#currentEnd = this.#end;
-        }
-        return this.#snapshots;
-    }
-
-    /**
-     * Get the last snapshot for the scenario period.
-     */
-    get final() {
-        return this.#final || ((ss) => ss[ss.length - 1])(this.snapshots);
-    }
-
-    get sourcesFlat() {
-        return this.snapshots.flatMap((s) => [...s.asset_list, ...s.income_list]);
-    }
-
-    /**
-     * Get the net worth at the final snapshot
-     */
-    get net_assets_final() {
-        return this.final.net_assets;
-    }
-
     get total_retirement_income() {
         return Math.round(
             this.asset_list
@@ -290,80 +261,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return x;
     }
 
-    setEnd(end: Date) {
-        this.#end = toDate(end);
-        this.#snapshots = undefined;
-        return this.snapshots;
-    }
-
-    *step() {}
-
-    /**
-     * Run the simulation for the scenario's period.
-     * @returns
-     */
-    #run() {
-        let previous: ScenarioBase = this;
-        let states: ItemStates = {};
-        const start = new CalendarStep(TODAY, this.#start, as(0));
-        this.items().forEach(i => {
-            const generator = i.step(start);
-            const current = generator.next().value;
-            states[i.id] = {generator, current};
-        });
-        // preroll would go here.
-        const snapshots = [];
-        if (TODAY !== this.#start) {
-            snapshots.push(previous = new Snapshot(this, start, previous, states));
-        }
-        for (const period of calendarRange(this.#start, this.#end, {month: 1})) {
-            // Walk each asset, liability, income, or expense through their internal evolution.
-            // This includes both rate-base calculations and multiple time-based entries.
-            const update = <T extends Type, L extends Array<ItemImpl<T>>>(list: L) => {
-                for (const item of list) {
-                    const itemState = states[item.id] as StateItem<T>;
-                    if (itemState) {
-                        const {current, generator} = itemState;
-                        if (current) {
-                            const next = generator.next(current);
-                            if (next.done) {
-                                delete states[item.id];
-                            } else {
-                                itemState.current = next.value;
-                            }
-                        }
-                    }
-                }
-            };
-            update(this.income_list);
-            update(this.asset_list);
-            update(this.expense_list);
-            update(this.liability_list);
-            // Needs to handle tax and loan payments.
-            for (const expense of this.expense_list) {
-                const inStream = this.incomeStreams[expense.fromStream]
-                    ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
-                const current = (states[expense.id]?.current) as ItemState<'expense'> | undefined;
-                if (current) {
-                    const used = inStream.withdraw(current.value, expense.id, states);
-                    current.value = asMoney(current.value - used)
-                }
-            }
-            // Income sweep goes here.
-            snapshots.push(previous = new Snapshot(this, period, previous, states));
-
-            const next = (item: IItem) => {
-                const state = states[item.id];
-                if (state) {
-                    const { current, generator } = state;
-                    const val = generator.next({ ...current, step: period });
-                    return state.current = val.value;
-                }
-            };
-            this.items().forEach(next);
-        }
-        return snapshots;
-    }
+    *stepper() {}
 }
 
 

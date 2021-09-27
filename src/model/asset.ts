@@ -13,7 +13,7 @@
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { asMoney, Rate, Money } from "../tagged";
-import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
+import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, StepperState, Type } from "../types";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
@@ -39,22 +39,15 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
         this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'asset'>, any, ItemState<'asset'>> {
-        let item: ItemImpl<'asset'> | null = this as  ItemImpl<'asset'>;
-        let step = start;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'asset'>, any, ItemState<'asset'>> {
         let value = this.value;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month)
         let interest: Money = asMoney(0);
         while (true) {
-            const next = yield { date: step.start, type: item.type, id: item.id, item, step, value, interest, rate };
+            const next = yield { value, interest, rate };
             rate = next.rate;
             interest = asMoney(rate * value);
             value = asMoney(next.value + interest);
-            step = next.step;
-            if (step.start >= this.start) {
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-                if (item === null) return;
-            }
         }
     }
 }

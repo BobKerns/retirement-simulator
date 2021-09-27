@@ -11,6 +11,7 @@ import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
+import { StepperState } from "..";
 
 /**
  * A liability (generally, a loan or mortgage).
@@ -36,8 +37,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'liability'>, any, ItemState<'liability'>> {
-        let item: ItemImpl<'liability'> | null = this as  ItemImpl<'liability'>;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'liability'>, any, ItemState<'liability'>> {
         let step = start;
         let value = this.value;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
@@ -46,18 +46,8 @@ export class Liability extends Monetary<'liability'> implements ILiability {
             const payment = asMoney(Math.min(value, this.payment ?? 0));
             const interest: Money = asMoney(roundTo(0.01)(rate * value));
             const principal = asMoney(payment - interest);
-            const next = yield this.makeState(step, {value, interest, principal, payment, rate});
-            step = next.step;
-            if (step.start >= this.start) {
-                value = asMoney(next.value - principal);
-                rate = next.rate;
-                const nitem: ItemImpl<'liability'> | null = (item.temporal.onDate(step.start) as this) ?? null;
-                if (nitem === null) return;
-                if (nitem !== item) {
-                    item = nitem;
-                    rate = convertInterestPerPeriod(nitem.rate, asCalendarUnit(nitem.rateType), CalendarUnit.month)
-                }
-            }
+            const next = yield {value, interest, principal, payment, rate};
+            value = asMoney(next.value - principal);
         }
     }
 }

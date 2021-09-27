@@ -10,6 +10,7 @@ import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
 import { CalendarStep, CalendarUnit } from "../calendar";
 import { convertPeriods } from "../sim/interest";
+import { StepperState } from "..";
 
 /**
  * A flow of money out.
@@ -27,18 +28,10 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
         super(row, scenario);
         this.fromStream = row.fromStream ?? Throw(`fromStream must be specified for ${this.name}.`);
     }
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'expense'>, any, ItemState<'expense'>> {
-        let item: ItemImpl<'expense'> | null = this as  ItemImpl<'expense'>;
-        let step = start;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'expense'>, any, ItemState<'expense'>> {
         let value = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);
         while (true) {
-            const next = yield this.makeState(step, { value });
-            if (step.start >= this.start) {
-                step = next.step;
-                value = next.value;
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-                if (item === null) return;
-            }
+            const next = yield { value };
         }
     }
 }

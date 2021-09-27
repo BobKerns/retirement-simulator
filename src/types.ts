@@ -54,7 +54,7 @@ export type Type = `${Types}`;
 export interface ItemMethods<T extends Type> {
     hasCategory(category: Category): boolean;
     inScenario(scenario: ScenarioName): boolean;
-    step(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
+    stepper(step: CalendarStep): Generator<StepperState<T>, void, ItemState<T>>;
 };
 
 /**
@@ -126,10 +126,15 @@ export type Id<T extends Type> = `${T}/${Name}`;
 /**
  * The model implementation for each {@link Type}.
  */
-export type ItemImpl<T extends Type> = RowType<T> & ItemMethods<T> & ItemImplFields<T> & ItemImplMethods<T> & {
+export type ItemImpl<T extends Type> =
+    RowType<T>
+    & ItemMethods<T>
+    & ItemImplFields<T>
+    & ItemImplMethods<T>
+    & TemporalItemImpl<T>
+    & {
     id: Id<T>;
     prettyName: string;
-    temporal: Temporal<ItemImpl<T>>;
     scenario: ItemImpl<'scenario'>;
 };
 
@@ -161,7 +166,8 @@ export type IItemState<T extends Type> = {
 }
 
 export interface StateItem<T extends Type> {
-    generator: Generator<ItemState<T>, any, ItemState<T>>;
+    generator: Generator<StepperState<T>, void, ItemState<T>> | null;
+    item: ItemImpl<T>;
     current: ItemState<T>;
 }
 
@@ -170,14 +176,15 @@ export interface ItemStates {
 }
 
 /**
- * The type of a particlar item type.
+ * An item's full state.
  */
-export type ItemState<T extends Type = Type> = ItemStateTypes[T];
+export type ItemState<T extends Type = Type> = IItemState<T> & StepperState<T>;
 
-// Fill in as we flesh out implementations
-type ItemStateTypes = {
-    [k in Type]: k extends 'any' ? IItemState<Type> : IItemState<k>;
-} & {
+/**
+ * The type returned by a {@link stepper} function. This includes just the state provided by
+ * the stepper function; the full state is {@link StateItem}.
+ */
+export type StepperState<T extends Type = Type> = {
     asset: {
         value: Money;
         interest: Money;
@@ -206,10 +213,13 @@ type ItemStateTypes = {
         survival: Probability;
         expected: number;
     };
+    incomeStream: {};
+    incomeTax: {};
     text: {
         text: string;
     };
-};
+    scenario: {};
+}[T];
 
 /**
  * Extract the {@link Type} keyword from an IITem-based type.
@@ -418,11 +428,13 @@ export type AnyRow = Partial<Omit<IAsset, OmitKeys>>
         name: Name;
     };
 
-
 export interface TemporalItem<T extends Type = Type> {
     readonly start: Date;
     readonly end?: boolean;
-    temporal?: Temporal<TemporalItem<T>>;
+}
+
+export interface TemporalItemImpl<T extends Type = Type> extends TemporalItem<T> {
+    temporal: Temporal<ItemImpl<T>>;
 }
 
 export type RowLabel = keyof AnyRow;

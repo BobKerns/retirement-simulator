@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Type, RowType, ItemType, AnyRow, TemporalItem } from './types';
+import { Type, RowType, ItemType, AnyRow, TemporalItem, TemporalItemImpl, ItemImpl } from './types';
 import { Asset, Expense, Liability, Income, IncomeStream, IncomeTax, Person, TextItem, Scenario } from './model';
 import { assertRow } from './utils';
 import { Year } from './tagged';
@@ -20,10 +20,10 @@ export const construct = <T extends Type>(items: Array<RowType<T>>, type: T, dat
     : ItemType<T> => {
         const data = dataset as Array<RowType<Type>>;
         const scenario = dataset as Scenario;
-    const builder = (): ((i: RowType<T>) => AnyRow & TemporalItem) => {
+    const builder = (): ((i: RowType<T>) => ItemType<Type>) => {
         switch (type) {
             case "asset":
-                return (i: RowType<T>) => new Asset(assertRow(i, 'asset'), scenario );
+                return (i: RowType<T>) => new Asset(assertRow(i, 'asset'), scenario);
             case "expense":
                 return (i: RowType<T>) => new Expense(assertRow(i, 'expense'), scenario);
             case "liability":
@@ -44,8 +44,8 @@ export const construct = <T extends Type>(items: Array<RowType<T>>, type: T, dat
                 throw new Error(`Unrecognized item type: ${type}`);
         }
     }
-    const tItems = items.map(builder());
-    const temporal = new Temporal(tItems);
+    const tItems = items.map(builder()) as unknown as ItemImpl<T>[];
+    const temporal = new Temporal(tItems as ItemImpl<T>[]);
     tItems.forEach(i => i.temporal = temporal);
     return temporal.first as unknown as ItemType<T>;
 };

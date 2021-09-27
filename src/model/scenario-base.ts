@@ -160,12 +160,30 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
             this.liability_list,
             this.income_list,
             this.expense_list,
-            this.incomeStream_list,
             this.tax_list,
+            this.incomeStream_list,
             this.text_list
         );
     }
 
+    expenseItems() {
+        return Sync.concat<ItemImpl<Type>, unknown, unknown>(
+            this.expense_list,
+            this.liability_list,
+            this.tax_list
+        );
+    }
+
+    incomeItems() {
+        return Sync.concat<ItemImpl<Type>, unknown, unknown>(
+            this.income_list
+            // For now, we don't handle asset income as income.
+            // We need a scheme to distinguish growth from income that needs to be swept
+            // to an asset. Without this, we in effect reinvest all asset income in the same
+            // asset, which may not reflect reality.
+            // this.asset_list
+        );
+    }
 
     findItem<T extends Type>(name: Name, type: T): ItemImpl<T> | undefined {
         return this.allItems[type]?.[name] as unknown as ItemImpl<T>

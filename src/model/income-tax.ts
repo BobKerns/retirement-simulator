@@ -10,6 +10,7 @@ import { StateCode } from "../states";
 import { IFScenario, IIncomeTax, ItemImpl, ItemState, RowType, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
+import { StepperState } from "..";
 
 /**
  * A tax on income, state or federal.
@@ -21,16 +22,11 @@ export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
         this.state = row.state;
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeTax'>, any, ItemState<'incomeTax'>> {
-        let item: ItemImpl<'incomeTax'> | null = this as ItemImpl<'incomeTax'>;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'incomeTax'>, any, ItemState<'incomeTax'>> {
         let step = start;
         while (true) {
-            const next = yield this.makeState(step, {});
+            const next = yield {};
             step = next.step;
-            if (step.start >= this.start) {
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-                if (item === null) return;
-            }
         }
     }
 }

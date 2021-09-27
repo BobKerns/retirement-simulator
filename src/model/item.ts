@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, Id, IFScenario, IItem, ItemState, Name, RowType, ScenarioName, Type } from "../types";
+import { Category, Id, IFScenario, IItem, ItemImpl, ItemState, Name, RowType, ScenarioName, StepperState, Type } from "../types";
 import { CalendarStep } from "../calendar";
 import { START } from '../time';
 import { Temporal } from "../sim";
@@ -34,7 +34,7 @@ export abstract class Item<T extends Type> implements IItem<T> {
      */
     sort: number;
 
-    #temporal?: Temporal<this> = undefined;
+    #temporal?: Temporal<ItemImpl<T>> = undefined;
 
     constructor(row: RowType<T>, scenario: IFScenario) {
         this.type = row.type as T;
@@ -50,7 +50,7 @@ export abstract class Item<T extends Type> implements IItem<T> {
         this.sort = Number(row.sort || 0)
     }
 
-    set temporal(value: Temporal<this>) {
+    set temporal(value: Temporal<ItemImpl<T>>) {
         if (this.#temporal) throw new Error(`Cannot reset .temporal`);
         this.#temporal = value;
     }
@@ -59,7 +59,7 @@ export abstract class Item<T extends Type> implements IItem<T> {
         return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
-    abstract step(start: CalendarStep): Generator<ItemState<T>, any, ItemState<T>>;
+    abstract stepper(start: CalendarStep): Generator<StepperState<T>, void, ItemState<T>>;
 
     /**
      * Tag instances with the type and name for easy recognition.
@@ -96,9 +96,5 @@ export abstract class Item<T extends Type> implements IItem<T> {
             return !!scenarios.find(s => s === scenario);
         }
         return this.inScenario(scenario, scenarios.scenarios);
-    }
-
-    makeState(step: CalendarStep, params: Omit<ItemState<T>, 'date' | 'type' | 'id' | 'item' | 'step'>): ItemState<T> {
-        return { date: step.start, id: this.id, ...params, type: this.type, item: this, step} as unknown as ItemState<T>;
     }
 }

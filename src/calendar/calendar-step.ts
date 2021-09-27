@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Integer } from "../tagged";
+import { as, Integer } from "../tagged";
 import { classChecks } from "../utils";
 import { CalendarPeriod } from "./calendar-period";
 
@@ -28,7 +28,7 @@ export class CalendarStep extends CalendarPeriod {
      * @param end The end `Date` of the time period
      * @param step The iteration counter value.
      */
-    constructor(start: Date|string, end: Date|string, step: Integer) {
+    constructor(start: Date|string, end: Date|string, step: Integer = as(0)) {
         super(start, end);
         this.step = step;
     }

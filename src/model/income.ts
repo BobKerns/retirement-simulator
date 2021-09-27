@@ -10,6 +10,7 @@ import { IFScenario, IIncome, ItemImpl, ItemState, RowType, Type } from "../type
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
 import { as, asMoney, Money } from "../tagged";
+import { StepperState } from "..";
 
 /**
  * An income item. By default, annual, but can be constrained to a particular period of time.
@@ -23,18 +24,11 @@ export class Income extends CashFlow<'income'> implements IIncome {
         super(row, scenario);
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'income'>, any, ItemState<'income'>> {
-        let item: ItemImpl<'income'> | null = this as  ItemImpl<'income'>;
-        let step = start;
-        let value: Money = as(0);
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'income'>, any, ItemState<'income'>> {
+        let value: Money = this.value;
         while (true) {
-            let next = yield this.makeState(step, { value });
-            step = next.step;
-            if (step.start >= this.start) {
-                value = asMoney(value + this.value);
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-                if (item === null) return;
-            }
+            let next = yield { value };
+            value = asMoney(this.value + next.value);
         }
     }
 }

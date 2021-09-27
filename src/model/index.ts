@@ -21,6 +21,7 @@ export * from './text';
 export * from './monetary';
 export * from './person';
 export * from './scenario';
+export * from './scenario-base';
 export * from './snapshot';
 export * from './state-mixin';
 export * as G from 'genutils';

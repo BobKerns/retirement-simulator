@@ -7,7 +7,7 @@
 import { Item } from "./item";
 import { Age, asAge, asIAge, floor, IAge, Probability, Year } from "../tagged";
 import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar";
-import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, Type } from "../types";
+import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, StepperState, Type } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
 import { actuary, compute_probabilities, SS_2017 } from "../sim/actuary";
@@ -39,19 +39,16 @@ export class Person extends Item<'person'> implements IFPerson {
                 .asArray()
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'person'>, any, ItemState<'person'>> {
-        let item: ItemImpl<'person'> | null = this as ItemImpl<'person'>;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'person'>, any, ItemState<'person'>> {
         const survivalProbabilities = this.survivalProbabilities;
         let step = start;
         while (true) {
             const age = this.age(step.start);
             const survival = survivalProbabilities[step.step];
             const {n, p, years} = actuary(this, step.start);
-            const next = yield this.makeState(step, { age, survival, n, mortality: p, expected: years });
+            const next: ItemState<'person'> = yield { age, survival, n, mortality: p, expected: years };
             step = next.step;
             if (step.start >= this.start) {
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-                if (item === null) return;
                 if (n === 0 && p === 1 && years === 0) return;
             }
         }

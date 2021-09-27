@@ -15,6 +15,7 @@ import { classChecks, isMonetary, Throw } from "../utils";
 import { asMoney, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
 import { CalendarStep } from "../calendar";
+import { StepperState } from "..";
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
@@ -153,16 +154,9 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return withdrawFrom(value, this.spec);
     }
 
-    *step<T extends Type>(start: CalendarStep): Generator<ItemState<'incomeStream'>, any, ItemState<'incomeStream'>> {
-        let item: ItemImpl<'incomeStream'> | null = this as ItemImpl<'incomeStream'>;
-        let step = start;
+    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'incomeStream'>, any, ItemState<'incomeStream'>> {
         while (true) {
-            const next = yield this.makeState(step, {});
-            step = next.step;
-            if (step.start >= this.start) {
-                item = (item.temporal.onDate(step.start) as this) ?? null;
-             if (item === null) return;
-            }
+            const next = yield {};
         }
     }
 }
