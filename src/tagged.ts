@@ -362,6 +362,9 @@ export const {is: isByte, as: asByte, to: toByte} = numberRange('Byte', {min: 0,
 export type Money = Tagged<'Money'>;
 export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 
+const roundMoney = roundTo(0.01);
+export const money = (n: number) => asMoney(roundMoney(n));
+
 /**
  * Interest/growth rate as a fraction (not percent).
  */
