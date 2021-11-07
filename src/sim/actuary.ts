@@ -5,7 +5,8 @@
  */
 
 import SS_2017_raw from '../data/SS_2017.json';
-import { as, asProbability, floor } from '../tagged';
+import { as, asProbability } from '../tagged';
+import { floor } from '../math';
 import { calculate_age } from '../calendar';
 import { IFPerson, IPerson, Sex } from '../types';
 import { START, END } from '../time';

@@ -49,6 +49,8 @@ export type BalanceType = 'asset' | 'liability';
 export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
 export type IncomeSourceType = BalanceType | 'income';
+
+export type PayableType = 'expense' | 'liability' | 'incomeTax';
 export type Type = `${Types}`;
 
 export interface ItemMethods<T extends Type> {
@@ -61,9 +63,6 @@ export interface ItemMethods<T extends Type> {
  * Additional fields found in specific implementation types.
  */
 interface ItemImplFieldDefs {
-    incomeStream: {
-        withdraw(value: Money, purpose: string, states: ItemStates): Money;
-    };
     person: {
         readonly survivalProbabilities:  Probability[];
     }
@@ -112,6 +111,10 @@ interface ItemImplMethodDefs {
         findItem<T extends Type>(name: Name, type: T): ItemImpl<T> | undefined;
         findItems<T extends Type>(type: T): Iterable<ItemImpl<T>> | undefined;
         findText(name: Name): string;
+    };
+
+    incomeStream: {
+        withdraw(value: Money, purpose: string, states: ItemStates): WithdrawalEvent;
     };
 }
 
@@ -391,6 +394,14 @@ export interface Constraint {
     min?: Money,
     max?: Money,
     weight: Weight
+}
+
+export type WithdrawalItem = [Id<IncomeSourceType>, Money];
+
+export interface WithdrawalEvent {
+    id: Id<PayableType>;
+    amount: Money;
+    sources: Array<WithdrawalItem>;
 }
 
 /**

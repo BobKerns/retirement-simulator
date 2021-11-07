@@ -10,7 +10,7 @@
  */
 
 
-import { roundTo } from "./math";
+import { max, min, roundTo } from "./math";
 import { Throw } from "./utils";
 
 
@@ -363,7 +363,31 @@ export type Money = Tagged<'Money'>;
 export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 
 const roundMoney = roundTo(0.01);
-export const money = (n: number) => asMoney(roundMoney(n));
+/**
+ * Cast (and check) a numerical value as {@link Money}.
+ * @param n A number to be interpreted as a monetary value
+ * @returns the number, typed as {@link Money}
+ */
+export const $$ = (n: number): Money => asMoney(roundMoney(asMoney(n)));
+
+/**
+ * Cast a set of numbers as {@link Money} and return the largest.
+ * @param n
+ * @returns
+ */
+export const $max = (...n: number[]): Money => $$(max(...n));
+
+/**
+ * Cast a set of numbers as {@link Money} and return the the smallest.
+ * @param n
+ * @returns
+ */
+export const $min = (...n: number[]): Money => $$(min(...n));
+
+/**
+ * Zero {@link Money}.
+ */
+export const $0 = $$(0);
 
 /**
  * Interest/growth rate as a fraction (not percent).

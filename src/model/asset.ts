@@ -12,7 +12,7 @@
 
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
-import { asMoney, Rate, Money } from "../tagged";
+import { Rate, Money, $$, $0 } from "../tagged";
 import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, StepperState, Type } from "../types";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
@@ -42,12 +42,12 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
     *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'asset'>, any, ItemState<'asset'>> {
         let value = this.value;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month)
-        let interest: Money = asMoney(0);
+        let interest: Money = $0;
         while (true) {
             const next = yield { value, interest, rate };
             rate = next.rate;
-            interest = asMoney(rate * value);
-            value = asMoney(next.value + interest);
+            interest = $$(rate * value);
+            value = $$(next.value + interest);
         }
     }
 }

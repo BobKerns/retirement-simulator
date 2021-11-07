@@ -11,7 +11,8 @@
  *
  * @module
  */
-import { asInteger, asYear, floor, Integer, isInteger, isString, Relaxed, TagOf, toInteger, Year } from "../tagged";
+import { asInteger, asYear, Integer, isInteger, isString, Relaxed, TagOf, toInteger, Year } from "../tagged";
+import { floor } from '../math';
 import { Throw, typeChecks } from "../utils";
 import { CalendarInterval, CalendarUnit } from "./calendar-types";
 

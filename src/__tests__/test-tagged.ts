@@ -4,7 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { as, isInteger, isum, isUnit } from "../tagged";
+import { as, isInteger, isUnit } from "../tagged";
+import { isum } from '../math';
 
 describe('Tagged', () => {
     describe('Unit', () => {

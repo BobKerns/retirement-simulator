@@ -6,7 +6,7 @@
 
 import { Throw } from "../utils";
 import { Person } from "../model";
-import { Age, asMoney, IAge, Money, TaxRate, Year } from "../tagged";
+import { $$, Age, IAge, Money, TaxRate, Year } from "../tagged";
 
 export type TaxStatus = 'single' | 'married' | 'separately' | 'head';
 
@@ -115,5 +115,5 @@ export const lookupTax = (income: Money, status: TaxStatus, table: TaxTableItem[
       remaining -= atRate;
     }
   }
-  return asMoney(tax);
+  return $$(tax);
 };

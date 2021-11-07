@@ -12,6 +12,7 @@ import {
     IScenarioBase, ItemImpl, ItemTableType, Name, NamedIndex, RowType, Type
     } from "../types";
 import { Sync } from "genutils";
+import { $$ } from "../tagged";
 
 export type AllItems = {
     [K in Type]: ItemTableType<K>;
@@ -135,7 +136,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      * Calculate the total net value of assets.
      */
     get net_assets() {
-        return Math.round(
+        return $$(
             this.asset_list.reduce((a, i) => a + i.value, 0) -
             this.liability_list.reduce((a, i) => a + i.value, 0)
         );
@@ -145,7 +146,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      * Get the total expenses
      */
     get total_expenses() {
-        return Math.round(this.expense_list.reduce((a, i) => a + i.value, 0));
+        return $$(this.expense_list.reduce((a, i) => a + i.value, 0));
     }
 
     /**

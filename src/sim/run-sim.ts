@@ -13,8 +13,8 @@
 import { EnhancedGenerator, Sync } from "genutils";
 import { calendarRange, CalendarStep } from "../calendar";
 import { Scenario, ScenarioBase, Snapshot } from "../model";
-import { asMoney } from "../tagged";
-import { Id, IItem, ItemImpl, ItemState, ItemStates, StateItem, Type } from "../types";
+import { $$ } from "../tagged";
+import { IItem, ItemImpl, ItemState, ItemStates, StateItem, Type } from "../types";
 import { Throw } from "../utils";
 
 export const initStates = (scenario: Scenario, init: CalendarStep) =>
@@ -110,8 +110,8 @@ const payExpenses = (scenario: Scenario, states: ItemStates) => {
             ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
         const current = (states[expense.id]?.current) as ItemState<'expense'> | undefined;
         if (current) {
-            const used = inStream.withdraw(current.value, expense.id, states);
-            current.value = asMoney(current.value - used);
+            const {amount, sources} = inStream.withdraw(current.value, expense.id, states);
+            current.value = $$(current.value - amount);
         }
     }
 }

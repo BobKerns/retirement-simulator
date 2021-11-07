@@ -27,6 +27,10 @@ export const ceil = Math.ceil as <T extends number>(n: T) => Integer & T;
  */
 export const round = Math.round as <T extends number>(n: T) => Integer & T;
 
+export const max = Math.max as <T extends number>(...n: T[]) => T;
+
+export const min = Math.min as <T extends number>(...n: T[]) => T;
+
 /**
  * A higher-order-function that produces a rounding function that rounds to the nearest _n_.
  * @param n scale of rounding
@@ -58,9 +62,21 @@ export const incr = (n: Integer) => asInteger(n + 1);
  */
 export const decr = (n: Integer) => asInteger(n - 1);
 
-const isummer2 = makeSummer<Integer, Integer>(asInteger, asInteger);
+/**
+ * We need to defer the deinition of isummer2 until the module system is fully loaded.
+ * @returns the isum function
+ */
+const makeIsum = () => {
+    let isummer2: (l: Integer[]) => Integer;
+    return (...n: Integer[]) => {
+        if (!isummer2) {
+            isummer2 = makeSummer<Integer, Integer>(asInteger, asInteger);
+        }
+        return isummer2(n);
+    }
+}
 
 /**
  * Sum the {@link Integer} arguments as an {@link Integer}
  */
-export const isum = (...n: Integer[]) => isummer2(n);
+export const isum = makeIsum();

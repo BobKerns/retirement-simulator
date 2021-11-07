@@ -7,22 +7,18 @@
 import Heap from "heap";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { calendarRange, CalendarStep, toDate, TODAY, YEAR } from "../calendar";
+import { YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     TimeLineItem, RowType, ItemType,
     Category, IFLiability, IFAsset, IFIncome,
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
     IFText,
-    IFScenario,
-    ItemStates,
-    ItemState,
-    StateItem,
-    ItemImpl
+    IFScenario
     } from "../types";
 import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
-import { as, asMoney, Year } from "../tagged";
+import { as, $$, Year, $0 } from "../tagged";
 import { START, END } from "../time";
 import { Item } from "./item";
 
@@ -189,18 +185,18 @@ export class Scenario extends ScenarioBase implements IFScenario {
     }
 
     get total_retirement_income() {
-        return Math.round(
+        return $$(
             this.asset_list
                 .filter((a) => !a.hasCategory(NON_INCOME_ASSET))
-                .reduce((acc, a) => acc + a.value * a.rate, 0) +
+                .reduce((acc, a) => $$(acc + a.value * a.rate), $0) +
                 total(this.income_list)
             );
     }
 
     get total_retirement_income_with_fixed() {
-        return Math.round(
-            this.asset_list.reduce((acc, a) => acc + a.value * a.rate, 0) +
-            this.income_list.reduce((acc, a) => acc + a.value, 0)
+        return $$(
+            this.asset_list.reduce((acc, a) => $$(acc + a.value * a.rate), $0) +
+            this.income_list.reduce((acc, a) => $$(acc + a.value), $0)
         );
     }
 

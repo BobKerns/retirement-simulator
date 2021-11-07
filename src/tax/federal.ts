@@ -5,20 +5,20 @@
  */
 
 import { Throw } from "../utils";
-import { asAge, asIAge, asMoney, asTaxRate, asYear } from "../tagged";
+import { asAge, asIAge, $$, asTaxRate, asYear, $0 } from "../tagged";
 import { lookupTax, TaxYearTable, TaxYearTables } from "./tax-util";
 
 export const FEDERAL_TAX: TaxYearTables = {
     2021: {
         year: asYear(2021),
         table: [
-            { single: asMoney(0), married: asMoney(0), rate: asTaxRate(0.1) },
-            { single: asMoney(9950), married: asMoney(19900), rate: asTaxRate(0.12) },
-            { single: asMoney(40525), married: asMoney(81050), rate: asTaxRate(0.22) },
-            { single: asMoney(86375), married: asMoney(172750), rate: asTaxRate(0.24) },
-            { single: asMoney(164925), married: asMoney(329850), rate: asTaxRate(0.32) },
-            { single: asMoney(209425), married: asMoney(418850), rate: asTaxRate(0.35) },
-            { single: asMoney(523600), married: asMoney(628300), rate: asTaxRate(0.37) }
+            { single: $$(0), married: $$(0), rate: asTaxRate(0.1) },
+            { single: $$(9950), married: $$(19900), rate: asTaxRate(0.12) },
+            { single: $$(40525), married: $$(81050), rate: asTaxRate(0.22) },
+            { single: $$(86375), married: $$(172750), rate: asTaxRate(0.24) },
+            { single: $$(164925), married: $$(329850), rate: asTaxRate(0.32) },
+            { single: $$(209425), married: $$(418850), rate: asTaxRate(0.35) },
+            { single: $$(523600), married: $$(628300), rate: asTaxRate(0.37) }
         ].sort((a, b) =>
             a.single < b.single ? 1 : a.single === b.single ? 0 : -1
         ),
@@ -29,13 +29,13 @@ export const FEDERAL_TAX: TaxYearTables = {
         },
         deductions: {
             single: {
-                regular: asMoney(12550),
-                senior: asMoney(1700),
+                regular: $$(12550),
+                senior: $$(1700),
                 age: asAge(65)
             },
             married: {
-                regular: asMoney(25100),
-                senior: asMoney(1350),
+                regular: $$(25100),
+                senior: $$(1350),
                 age: asAge(65)
             }
         },
@@ -52,27 +52,26 @@ export const FEDERAL_TAX: TaxYearTables = {
             deductions
     }   ) {
             const income =
-                asMoney((regular ?? 0) +
-                 (socialSecurity ?? 0) * (this.rates.socialSecurity ?? 1) +
-                 (capitalGains ?? 0) * (this.rates.capitalGains ?? 1)
+                $$((regular ?? $0) +
+                 (socialSecurity ?? $0) * (this.rates.socialSecurity ?? 1) +
+                 (capitalGains ?? $0) * (this.rates.capitalGains ?? 1)
                 );
             const info = this.deductions[status]
                 ?? Throw(`No data for filing status ${status}`);
             const spouse1Age = spouse1.iage(year);
             const spouse2Age = spouse2?.iage(year) ?? asIAge(0);
             const std_deductions =
-                asMoney(info.regular +
-                    (spouse1Age >= info.age ? info.senior ?? 0: 0) +
-                    (spouse2Age >= info.age ? info.senior ?? 0 : 0));
-            const agi = asMoney(income - (deductions ?? std_deductions));
-            const zero = asMoney(0);
+                $$(info.regular +
+                    (spouse1Age >= info.age ? info.senior ?? $0: $0) +
+                    (spouse2Age >= info.age ? info.senior ?? $0 : $0));
+            const agi = $$(income - (deductions ?? std_deductions));
             return {
                 year: this.year,
                 income,
                 sources: {
-                    regular: regular ?? zero,
-                    socialSecurity: socialSecurity ?? zero,
-                    capitalGains: capitalGains ?? zero
+                    regular: regular ?? $0,
+                    socialSecurity: socialSecurity ?? $0,
+                    capitalGains: capitalGains ?? $0
                 },
                 deductions: deductions ?? std_deductions,
                 std_deductions,

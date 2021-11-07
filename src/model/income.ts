@@ -9,7 +9,7 @@ import { StateMixin } from "./state-mixin";
 import { IFScenario, IIncome, ItemImpl, ItemState, RowType, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
-import { as, asMoney, Money } from "../tagged";
+import { $$, Money } from "../tagged";
 import { StepperState } from "..";
 
 /**
@@ -28,7 +28,7 @@ export class Income extends CashFlow<'income'> implements IIncome {
         let value: Money = this.value;
         while (true) {
             let next = yield { value };
-            value = asMoney(this.value + next.value);
+            value = $$(this.value + next.value);
         }
     }
 }

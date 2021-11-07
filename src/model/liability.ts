@@ -6,7 +6,7 @@
 
 import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
 import { Monetary } from "./monetary";
-import { asMoney, Money, Rate, roundTo } from "../tagged";
+import { $$, $0, $min, Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
@@ -33,7 +33,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         super(row, scenario);
         this.rate = row.rate ?? 0;
         this.rateType = row.rateType || CalendarUnit.year;
-        this.payment = asMoney(row.payment ?? 0);
+        this.payment = row.payment ?? $0;
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;
     }
 
@@ -43,11 +43,11 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
         while (true) {
             if (value <= 0) return;
-            const payment = asMoney(Math.min(value, this.payment ?? 0));
-            const interest: Money = asMoney(roundTo(0.01)(rate * value));
-            const principal = asMoney(payment - interest);
+            const payment = $min(value, this.payment ?? $0);
+            const interest: Money = $$(rate * value);
+            const principal = $$(payment - interest);
             const next = yield {value, interest, principal, payment, rate};
-            value = asMoney(next.value - principal);
+            value = $$(next.value - principal);
         }
     }
 }

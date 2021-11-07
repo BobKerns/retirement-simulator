@@ -6,7 +6,7 @@
 
 import { UTC } from "../../calendar";
 import { START } from "../../time";
-import { as, asMoney } from "../../tagged";
+import { $$, as } from "../../tagged";
 import { Category, IFExpense, IFScenario, IItem, IPerson, RowType, Type } from "../../types";
 
 export const CAT_FRED: Category = as('fred');
@@ -36,7 +36,7 @@ export const expense_1: IFExpense = id({
     fromStream: 'from',
     sort: 1,
     paymentPeriod: 'month',
-    value: asMoney(100.00),
+    value: $$(100.00),
     categories: [CAT_FRED],
     scenarios: []
 });

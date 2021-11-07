@@ -5,7 +5,8 @@
  */
 
 import { Item } from "./item";
-import { Age, asAge, asIAge, floor, IAge, Probability, Year } from "../tagged";
+import { Age, asAge, asIAge, IAge, Probability, Year } from "../tagged";
+import { floor } from '../math';
 import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar";
 import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, StepperState, Type } from "../types";
 import { classChecks } from "../utils";

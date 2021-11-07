@@ -10,7 +10,8 @@
  * @module
  */
 
-import { as, asInteger, floor, Integer, Relaxed } from "../tagged";
+import { as, asInteger, Integer, Relaxed } from "../tagged";
+import { floor } from '../math';
 import { classChecks } from "../utils";
 import { CalendarInterval, CalendarUnit, ICalendarRange } from "./calendar-types";
 import { isLeapYear, CalendarLength, MONTH_LEMGTH, incrementDate, fmt_date, isCalendarUnit, isCalendarInterval, decodeCalendarInterval, toDate } from "./calendar-utils";

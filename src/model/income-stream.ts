@@ -7,15 +7,15 @@
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
 import {
-    Constraint, IFScenario,
+    Constraint, IFScenario, Id,
     IncomeSourceType, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec,
-    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, Writeable
+    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, WithdrawalEvent, WithdrawalItem, Writeable
     } from "../types";
 import { classChecks, isMonetary, Throw } from "../utils";
-import { asMoney, isString, Money } from "../tagged";
+import { $$, $0, $max, $min, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
 import { CalendarStep } from "../calendar";
-import { StepperState } from "..";
+import { StepperState } from "../types";
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
@@ -101,40 +101,43 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         }
     }
 
-    withdraw(value: Money, id: string, state: ItemStates): Money {
-        const withdrawFrom = (amount: number, spec: IncomeStreamBoundSpec): Money => {
+    withdraw(value: Money, id: Id<'expense'|'liability'|'incomeTax'>, state: ItemStates): WithdrawalEvent {
+        const withdrawFrom = (raw_amt: Money, spec: IncomeStreamBoundSpec): WithdrawalEvent => {
             if (isString(spec)) {
                 const current = state[spec]?.current;
                 if (current) {
-                    const item = current.item;
-                    if (isIncomeStream(item)) {
-                        return item.withdraw(asMoney(amount), id, state);
+                    if (isIncomeStream(current.item)) {
+                        return current.item.withdraw(raw_amt, id, state);
                     } else if (isIncomeSource(current)) {
-                        const amt = Math.min(amount, current.value);
-                        current.used = asMoney(current.used ?? 0 + amt);
+                        const item = current.item;
+                        const amt = $min(raw_amt, current.value);
+                        current.used = $$(current.used ?? $0 + amt);
                         if (item.type === 'liability') {
                             // Really should flip the sign on liabilities and expenses.
-                            current.value = asMoney(current.value + amt);
+                            current.value = $$(current.value + amt);
                         } else {
-                            current.value = asMoney(current.value - amt);
+                            current.value = $$(current.value - amt);
                         }
-                        return asMoney(amt);
+                        return {id, amount: amt, sources: [[item.id, amt]]};
                     } else {
                         throw new Error(`${spec} is not a valid source of income.`);
                     }
                 } else {
                     console.log(`The income source ${spec} is not available at ${state.date}.`);
-                    return asMoney(0);
+                    return {id, amount: $0, sources: []};
                 }
             } else if (Array.isArray(spec)) {
                 let total = 0;
+                const allSources: Array<WithdrawalItem> = [];
                 for (const k of spec) {
-                    total +=  withdrawFrom(Math.max(amount - total, 0), k);
-                    if (total >= amount) {
+                    const { amount, sources } = withdrawFrom($max(raw_amt - total, $0), k);
+                    total +=  amount;
+                    allSources.push(...sources);
+                    if (total >= raw_amt) {
                         break;
                     }
                 }
-                return asMoney(total);
+                return {id, amount: $$(total), sources: allSources};
             } else if (typeof spec === 'object') {
                 const shares: {[k: string]: Constraint} = spec;
                 // TODO: Enforce min and max
@@ -144,10 +147,13 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 // Repeat (w/ higher distribution) until no new stream max amounts are met.
                 // Then distribute by weight.
                 let total = 0;
+                const allSources: Array<WithdrawalItem> = [];
                 for (const k in spec) {
-                    total += withdrawFrom(amount * shares[k].weight, k as IncomeStreamId);
+                    const { amount, sources } = withdrawFrom($$(raw_amt * shares[k].weight), k as IncomeStreamId);
+                    total += amount;
+                    allSources.push(...sources);
                 }
-                return asMoney(total);
+                return {id, amount: $$(total), sources: allSources};
             }
             throw new Error(`Unknown spec: ${spec}`);
         }
