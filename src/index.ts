@@ -15,6 +15,7 @@ export * from './construct';
 export * from './display';
 export * from './enums';
 export * from "./io";
+export * from './math';
 export * from "./model";
 export * from './observablehq';
 export * from './sort';
