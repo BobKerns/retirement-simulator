@@ -65,7 +65,8 @@ const execFile = util.promisify(child_process.execFile);
 
 const hljs = require('highlight.js');
 
-const fetch = require('node-fetch');
+const fetchPkg = import('node-fetch');
+const fetch = async (...args) => (await fetchPkg).default(...args);
 
 /**
  * The root of our repo
