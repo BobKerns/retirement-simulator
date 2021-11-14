@@ -12,5 +12,5 @@
 
 export * from './actuary';
 export * from './interest';
-export * from './run-sim';
+export * from './sim';
 export * from './temporal';

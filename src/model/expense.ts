@@ -4,13 +4,13 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IExpense, IFScenario, IncomeStreamName, ItemImpl, ItemState, RowType, Type } from "../types";
+import { IExpense, IFScenario, IncomeStreamName, ItemImpl, ItemState, RowType, Stepper, Type } from "../types";
 import { CashFlow } from "./cashflow";
 import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
 import { CalendarStep, CalendarUnit } from "../calendar";
 import { convertPeriods } from "../sim/interest";
-import { StepperState } from "..";
+import { $$, $0 } from "../tagged";
 
 /**
  * A flow of money out.
@@ -28,10 +28,16 @@ export class Expense extends CashFlow<'expense'> implements IExpense {
         super(row, scenario);
         this.fromStream = row.fromStream ?? Throw(`fromStream must be specified for ${this.name}.`);
     }
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'expense'>, any, ItemState<'expense'>> {
-        let value = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'expense'> {
+        let amt = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);
+        let date = start.start;
+        let value = $0;
         while (true) {
-            const next = yield { value };
+            value = $$(value + (date >= this.start ? amt : $0));
+            const payment = value;
+            const next = yield { value, payment };
+            value = next.value;
+            date = next.date;
         }
     }
 }

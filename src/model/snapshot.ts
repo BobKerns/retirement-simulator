@@ -59,7 +59,7 @@ export class Snapshot extends ScenarioBase {
         const active = <I extends ItemImpl<Type>, S extends ItemState<ItemTypeOf<I>>>(a: I): [[I, S]] | [] => {
             const state = states[a.id]
             if (!state) return [];
-            const current = state.current;
+            const current = {...state.current};
             return [[a, current as S]];
         };
 

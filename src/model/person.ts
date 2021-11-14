@@ -8,7 +8,7 @@ import { Item } from "./item";
 import { Age, asAge, asIAge, IAge, Probability, Year } from "../tagged";
 import { floor } from '../math';
 import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar";
-import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, StepperState, Type } from "../types";
+import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
 import { actuary, compute_probabilities, SS_2017 } from "../sim/actuary";
@@ -40,7 +40,7 @@ export class Person extends Item<'person'> implements IFPerson {
                 .asArray()
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'person'>, any, ItemState<'person'>> {
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'person'> {
         const survivalProbabilities = this.survivalProbabilities;
         let step = start;
         while (true) {

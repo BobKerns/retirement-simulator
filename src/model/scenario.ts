@@ -10,11 +10,12 @@ import { Snapshot } from "./snapshot";
 import { YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
-    TimeLineItem, RowType, ItemType,
+    RowType, ItemType,
     Category, IFLiability, IFAsset, IFIncome,
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
     IFText,
-    IFScenario
+    IFScenario,
+    Stepper
     } from "../types";
 import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
@@ -58,7 +59,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
     /**
      * @internal
      */
-    #timeline: Heap<TimeLineItem>;
     /**
      * @internal
      */
@@ -125,30 +125,11 @@ export class Scenario extends ScenarioBase implements IFScenario {
         this.text_list = this.#construct_items("text");
         this.texts = indexByName(this.text_list);
 
-        const timelineCmp = (a: TimeLineItem, b: TimeLineItem) =>
-            a.date.valueOf() < b.date.valueOf()
-                ? -1
-                : a.date.valueOf() === b.date.valueOf()
-                    ? a.item.type < b.item.type
-                        ? -1
-                        : a.item.type === b.item.type
-                        ? a.item.name < b.item.name
-                            ? -1
-                            : 0
-                    : -1
-                : 1;
-
         // Compute the intial timeline.
-        const timeline = new Heap(timelineCmp);
-        timeline.push({ date: START, action: "begin", item: this });
         const scan = (list: Array<IItem>) =>
             list.forEach((item) => {
-                this.byId[item.id] = item;
-                if (item && item.start) {
-                    timeline.push({ date: item.start, action: "begin", item });
-                }
-                if (item && item.end) {
-                    timeline.push({ date: item.start, action: "end", item });
+                if (!this.byId[item.id]) {
+                    this.byId[item.id] = item;
                 }
             });
         this.spouse1 && scan([this.spouse1]);
@@ -159,7 +140,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
         scan(this.income_list);
         scan(this.tax_list);
         scan(this.incomeStream_list);
-        this.#timeline = timeline;
        this. allItems = {
             asset: this.assets,
             expense: this.expenses,
@@ -175,13 +155,6 @@ export class Scenario extends ScenarioBase implements IFScenario {
 
     get dateRange(): [start: Date, end: Date] {
         return [this.#start, this.#end];
-    }
-
-    /**
-     * Get the full timeline in sorted order as a generator.
-     */
-    get timeline() {
-        return heapgen(this.#timeline);
     }
 
     get total_retirement_income() {
@@ -257,7 +230,11 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return x;
     }
 
-    *stepper() {}
+    *stepper(): Stepper<'scenario'> {
+        while (true) {
+            const next = yield {};
+        }
+    }
 }
 
 

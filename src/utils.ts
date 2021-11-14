@@ -263,3 +263,12 @@ export function id<T extends Type>(type: T, name?: Name): ((name: Name) => Id<T>
     }
     return (name: Name): Id<T> => `${type}/${name}`;
 }
+
+export const entries = <K extends keyof any, V extends any>(o: Record<K,V>) =>
+    Object.entries<V>(o) as [K, V][];
+
+export const keys = <K extends keyof any, V extends any>(o: Record<K, V>) =>
+    Object.keys(o) as K[];
+
+export const values = <K extends keyof any, V extends any>(o: Record<K, V>) =>
+    Object.values<V>(o) as V[];

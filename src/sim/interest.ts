@@ -6,7 +6,7 @@
 
 import { Sync } from "genutils";
 import { ANNUAL_PAYMENT_PERIODS, CalendarUnit, isCalendarUnit } from "../calendar";
-import { Money, Rate } from "../tagged";
+import { $$, Money, Rate } from "../tagged";
 import { AppliedInterest, AppliedLoanPayment } from "../types";
 
 /*
@@ -111,5 +111,5 @@ export const convertPeriods = (amt: Money, fromPeriod: number | CalendarUnit, ne
     } else if (isCalendarUnit(newPeriod)) {
         return convertPeriods(amt, fromPeriod, ANNUAL_PAYMENT_PERIODS[newPeriod]);
     }
-    return amt * fromPeriod / newPeriod as Money;
+    return $$(amt * fromPeriod / newPeriod);
 };

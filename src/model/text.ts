@@ -6,10 +6,9 @@
 
 import { Item } from "./item";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, ItemImpl, ItemState, IText, RowType, Type } from "../types";
+import { IFScenario, ItemImpl, ItemState, IText, RowType, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
-import { StepperState } from "..";
 /**
  * A configured item of text used in model explanations, etc.
  *
@@ -24,10 +23,12 @@ export class TextItem extends Item<'text'> implements IText {
     }
 
 
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'text'>, any, ItemState<'text'>> {
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'text'> {
+        let date = start.start;
         while (true) {
-            let text = this.text;
+            let text = date >= this.start ? this.text : '';
             const next = yield { text };
+            date = next.date;
         }
     }
 }

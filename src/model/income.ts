@@ -6,11 +6,10 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncome, ItemImpl, ItemState, RowType, Type } from "../types";
+import { IFScenario, IIncome, ItemImpl, ItemState, RowType, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
-import { $$, Money } from "../tagged";
-import { StepperState } from "..";
+import { $$, $0, Money } from "../tagged";
 
 /**
  * An income item. By default, annual, but can be constrained to a particular period of time.
@@ -24,11 +23,15 @@ export class Income extends CashFlow<'income'> implements IIncome {
         super(row, scenario);
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'income'>, any, ItemState<'income'>> {
-        let value: Money = this.value;
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'income'> {
+        let amt: Money = this.value;
+        let date = start.start;
         while (true) {
-            let next = yield { value };
-            value = $$(this.value + next.value);
+            const value = date >= this.start ? amt : $0;
+            const payment = value;
+            let next = yield { value, payment };
+            amt = $$(this.value + next.value);
+            date = next.date;
         }
     }
 }

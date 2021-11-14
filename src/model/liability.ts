@@ -4,14 +4,13 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, Type } from "../types";
+import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, Stepper, Type } from "../types";
 import { Monetary } from "./monetary";
 import { $$, $0, $min, Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
-import { StepperState } from "..";
 
 /**
  * A liability (generally, a loan or mortgage).
@@ -37,17 +36,20 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'liability'>, any, ItemState<'liability'>> {
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'liability'> {
         let step = start;
-        let value = this.value;
+        let amt = this.value;
+        let date = start.start;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
         while (true) {
-            if (value <= 0) return;
-            const payment = $min(value, this.payment ?? $0);
-            const interest: Money = $$(rate * value);
+            if (amt <= 0) return;
+            const payment = $min(amt, this.payment ?? $0);
+            const interest: Money = $$(rate * amt);
             const principal = $$(payment - interest);
+            const value = date >= this.start ? amt : $0;
             const next = yield {value, interest, principal, payment, rate};
-            value = $$(next.value - principal);
+            amt = $$(next.value - principal);
+            date = next.date;
         }
     }
 }

@@ -9,13 +9,20 @@ import { StateMixin } from "./state-mixin";
 import {
     Constraint, IFScenario, Id,
     IncomeSourceType, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec,
-    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, WithdrawalEvent, WithdrawalItem, Writeable
+    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, WithdrawalEvent, Writeable
     } from "../types";
-import { classChecks, isMonetary, Throw } from "../utils";
+import { classChecks, entries, isMonetary, Throw } from "../utils";
 import { $$, $0, $max, $min, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
 import { CalendarStep } from "../calendar";
-import { StepperState } from "../types";
+import { Sources, PayableType, Stepper  } from "../types";
+
+
+export const addSubSources = (sources: Sources, subsources: Sources) => {
+    for (const [k, v] of entries(subsources)) {
+        sources[k] = $$((sources[k] ?? $0) + (v ?? $0));
+    }
+};
 
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
@@ -101,43 +108,45 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         }
     }
 
-    withdraw(value: Money, id: Id<'expense'|'liability'|'incomeTax'>, state: ItemStates): WithdrawalEvent {
-        const withdrawFrom = (raw_amt: Money, spec: IncomeStreamBoundSpec): WithdrawalEvent => {
+    withdraw(value: Money, id: Id<PayableType>, state: ItemStates): WithdrawalEvent {
+        const sources: Sources = {};
+        const alloc = (id: Id<IncomeSourceType>, amount: Money) => sources[id] = $$((sources[id] ?? $0) + amount);
+        const withdrawFrom = (raw_amt: Money, spec: IncomeStreamBoundSpec): Money => {
             if (isString(spec)) {
                 const current = state[spec]?.current;
                 if (current) {
                     if (isIncomeStream(current.item)) {
-                        return current.item.withdraw(raw_amt, id, state);
+                        const { amount, sources: subSources } = current.item.withdraw(raw_amt, id, state);
+                        addSubSources(sources, subSources);
+                        return amount;
                     } else if (isIncomeSource(current)) {
                         const item = current.item;
                         const amt = $min(raw_amt, current.value);
-                        current.used = $$(current.used ?? $0 + amt);
+                        current.used = $$((current.used ?? $0) + amt);
                         if (item.type === 'liability') {
                             // Really should flip the sign on liabilities and expenses.
                             current.value = $$(current.value + amt);
                         } else {
                             current.value = $$(current.value - amt);
                         }
-                        return {id, amount: amt, sources: [[item.id, amt]]};
+                        alloc(item.id, amt);
+                        return amt;
                     } else {
                         throw new Error(`${spec} is not a valid source of income.`);
                     }
                 } else {
                     console.log(`The income source ${spec} is not available at ${state.date}.`);
-                    return {id, amount: $0, sources: []};
+                    return $0;
                 }
             } else if (Array.isArray(spec)) {
                 let total = 0;
-                const allSources: Array<WithdrawalItem> = [];
                 for (const k of spec) {
-                    const { amount, sources } = withdrawFrom($max(raw_amt - total, $0), k);
-                    total +=  amount;
-                    allSources.push(...sources);
+                    total += withdrawFrom($max(raw_amt - total, $0), k);
                     if (total >= raw_amt) {
                         break;
                     }
                 }
-                return {id, amount: $$(total), sources: allSources};
+                return $$(total);
             } else if (typeof spec === 'object') {
                 const shares: {[k: string]: Constraint} = spec;
                 // TODO: Enforce min and max
@@ -147,20 +156,17 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 // Repeat (w/ higher distribution) until no new stream max amounts are met.
                 // Then distribute by weight.
                 let total = 0;
-                const allSources: Array<WithdrawalItem> = [];
                 for (const k in spec) {
-                    const { amount, sources } = withdrawFrom($$(raw_amt * shares[k].weight), k as IncomeStreamId);
-                    total += amount;
-                    allSources.push(...sources);
+                    total += withdrawFrom($$(raw_amt * shares[k].weight), k as IncomeStreamId);
                 }
-                return {id, amount: $$(total), sources: allSources};
+                return $$(total);
             }
             throw new Error(`Unknown spec: ${spec}`);
         }
-        return withdrawFrom(value, this.spec);
+        return {id, amount: withdrawFrom(value, this.spec), sources};
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Generator<StepperState<'incomeStream'>, any, ItemState<'incomeStream'>> {
+    *stepper<T extends Type>(start: CalendarStep): Stepper<'incomeStream'> {
         while (true) {
             const next = yield {};
         }

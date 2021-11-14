@@ -204,9 +204,11 @@ export type StepperState<T extends Type = Type> = {
     };
     expense: {
         value: Money;
+        payment: Money;
     };
     income: {
         value: Money;
+        payment: Money;
         used?: Money;
     };
     person: {
@@ -223,6 +225,12 @@ export type StepperState<T extends Type = Type> = {
     };
     scenario: {};
 }[T];
+
+/**
+ * A generator that produces updated item states,
+ */
+export type Stepper<T extends Type> = Generator<StepperState<T>, any, ItemState<T>>;
+
 
 /**
  * Extract the {@link Type} keyword from an IITem-based type.
@@ -396,12 +404,14 @@ export interface Constraint {
     weight: Weight
 }
 
-export type WithdrawalItem = [Id<IncomeSourceType>, Money];
+export type Sources = {
+    [k in Id<IncomeSourceType>]?: Money;
+};
 
 export interface WithdrawalEvent {
     id: Id<PayableType>;
     amount: Money;
-    sources: Array<WithdrawalItem>;
+    sources: Sources;
 }
 
 /**
@@ -460,13 +470,40 @@ export type InputRow = {
 
 export type SortFn<T> = (a: T, b: T) => -1 | 0 | 1;
 
-export type TimeLIneAction = "begin" | "end";
+export type TimeLineAction = "begin" | "end" | 'receive' | 'withdraw' | 'pay';
 
-export interface TimeLineItem {
+export type ActionItem<A extends TimeLineAction> = A extends ('begin' | 'end')
+    ? IItem
+    : A extends 'receive'
+    ? IItem<'asset' | 'income'>
+    : A extends 'withdraw'
+    ? IItem<'asset' | 'income' | 'liability'>
+    : A extends 'pay'
+    ? IItem<'expense' | 'liability' | 'incomeTax'>
+    : never;
+
+interface TransferAction {
+    amount: Money;
+};
+
+export type ActionData<A extends TimeLineAction> = A extends ('begin' | 'end')
+    ? {}
+    : A extends 'receive'
+    ? TransferAction
+    : A extends 'withdraw'
+    ? TransferAction
+    : A extends 'pay'
+    ? TransferAction
+    : never;
+
+
+export interface TimeLineItemBase<A extends TimeLineAction> {
     readonly date: Date;
-    readonly action: TimeLIneAction;
-    readonly item: IItem;
+    readonly action: A;
+    readonly item: ActionItem<A>;
 }
+
+export type TimeLineItem<A extends TimeLineAction = TimeLineAction> = TimeLineItemBase<A> & ActionData<A>;
 
 export interface IState<T extends Type> {
     readonly scenario: IFScenario;
