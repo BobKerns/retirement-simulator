@@ -10,6 +10,7 @@
  * @module Index
  */
 
+export * from './agregate';
 export * from './calendar';
 export * from './construct';
 export * from './display';
