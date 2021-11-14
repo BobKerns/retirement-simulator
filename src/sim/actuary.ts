@@ -5,13 +5,12 @@
  */
 
 import SS_2017_raw from '../data/SS_2017.json';
-import { as, asProbability } from '../tagged';
+import { as, asProbability, Probability } from '../tagged';
 import { floor } from '../math';
 import { calculate_age } from '../calendar';
 import { IFPerson, IPerson, Sex } from '../types';
 import { START, END } from '../time';
 import { range } from 'genutils';
-import { Probability } from '..';
 
 
 export type ActuaryDatum = {

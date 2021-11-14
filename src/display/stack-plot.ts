@@ -11,8 +11,7 @@ import { uniq } from 'ramda';
 import type {ScaleOrdinal} from 'd3';
 import { isFunction, Throw } from "../utils";
 import { Name } from '../types';
-import { Formatter } from "./format";
-import { Fmt } from ".";
+import { Formatter, Fmt } from "./format";
 import { Channel, Offset } from "./plot";
 import { isString } from "../tagged";
 

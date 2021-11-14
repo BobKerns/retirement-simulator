@@ -5,7 +5,7 @@
  */
 
 import { Monetary } from "./monetary";
-import { CalendarUnit, day_of_year, YEAR } from "../calendar";
+import { CalendarUnit } from "../calendar";
 import { CashFlowType, ICashFlowItem, IFScenario, RowType } from "../types";
 import { Throw } from "../utils";
 

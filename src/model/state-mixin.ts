@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl, ItemStates, StateItem} from "../types";
+import { IItem, IState, Type , IFScenario, ItemState, RowType, ItemImpl } from "../types";
 
 /**
  * Mixin and support for fields that vary over time.

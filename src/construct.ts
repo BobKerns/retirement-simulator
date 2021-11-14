@@ -4,11 +4,11 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Type, RowType, ItemType, AnyRow, TemporalItem, TemporalItemImpl, ItemImpl } from './types';
+import { Type, RowType, ItemType, ItemImpl } from './types';
 import { Asset, Expense, Liability, Income, IncomeStream, IncomeTax, Person, TextItem, Scenario } from './model';
 import { assertRow } from './utils';
 import { Year } from './tagged';
-import { Temporal } from './sim';
+import { Temporal } from './sim/temporal';
 
 /**
  * Construct an item from a row object

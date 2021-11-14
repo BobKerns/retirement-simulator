@@ -7,7 +7,7 @@
 import { Category, Id, IFScenario, IItem, ItemImpl, ItemState, Name, RowType, ScenarioName, StepperState, Type } from "../types";
 import { CalendarStep } from "../calendar";
 import { START } from '../time';
-import { Temporal } from "../sim";
+import { Temporal } from "../sim/temporal";
 import { Throw } from "../utils";
 
 /**

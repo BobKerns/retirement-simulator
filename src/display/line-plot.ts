@@ -11,13 +11,12 @@
  */
 
 import { ScaleOrdinal } from 'd3';
-import { Formatter } from './format';
+import { Formatter, Fmt } from './format';
 import { subcolors, Color } from './color';
 import { O } from '../observablehq';
 import { Name } from '../types';
 import {box} from './box';
 import { PlotOptions } from './plot';
-import { Fmt } from '.';
 
 type LabelFormatter = (x: string) => string;
 
