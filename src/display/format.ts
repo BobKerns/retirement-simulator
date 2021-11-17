@@ -5,8 +5,7 @@
  */
 
 import { fmt_pct, fmt_usd, typeChecks } from "../utils";
-import { isNumber } from "../tagged";
-import { round, roundTo } from '../math';
+import { isNumber, round, roundTo } from '../math';
 import { fmt_date, fmt_month, fmt_year, fmt_year_abbrev, fmt_year_short, isDate } from "../calendar";
 
 /**
