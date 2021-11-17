@@ -23,7 +23,9 @@ class MergeSum<K, V extends number, R extends V> extends Merge<K, V, R> {
     }
 
     override add(item: V) {
-        this.#value += item;
+        if (item !== null && item !== undefined) {
+            this.#value += item;
+        }
     }
 
     override value() {
