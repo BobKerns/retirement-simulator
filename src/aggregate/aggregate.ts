@@ -43,19 +43,15 @@ export const aggregate = <T, R, K = T, V = T>(spec: AggregationSpec<T, R, K, V>)
             for (const i of l) {
                 const currentKey = keyFn(i);
                 const currentValue = valueFn(i);
-                console.log('key', previousKey, currentKey)
                 if (merger === null || previousKey === INIT_MARK) {
                     // Initial pass
                     merger =  merge(currentKey);
-                    console.log('init', currentValue, i);
                     merger.add(currentValue);
                 } else if (!compare(previousKey, currentKey)) {
-                    console.log('same', currentValue, i);
                     merger.add(currentValue);
                 } else {
                     yield* merger.value();
                     merger = merge(currentKey);
-                    console.log('new', currentKey, currentValue, i);
                     merger.add(currentValue);
                 }
                 previousKey = currentKey;
