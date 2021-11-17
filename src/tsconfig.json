@@ -3,6 +3,7 @@
   "extends": "../tsconfig",
   "include": [
     "*.ts",
+    "aggregate/*.ts",
     "calendar/*.ts",
     "display/*.ts",
     "io/*.ts",
@@ -10,7 +11,7 @@
     "sim/*.ts",
     "tax/*.ts",
     "data/*.json"
-, "io/validate.ts", "io/input.ts"  ],
+, "io/validate.ts", "io/input.ts", "aggregate/aggregate.ts"  ],
   "exclude": ["../node_modules", "../build", "__test__"],
 
   "compilerOptions": {
