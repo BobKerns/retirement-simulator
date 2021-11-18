@@ -17,7 +17,7 @@ import type { Merge } from './merge';
 /**
  * For aggregation, k
  */
-export type MergeFn<K, V, R> = (key: K) => Merge<K, V, R>;
+export type MergeFn<K, I extends Record<keyof any, any>, R> = (key: K) => Merge<K, I, R>;
 /**
  * Aggregation types
  *
@@ -33,7 +33,7 @@ export type ExtractorFn<T, K> = (item: T) => K;
  * @type K the type of the keys partitioning the aggregated results
  * @type V the type of value extracted to be passed to the {@link MergeFn}
  */
-export interface AggregationSpec<T, R, K, V> {
+export interface AggregationSpec<T extends Record<keyof any, any>, R extends any, K, V> {
     /**
      * Function to extract the aggregation key, or the name of a field. Defaults to the identity function.
      */
