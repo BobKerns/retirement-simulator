@@ -267,7 +267,7 @@ export function id<T extends Type>(type: T, name?: Name): ((name: Name) => Id<T>
 export const entries = <K extends keyof any, V extends any>(o: Record<K,V>) =>
     Object.entries<V>(o) as [K, V][];
 
-export const keys = <K extends keyof any, V extends any>(o: Record<K, V>) =>
+export const keys = <K extends keyof any>(o: Record<K, any>) =>
     Object.keys(o) as K[];
 
 export const values = <K extends keyof any, V extends any>(o: Record<K, V>) =>
