@@ -36,6 +36,9 @@ export const naturalCMP = <T>(a: T, b: T): -1 | 0 | 1 => {
             if (!a && b) return -1;
             if (!b && a) return 1;
             if (b === a) return 0;
+            if (a instanceof Date && b instanceof Date) {
+                return naturalCMP(a.getTime(), b.getTime());
+            }
             const aCnst = (a as Object).constructor;
             const bCnst = (b as Object).constructor;
             if (aCnst === bCnst) {
