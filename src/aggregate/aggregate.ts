@@ -7,6 +7,7 @@
 import { AggregationSpec, ExtractorFn } from "./aggregate-types";
 import { naturalCMP } from "../sort";
 import { Merge } from "./merge";
+import { Sync } from "genutils";
 
 
 /**
@@ -60,6 +61,6 @@ export const aggregate = <T, R, K = T, V = T>(spec: AggregationSpec<T, R, K, V>)
                 yield* merger.value();
             }
         }
-        return aggregate();
+        return Sync.enhance<R,void,void>(aggregate());
     };
 };
