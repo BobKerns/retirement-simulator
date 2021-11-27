@@ -12,6 +12,10 @@
         "import": "./lib/esm/index.js",
         "require": "./lib/cjs/index.js"
     },
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=6"
+    },
     "enable-pre-post-scripts": true,
     "scripts": {
         "build:compile": "tsc --build config src",
