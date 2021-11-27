@@ -20,7 +20,6 @@ export * from './math';
 export * from "./model";
 export * from './observablehq';
 export * from './sort';
-export * from './states';
 export * from './tagged';
 export * from './sim';
 export * from './tax';

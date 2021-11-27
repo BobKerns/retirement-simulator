@@ -6,7 +6,7 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { StateCode } from "../states";
+import { StateCode } from "../tax/states";
 import { IFScenario, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";

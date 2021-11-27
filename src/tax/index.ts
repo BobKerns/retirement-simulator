@@ -11,11 +11,12 @@
  */
 
 import { TAX_TABLES } from './tax-tables';
-import { StateCode } from '../states';
+import { StateCode } from './states';
 import { Year } from '../tagged';
 import { Throw } from '../utils';
 import { TaxData } from './tax-util';
 
+export * from './states';
 export * from './tax-util';
 export * from './tax-tables';
 

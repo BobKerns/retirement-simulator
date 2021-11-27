@@ -8,7 +8,7 @@
  * Tax tables by state.
  */
 
-import { StateCode } from "../states";
+import { StateCode } from "./states";
 import { CALIFORNIA_TAX } from "./california";
 import { FEDERAL_TAX } from "./federal";
 import { TaxYearTables } from "./tax-util";

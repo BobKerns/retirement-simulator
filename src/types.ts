@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import type { StateCode } from "./states";
+import type { StateCode } from "./tax/states";
 import type { Age, Money, Probability, Rate, Tagged, Year } from "./tagged";
 import type { Temporal } from "./sim";
 import type { RateType, Types } from "./enums";
