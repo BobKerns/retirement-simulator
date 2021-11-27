@@ -1,5 +1,14 @@
 # Changes for Retirement Simulator
 
+## Version 0.2.0
+
+* New simulation driver.
+* Use pnpm as package manager.
+* Fix [#15] Supply observable context
+* Add rounded money functions
+* New aggregation facility
+* naturalCMP now works properly with dates.
+
 ## Version 0.1.17
 
 __date: 2021-09-02__
