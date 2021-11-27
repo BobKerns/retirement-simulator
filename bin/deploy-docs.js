@@ -98,7 +98,7 @@ const exec = mkexec(DOCS);
 const rootExec = mkexec(ROOT);
 const rootExecRead = mkexecRead(ROOT);
 
-const marked = require('marked');
+const marked = require('marked').marked;
 marked.setOptions({
     renderer: new marked.Renderer(),
     highlight: function(code, language) {
