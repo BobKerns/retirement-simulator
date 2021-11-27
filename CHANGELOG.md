@@ -2,6 +2,8 @@
 
 ## Version 0.2.0
 
+__date: 2021-11-26__
+
 * New simulation driver.
 * Use pnpm as package manager.
 * Fix [#15] Supply observable context
