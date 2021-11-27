@@ -19,6 +19,6 @@ jobs:
       - run: pnpm install
       - run: pnpm build:compile
       - run: pnpm run prepublishOnly
-      - run: pnpm publish --access public
+      - run: pnpm publish --access --no-git-checks public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
