@@ -18,14 +18,18 @@ import { addSubSources, Scenario, ScenarioBase, Snapshot } from "../model";
 import { $$ } from "../tagged";
 import { ActionData, ActionItem, IItem, ItemImpl, ItemState, ItemStates, Sources, StateItem, Type, IncomeSourceType, TimeLineAction, TimeLineItem } from "../types";
 import { entries, Throw } from "../utils";
+import { SimContext } from "..";
 
 
 const timelineOrder: { [k in TimeLineAction]: Number } = {
     begin: 0,
-    receive: 1,
-    withdraw: 2,
-    pay: 3,
-    end: 4
+    interest: 1,
+    receive: 2,
+    withdraw: 3,
+    deposit: 4,
+    pay: 5,
+    end: 6,
+    age: 7
 };
 
 const actionCmp = (a: TimeLineAction, b: TimeLineAction) =>
@@ -69,12 +73,17 @@ export class Sim {
 
     states?: ItemStates;
 
+    #context: SimContext;
+
     constructor(scenario: Scenario, start?: Date, end?: Date) {
         this.scenario = scenario;
         this.start = start ?? scenario.start ?? START;
         this.end = end ?? END;
         this.#timeline = new Heap(timelineCmp);
         this.prerollStart = scenario.items().reduce((a, i: IItem<Type>) => i.start < a ? i.start : a, this.start);
+        this.#context = {
+            addTimeLine: (action, date, item, data) => this.addTimeLine(action, date, item, data)
+        };
     }
     get snapshots() {
         return this.#runSim();
@@ -102,7 +111,7 @@ export class Sim {
     initStates(init: CalendarStep) {
         return this.scenario.items().reduce((states, i: ItemImpl<Type>) => {
             const item = i.temporal.onDate(init.start) ?? i;
-            const generator = item.stepper(init);
+            const generator = item.stepper(init, this.#context);
             const nxt = generator.next();
             if (nxt.done) {
                 return states;
@@ -168,7 +177,7 @@ export class Sim {
                         // Reinitialize
                         itemState.item = nitem;
                         generator.return();
-                        itemState.generator = nitem.stepper(step);
+                        itemState.generator = nitem.stepper(step, this.#context);
                     }
                     return itemState;
                 }

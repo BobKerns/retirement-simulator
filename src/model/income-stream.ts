@@ -9,7 +9,7 @@ import { StateMixin } from "./state-mixin";
 import {
     Constraint, IFScenario, Id,
     IncomeSourceType, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec,
-    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, Type, WithdrawalEvent, Writeable
+    ItemImpl, ItemState, ItemStates, MonetaryType, RowType, SimContext, Type, WithdrawalEvent, Writeable
     } from "../types";
 import { classChecks, entries, isMonetary, Throw } from "../utils";
 import { $$, $0, $max, $min, isString, Money } from "../tagged";
@@ -166,7 +166,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return {id, amount: withdrawFrom(value, this.spec), sources};
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'incomeStream'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'incomeStream'> {
         while (true) {
             const next = yield {};
         }

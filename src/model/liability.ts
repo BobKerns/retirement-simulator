@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, Stepper, Type } from "../types";
+import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, SimContext, Stepper, Type } from "../types";
 import { Monetary } from "./monetary";
 import { $$, $0, $min, Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
@@ -36,7 +36,7 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         this.paymentPeriod = row.paymentPeriod ?? CalendarUnit.month;
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'liability'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'liability'> {
         let step = start;
         let amt = this.value;
         let date = start.start;
@@ -44,9 +44,11 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         while (true) {
             if (amt <= 0) return;
             const payment = $min(amt, this.payment ?? $0);
+            ctx.addTimeLine('pay', date, this, { amount: payment, balance: amt });
             const interest: Money = $$(rate * amt);
             const principal = $$(payment - interest);
             const value = date >= this.start ? amt : $0;
+            ctx.addTimeLine('interest', date, this, { amount: interest, balance: value });
             const next = yield {value, interest, principal, payment, rate};
             amt = $$(next.value - principal);
             date = next.date;

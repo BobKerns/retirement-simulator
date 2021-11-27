@@ -6,7 +6,7 @@
 
 import { Item } from "./item";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, ItemImpl, ItemState, IText, RowType, Stepper, Type } from "../types";
+import { IFScenario, ItemImpl, ItemState, IText, RowType, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
 /**
@@ -23,7 +23,7 @@ export class TextItem extends Item<'text'> implements IText {
     }
 
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'text'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'text'> {
         let date = start.start;
         while (true) {
             let text = date >= this.start ? this.text : '';

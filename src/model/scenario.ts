@@ -7,7 +7,7 @@
 import Heap from "heap";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { Snapshot } from "./snapshot";
-import { YEAR } from "../calendar";
+import { CalendarStep, YEAR } from "../calendar";
 import {
     IItem, Name, NamedIndex, Type,
     RowType, ItemType,
@@ -15,6 +15,7 @@ import {
     IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
     IFText,
     IFScenario,
+    SimContext,
     Stepper
     } from "../types";
 import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
@@ -230,7 +231,7 @@ export class Scenario extends ScenarioBase implements IFScenario {
         return x;
     }
 
-    *stepper(): Stepper<'scenario'> {
+    *stepper(start: CalendarStep, ctx: SimContext): Stepper<'scenario'> {
         while (true) {
             const next = yield {};
         }

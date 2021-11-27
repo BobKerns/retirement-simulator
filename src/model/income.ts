@@ -6,7 +6,7 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncome, ItemImpl, ItemState, RowType, Stepper, Type } from "../types";
+import { IFScenario, IIncome, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
 import { $$, $0, Money } from "../tagged";
@@ -23,13 +23,14 @@ export class Income extends CashFlow<'income'> implements IIncome {
         super(row, scenario);
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'income'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'income'> {
         let amt: Money = this.value;
         let date = start.start;
         while (true) {
             const value = date >= this.start ? amt : $0;
             const payment = value;
-            let next = yield { value, payment };
+            ctx.addTimeLine('receive', date, this, { amount: payment, balance: amt });
+            const next = yield { value, payment };
             amt = $$(this.value + next.value);
             date = next.date;
         }

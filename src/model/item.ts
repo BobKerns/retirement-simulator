@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { Category, Id, IFScenario, IItem, ItemImpl, ItemState, Name, RowType, ScenarioName, Stepper, Type } from "../types";
+import { Category, Id, IFScenario, IItem, ItemImpl, Name, RowType, ScenarioName, SimContext, Stepper, Type } from "../types";
 import { CalendarStep } from "../calendar";
 import { START } from '../time';
 import { Temporal } from "../sim/temporal";
@@ -59,7 +59,7 @@ export abstract class Item<T extends Type> implements IItem<T> {
         return this.#temporal ?? Throw(`.temporal has not been set.`);
     }
 
-    abstract stepper(start: CalendarStep): Stepper<T>;
+    abstract stepper(start: CalendarStep, ctx: SimContext): Stepper<T>;
 
     /**
      * Tag instances with the type and name for easy recognition.

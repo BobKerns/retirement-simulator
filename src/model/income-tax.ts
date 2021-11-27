@@ -7,7 +7,7 @@
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
 import { StateCode } from "../states";
-import { IFScenario, IIncomeTax, ItemImpl, ItemState, RowType, Stepper, Type } from "../types";
+import { IFScenario, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { CalendarStep } from "../calendar";
 
@@ -21,7 +21,7 @@ export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
         this.state = row.state;
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'incomeTax'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'incomeTax'> {
         let step = start;
         while (true) {
             const next = yield {};

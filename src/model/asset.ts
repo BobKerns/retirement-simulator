@@ -13,7 +13,7 @@
 import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { Rate, Money, $$, $0 } from "../tagged";
-import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, Stepper, StepperState, Type } from "../types";
+import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
@@ -39,13 +39,14 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
         this.paymentPeriod = row.paymentPeriod || CalendarUnit.year;
     }
 
-    *stepper<T extends Type>(start: CalendarStep): Stepper<'asset'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'asset'> {
         let amt = this.value;
         let date = start.start;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month)
         let interest: Money = $0;
         while (true) {
             const value = date >= this.start ? amt : $0;
+            ctx.addTimeLine('interest', date, this, { amount: interest, balance: amt })
             const next = yield { value: amt, interest, rate };
             rate = next.rate;
             interest = $$(rate * amt);

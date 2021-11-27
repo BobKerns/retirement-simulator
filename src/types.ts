@@ -56,7 +56,7 @@ export type Type = `${Types}`;
 export interface ItemMethods<T extends Type> {
     hasCategory(category: Category): boolean;
     inScenario(scenario: ScenarioName): boolean;
-    stepper(step: CalendarStep): Generator<StepperState<T>, void, ItemState<T>>;
+    stepper(step: CalendarStep, ctx: SimContext): Stepper<T>;
 };
 
 /**
@@ -169,7 +169,7 @@ export type IItemState<T extends Type> = {
 }
 
 export interface StateItem<T extends Type> {
-    generator: Generator<StepperState<T>, void, ItemState<T>> | null;
+    generator: Stepper<T> | null;
     item: ItemImpl<T>;
     current: ItemState<T>;
 }
@@ -229,7 +229,7 @@ export type StepperState<T extends Type = Type> = {
 /**
  * A generator that produces updated item states,
  */
-export type Stepper<T extends Type> = Generator<StepperState<T>, any, ItemState<T>>;
+export type Stepper<T extends Type> = Generator<StepperState<T>, void, ItemState<T>>;
 
 
 /**
@@ -470,30 +470,40 @@ export type InputRow = {
 
 export type SortFn<T> = (a: T, b: T) => -1 | 0 | 1;
 
-export type TimeLineAction = "begin" | "end" | 'receive' | 'withdraw' | 'pay';
+export type TimeLineAction = "begin" | "end" | 'receive' | 'deposit' | 'withdraw' | 'interest' | 'pay' | 'age';
 
 export type ActionItem<A extends TimeLineAction> = A extends ('begin' | 'end')
     ? IItem
     : A extends 'receive'
-    ? IItem<'asset' | 'income'>
-    : A extends 'withdraw'
+    ? IItem<'income'>
+    : A extends 'deposit'
+    ? IItem<'asset'>
+    : A extends 'interest'
+    ? IItem<'asset' | 'liability'>
+    : A extends ('withdraw' | 'deposit')
     ? IItem<'asset' | 'income' | 'liability'>
     : A extends 'pay'
     ? IItem<'expense' | 'liability' | 'incomeTax'>
+    : A extends 'age'
+    ? IItem<'person'>
     : never;
 
 interface TransferAction {
     amount: Money;
+    balance?: Money;
+};
+
+interface AgeAction {
+    age: number;
+    expectancy: number;
 };
 
 export type ActionData<A extends TimeLineAction> = A extends ('begin' | 'end')
     ? {}
-    : A extends 'receive'
+    : A extends ('receive' | 'deposit' | 'withdraw' | 'interest' | 'pay')
     ? TransferAction
-    : A extends 'withdraw'
-    ? TransferAction
-    : A extends 'pay'
-    ? TransferAction
+    : A extends 'age'
+    ? AgeAction
     : never;
 
 
@@ -562,4 +572,8 @@ export interface ItemTableType<T extends Type> {
 
 export type ItemTable = {
     [K in Type]: ItemTableType<K>;
+}
+
+export interface SimContext {
+    addTimeLine<A extends TimeLineAction>(action: A, date: Date, item: ActionItem<A>, data: ActionData<A>): void;
 }

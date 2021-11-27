@@ -12,7 +12,11 @@ import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream, IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText, ItemImpl, ItemState, ItemStates, ItemTypeOf, NamedIndex, Type }from "../types";
+import { IFAsset, IFExpense, IFIncome, IFIncomeStream,
+        IFIncomeTax, IFLiability, IFPerson, IFScenario,
+        IFText, ItemImpl, ItemState, ItemStates,
+        ItemTypeOf, NamedIndex, SimContext, Type
+} from "../types";
 import { classChecks, indexByName } from "../utils";
 import { CalendarStep, fmt_date } from "../calendar";
 import { PersonState } from "./person";
@@ -111,7 +115,7 @@ export class Snapshot extends ScenarioBase {
         }
     }
 
-    *stepper() {
+    *stepper(start: CalendarStep, ctx: SimContext) {
 
     }
 }
