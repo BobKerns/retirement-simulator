@@ -13,9 +13,9 @@
 import { Sync } from "genutils";
 import Heap from "heap";
 import { END, START } from "../time";
-import { calendarRange, CalendarStep } from "../calendar";
+import { calendarRange, CalendarStep, UTC } from "../calendar";
 import { addSubSources, Scenario, ScenarioBase, Snapshot } from "../model";
-import { $$ } from "../tagged";
+import { $$, $0 } from "../tagged";
 import { ActionData, ActionItem, IItem, ItemImpl, ItemState, ItemStates, Sources, StateItem, Type, IncomeSourceType, TimeLineAction, TimeLineItem } from "../types";
 import { entries, Throw } from "../utils";
 import { SimContext } from "..";
@@ -23,13 +23,15 @@ import { SimContext } from "..";
 
 const timelineOrder: { [k in TimeLineAction]: Number } = {
     begin: 0,
-    interest: 1,
-    receive: 2,
-    withdraw: 3,
-    deposit: 4,
-    pay: 5,
-    end: 6,
-    age: 7
+    step: 1,
+    interest: 2,
+    receive: 3,
+    withdraw: 4,
+    deposit: 5,
+    pay: 6,
+    end: 7,
+    age: 8,
+    terminate: 9
 };
 
 const actionCmp = (a: TimeLineAction, b: TimeLineAction) =>
@@ -114,6 +116,7 @@ export class Sim {
             const generator = item.stepper(init, this.#context);
             const nxt = generator.next();
             if (nxt.done) {
+                this.addTimeLine('terminate', init.start, item, {reason: 'early'})
                 return states;
             }
             const current = {
@@ -127,7 +130,8 @@ export class Sim {
             states[i.id] = {
                 generator,
                 current,
-                item
+                item,
+                status: 'init'
             };
             return states;
         },
@@ -161,23 +165,30 @@ export class Sim {
 
     stepItemState<T extends Type>(itemState: StateItem<T>, step: CalendarStep): StateItem<T> | null {
         if (itemState) {
-            const { current, generator, item } = itemState;
+            const { current, generator, item, status} = itemState;
             if (item.start > step.start) {
                 // Hasn't started yet.
                 return itemState;
             } else {
                 if (generator) {
+                    if (status === 'init' && item.start.getTime() <= step.start.getTime()) {
+                        this.addTimeLine('begin', step.start, item, {reason: 'time', current});
+                        itemState.status = 'active';
+                    }
                     const nitem = item.temporal.onDate(step.start) as never as ItemImpl<T>;
-                    if (!nitem) {
+                    if (status === 'active' && !nitem) {
                         // This item has terminated.
                         generator.return();
                         itemState.generator = null;
+                        this.addTimeLine('terminate', step.start, item, {})
+                        itemState.status = 'terminated';
                     } else if (nitem !== item) {
                         // The item has stepped to a new set of values.
                         // Reinitialize
                         itemState.item = nitem;
                         generator.return();
                         itemState.generator = nitem.stepper(step, this.#context);
+                        this.addTimeLine('step', step.start, item, {})
                     }
                     return itemState;
                 }
@@ -200,12 +211,14 @@ export class Sim {
     ) {
         const itemState = this.stepItemState(states[item.id] as StateItem<T>, step);
         if (itemState) {
-            const { item, generator, current } = itemState;
+            const { item, generator, current, status } = itemState;
             if (generator) {
                 // Don't step until we reach the start of this item.
-                if (item.start <= step.start) {
+                if (status === 'active') {
+                    current.date = step.start;
                     const next = generator.next(current);
                     if (next.done) {
+                        this.addTimeLine('end', step.start, item, {reason: 'done', state: states[item.id]});
                         delete states[item.id];
                     } else {
                         const nextState = {
@@ -220,12 +233,9 @@ export class Sim {
                     }
                 }
             } else {
-                this.addTimeLine('end', step.start, item, {});
+                this.addTimeLine('end', step.start, item, {reason: 'no generator'});
                 delete states[item.id];
             }
-        } else {
-            this.addTimeLine('end', step.start, item, {});
-            delete states[item.id];
         }
     }
 

@@ -24,14 +24,16 @@ export class Income extends CashFlow<'income'> implements IIncome {
     }
 
     *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'income'> {
-        let amt: Money = this.value;
+        let balance: Money = $0;
         let date = start.start;
         while (true) {
-            const value = date >= this.start ? amt : $0;
+            const value = date >= this.start ? this.value : $0;
             const payment = value;
-            ctx.addTimeLine('receive', date, this, { amount: payment, balance: amt });
+            if (payment) {
+              ctx.addTimeLine('receive', date, this, { amount: payment, balance });
+            }
             const next = yield { value, payment };
-            amt = $$(this.value + next.value);
+            balance = $$(this.value + next.value);
             date = next.date;
         }
     }

@@ -172,6 +172,7 @@ export interface StateItem<T extends Type> {
     generator: Stepper<T> | null;
     item: ItemImpl<T>;
     current: ItemState<T>;
+    status: 'init' | 'active' | 'terminated';
 }
 
 export interface ItemStates {
@@ -470,7 +471,7 @@ export type InputRow = {
 
 export type SortFn<T> = (a: T, b: T) => -1 | 0 | 1;
 
-export type TimeLineAction = "begin" | "end" | 'receive' | 'deposit' | 'withdraw' | 'interest' | 'pay' | 'age';
+export type TimeLineAction = "begin" | "end" | 'receive' | 'deposit' | 'withdraw' | 'interest' | 'pay' | 'age' | 'step' | 'terminate';
 
 export type ActionItem<A extends TimeLineAction> = A extends ('begin' | 'end')
     ? IItem
@@ -486,6 +487,8 @@ export type ActionItem<A extends TimeLineAction> = A extends ('begin' | 'end')
     ? IItem<'expense' | 'liability' | 'incomeTax'>
     : A extends 'age'
     ? IItem<'person'>
+    : A extends ('step' | 'terminate')
+    ? IItem
     : never;
 
 interface TransferAction {
@@ -499,11 +502,13 @@ interface AgeAction {
 };
 
 export type ActionData<A extends TimeLineAction> = A extends ('begin' | 'end')
-    ? {}
+    ? any
     : A extends ('receive' | 'deposit' | 'withdraw' | 'interest' | 'pay')
     ? TransferAction
     : A extends 'age'
     ? AgeAction
+    : A extends ('step' | 'terminate')
+    ? any
     : never;
 
 

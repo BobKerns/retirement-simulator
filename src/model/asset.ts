@@ -45,11 +45,14 @@ export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month)
         let interest: Money = $0;
         while (true) {
+            if (date.getTime() === this.start.getTime()) {
+                amt = this.value;
+            }
             const value = date >= this.start ? amt : $0;
             ctx.addTimeLine('interest', date, this, { amount: interest, balance: amt })
-            const next = yield { value: amt, interest, rate };
+            const next = yield { value, interest, rate };
             rate = next.rate;
-            interest = $$(rate * amt);
+            interest = $$(rate * value);
             amt = $$(next.value + interest);
             date = next.date;
         }

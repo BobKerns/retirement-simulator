@@ -6,7 +6,7 @@
 
 import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, SimContext, Stepper, Type } from "../types";
 import { Monetary } from "./monetary";
-import { $$, $0, $min, Money, Rate } from "../tagged";
+import { $$, $0, $max, $min, Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
@@ -38,19 +38,25 @@ export class Liability extends Monetary<'liability'> implements ILiability {
 
     *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'liability'> {
         let step = start;
-        let amt = this.value;
+        let value = $0;
         let date = start.start;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
         while (true) {
-            if (amt <= 0) return;
-            const payment = $min(amt, this.payment ?? $0);
-            ctx.addTimeLine('pay', date, this, { amount: payment, balance: amt });
-            const interest: Money = $$(rate * amt);
+            const active = date >= this.start;
+            if (date.getTime() === this.start.getTime()) {
+                value = this.value;
+            }
+            if (value <= 0) return;
+            const interest: Money = $$(rate * value);
+            const payment = $min(value + interest, this.payment ?? $0);
             const principal = $$(payment - interest);
-            const value = date >= this.start ? amt : $0;
-            ctx.addTimeLine('interest', date, this, { amount: interest, balance: value });
+            const balance = active ? $$(value + interest - principal) : $0;
+            if (active) {
+                ctx.addTimeLine('pay', date, this, { amount: payment, balance: value });
+                ctx.addTimeLine('interest', date, this, { amount: interest, balance });
+            }
             const next = yield {value, interest, principal, payment, rate};
-            amt = $$(next.value - principal);
+            value = $max(next.value - principal, $0);
             date = next.date;
         }
     }
