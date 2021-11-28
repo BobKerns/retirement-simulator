@@ -43,7 +43,7 @@ export const stackPlot = (
     series: any[],
     options: StackPlotOptions
 ) => {
-    const { caption, y = "value", x = "date", z = 'id', fill = z, offset = null, title = "name", tickFormat = "",
+    const { caption, y = "value", x = "date", z = 'id', fill = z, offset = null, title = "prettyName", tickFormat = "",
         colors, years = 25, xformat = Fmt.month,
         labelFormat = x => x } = options;
     const value = isFunction(y)
