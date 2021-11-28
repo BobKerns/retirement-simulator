@@ -10,7 +10,7 @@
  * @module Sort
  */
 
-import { Named, SortFn } from "./types";
+import { IItem, Named, SortFn } from "./types";
 
 export const comparator = Symbol.for('compare');
 
@@ -87,6 +87,8 @@ const byType =  sortBy('type');
 
 const byStart =  sortBy('start');
 
+const bySort = sortBy('sort');
+
 /**
  * Invert the direction of sorting of a sort comparator function.
  * @param fn A sort comparator function
@@ -103,6 +105,7 @@ export const Sort = {
     byName: composeSorts<Named>(byName, byType),
     byType: composeSorts<Named>(byType, byName),
     byStart: composeSorts<any>(byStart, byType, byName),
+    bySort: composeSorts<IItem>(bySort, byType, byName),
     null: nullCMP,
     natural: naturalCMP
 };

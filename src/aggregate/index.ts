@@ -17,4 +17,4 @@ export * from './merge-list';
 export * from './merge-object';
 export * from './merge-sum';
 export * from './merge';
-export * from './rampify';
+export * from './regularize';

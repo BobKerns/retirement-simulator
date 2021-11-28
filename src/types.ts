@@ -124,7 +124,7 @@ interface ItemImplMethodDefs {
 export type ItemImplFields<T extends Type> = T extends keyof ItemImplFieldDefs ? ItemImplFieldDefs[T] : {};
 export type ItemImplMethods<T extends Type> = T extends keyof ItemImplMethodDefs ? ItemImplMethodDefs[T] : {};
 
-export type Id<T extends Type> = `${T}/${Name}`;
+export type Id<T extends Type = Type> = `${T}/${Name}`;
 
 /**
  * The model implementation for each {@link Type}.
