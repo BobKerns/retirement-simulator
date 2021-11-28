@@ -18,7 +18,7 @@ import {
     SimContext,
     Stepper
     } from "../types";
-import { classChecks, heapgen, id as makeId, indexByName, Throw, total } from "../utils";
+import { classChecks, id as makeId, indexByName, Throw, total } from "../utils";
 import type { construct } from "../construct";
 import { as, $$, Year, $0 } from "../tagged";
 import { START, END } from "../time";
