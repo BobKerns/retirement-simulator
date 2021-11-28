@@ -10,7 +10,7 @@
  */
 
 
-import { isNumber, max, min, numberRange, roundTo } from "./math";
+import { floor, isNumber, max, min, numberRange, round, roundTo } from "./math";
 
 
 const typetag = Symbol("typetag");
@@ -176,11 +176,18 @@ export const {is: isMoney, as: asMoney, to: toMoney} = numberRange('Money', {});
 
 const roundMoney = roundTo(0.01);
 /**
- * Cast (and check) a numerical value as {@link Money}.
+ * Cast (and check) a numerical value as {@link Money}, rounded to the penny.
  * @param n A number to be interpreted as a monetary value
  * @returns the number, typed as {@link Money}
  */
 export const $$ = (n: number): Money => asMoney(roundMoney(asMoney(n)));
+
+/**
+* Cast (and check) a numerical value as {@link Money}, rounding to the nearest dollar.
+* @param n A number to be interpreted as a monetary value
+* @returns the number, typed as {@link Money}
+*/
+export const $$$ = (n: number): Money => asMoney(round(n));
 
 /**
  * Cast a set of numbers as {@link Money} and return the largest.
