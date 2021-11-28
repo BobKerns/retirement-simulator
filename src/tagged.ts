@@ -239,6 +239,8 @@ export const {is: isAge, as: asAge, to: toAge} = numberRange('Age', {min: 0, max
 export type IAge = Tagged<'IAge'>;
 export const {is: isIAge, as: asIAge, to: toIAge} = numberRange('IAge', {min: 0, max: 130, mod: 1});
 
+export const iAge = (n: Age) => toIAge(floor(n));
+
 /**
  * Convert a {@link TypeGuard} for type _T_ into one for `T | undefined`.
  * @param guard an existing typeguard.

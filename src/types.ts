@@ -9,6 +9,7 @@ import type { Age, Money, Probability, Rate, Tagged, Year } from "./tagged";
 import type { Temporal } from "./sim";
 import type { RateType, Types } from "./enums";
 import { CalendarStep, CalendarUnit } from "./calendar";
+import { TaxResult, TaxStatus } from ".";
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export type Initable<T> = { -readonly [P in keyof T]?: T[P] };
@@ -220,7 +221,7 @@ export type StepperState<T extends Type = Type> = {
         expected: number;
     };
     incomeStream: {};
-    incomeTax: {};
+    incomeTax: TaxResult;
     text: {
         text: string;
     };
@@ -358,6 +359,11 @@ export interface IIncomeTax extends ICashFlowItem<'incomeTax'> {
      * A state postal code or 'US' for federal income tax. This controls what tax tables are used.
      */
     readonly state: StateCode;
+
+    // The source of funds for payments.
+    readonly fromStream: IncomeStreamName;
+    // Filing status
+    readonly filingStatus: TaxStatus;
 }
 
 /**
@@ -413,6 +419,8 @@ export interface WithdrawalEvent {
     id: Id<PayableType>;
     amount: Money;
     sources: Sources;
+    taxable: Money;
+    deductable: Money;
 }
 
 /**
@@ -494,6 +502,7 @@ export type ActionItem<A extends TimeLineAction> = A extends ('begin' | 'end')
 interface TransferAction {
     amount: Money;
     balance?: Money;
+    result?: TaxResult
 };
 
 interface AgeAction {

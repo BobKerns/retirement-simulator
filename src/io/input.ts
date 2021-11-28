@@ -15,7 +15,7 @@ import { TYPES } from "../item-types";
 import { toMoney, toRate } from "../tagged";
 import { toCalendarUnit, toDate, UTC } from "../calendar";
 import { AnyRow, RowLabel, Type, InputRow, Initable, TemporalItem } from "../types";
-import { identity, toBoolean } from "../utils";
+import { identity, Throw, toBoolean } from "../utils";
 import { Temporal } from "../sim";
 import { START } from "../time";
 
@@ -46,6 +46,19 @@ export const optional = <T>(fn: (a: any) => T) =>
             (a !== undefined && a !== "")
             ? fn(a)
             : dflt;
+
+/**
+ * Enforce enumerated string values.
+ * @param values List of permissible values (as strings)
+ * @returns
+ */
+export const oneof = <T extends string>(...values: T[]) =>
+    (a: any): T =>
+        a === undefined
+        ? a
+        : values.indexOf(a) > -1
+            ? a as T
+            : Throw(`Input ${a} is not one of ${values.join(', ')}`);
 
 /**
  * Split a comma-separated field.
@@ -86,6 +99,7 @@ export const converters: Converters = {
     fromStream: or('default'),
     spec: or(undefined),
     state: or(undefined),
+    filingStatus: oneof('single', 'married', 'separately', 'head'),
     birth: optionalDate(undefined),
     sex: or(undefined),
     src: or(undefined),

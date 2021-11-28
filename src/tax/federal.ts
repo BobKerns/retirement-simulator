@@ -5,8 +5,11 @@
  */
 
 import { Throw } from "../utils";
-import { asAge, asIAge, $$, asTaxRate, asYear, $0 } from "../tagged";
+import { asAge, $$, asTaxRate, asYear, $0, toIAge, IAge } from "../tagged";
 import { lookupTax, TaxYearTable, TaxYearTables } from "./tax-util";
+import { IFPerson } from "../types";
+import { UTC } from '../calendar';
+import { iAge } from "..";
 
 export const FEDERAL_TAX: TaxYearTables = {
     2021: {
@@ -49,7 +52,8 @@ export const FEDERAL_TAX: TaxYearTables = {
             spouse1,
             spouse2,
             year,
-            deductions
+            deductions,
+            credits
     }   ) {
             const income =
                 $$((regular ?? $0) +
@@ -58,8 +62,10 @@ export const FEDERAL_TAX: TaxYearTables = {
                 );
             const info = this.deductions[status]
                 ?? Throw(`No data for filing status ${status}`);
-            const spouse1Age = spouse1.iage(year);
-            const spouse2Age = spouse2?.iage(year) ?? asIAge(0);
+            const yearEnd = UTC(year, 11, 31);
+            const age = (p: IFPerson | undefined) => p ? iAge(p.age(yearEnd)) : 0 as IAge;
+            const spouse1Age = age(spouse1);
+            const spouse2Age = age(spouse2);
             const std_deductions =
                 $$(info.regular +
                     (spouse1Age >= info.age ? info.senior ?? $0: $0) +
@@ -78,7 +84,8 @@ export const FEDERAL_TAX: TaxYearTables = {
                 agi,
                 spouse1Age,
                 spouse2Age,
-                tax: lookupTax(agi, status, this.table)
+                credits,
+                tax: $$(lookupTax(agi, status, this.table) - credits)
             };
         }
     },

@@ -4,7 +4,9 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { asAge, asIAge, $$, asTaxRate, asYear, $0 } from "../tagged";
+import { UTC } from "../calendar";
+import { asAge, iAge, $$, asTaxRate, asYear, $0, toIAge, IAge } from "../tagged";
+import { IFPerson } from "../types";
 import { Throw } from "../utils";
 import { lookupTax, TaxYearTables } from "./tax-util";
 
@@ -53,7 +55,8 @@ export const CALIFORNIA_TAX: TaxYearTables = ({
       spouse2,
       year,
       dependents = 0,
-      deductions
+      deductions,
+      credits
     }) {
         const income =
             $$((regular ?? $0) +
@@ -62,8 +65,10 @@ export const CALIFORNIA_TAX: TaxYearTables = ({
             );
         const info = this.deductions[status]
             ?? Throw(`No data for filing status ${status}`);
-        const spouse1Age = spouse1.iage(year);
-        const spouse2Age = spouse2?.iage(year) ?? asIAge(0);
+        const yearEnd = UTC(year, 11, 31);
+        const age = (p: IFPerson | undefined) => p ? iAge(p.age(yearEnd)) : 0 as IAge;
+        const spouse1Age = age(spouse1);
+        const spouse2Age = age(spouse2);
         const std_deductions =
             $$(
                 info.regular +
@@ -82,11 +87,12 @@ export const CALIFORNIA_TAX: TaxYearTables = ({
           capitalGains: capitalGains ?? $0
         },
         deductions,
+        credits,
         std_deductions,
         agi,
         spouse1Age,
         spouse2Age,
-        tax: lookupTax(agi, status, this.table)
+        tax: $$(lookupTax(agi, status, this.table) - credits)
       };
     }
   },

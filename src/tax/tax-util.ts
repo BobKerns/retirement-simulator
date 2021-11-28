@@ -7,6 +7,7 @@
 import { Throw } from "../utils";
 import { Person } from "../model";
 import { $$, Age, IAge, Money, TaxRate, Year } from "../tagged";
+import { IFPerson } from "../types";
 
 export type TaxStatus = 'single' | 'married' | 'separately' | 'head';
 
@@ -49,10 +50,11 @@ export type TaxIncomeCategory = keyof TaxIncome;
 export interface TaxData  {
     income: TaxIncome;
     deductions: Money;
+    credits: Money;
     year: Year;
     status: TaxStatus;
-    spouse1: Person;
-    spouse2?: Person;
+    spouse1: IFPerson;
+    spouse2?: IFPerson;
     dependents?: number
 }
 
@@ -65,6 +67,7 @@ export interface TaxResult {
     agi: Money;
     sources: TaxIncome;
     deductions: Money;
+    credits: Money;
     std_deductions: Money;
     spouse1Age: IAge;
     spouse2Age: IAge;

@@ -29,7 +29,7 @@ export const TYPES: {[k in Type]: any} = {
         required: ['name', 'spec']
     },
     incomeTax: {
-        required: ['name', 'state']
+        required: ['name', 'state', 'filingStatus', 'fromStream']
     },
     liability: {
         required: ['name', 'value']

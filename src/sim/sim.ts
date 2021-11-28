@@ -141,15 +141,41 @@ export class Sim {
 
     payExpenses(period: CalendarStep) {
         const allSources: Sources = {};
+        let allTaxable = $0;
+        let allDeductions = $0;
         for (const expense of this.scenario.expense_list) {
             const inStream = this.scenario.incomeStreams[expense.fromStream]
                 ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
             const current = (this.states?.[expense.id]?.current) as ItemState<'expense'> | undefined;
             if (current && current.value) {
-                const { amount, sources } = inStream.withdraw(current.value, expense.id, this.states!);
+                const { amount, sources , taxable, deductable} = inStream.withdraw(current.value, expense.id, this.states!);
                 addSubSources(allSources, sources);
                 this.addTimeLine('pay', period.start, expense, { amount });
                 current.value = $$(current.value - amount);
+            }
+        }
+        for (const incomeTax of this.scenario.tax_list) {
+            const inStream = this.scenario.incomeStreams[incomeTax.fromStream]
+                ?? Throw(`There is no IncomeStream named ${incomeTax.fromStream}`);
+            const itemState = (this.states?.[incomeTax.id]) as StateItem<'incomeTax'> | undefined;
+            if (itemState) {
+            let {current, generator} = itemState
+                if (current && generator) {
+                    const next = generator.next(current)!;
+                    if (next.done) return;
+                    const result = next.value;
+                    current.sources = allSources;
+                    current.tax = result.tax;
+                    current.agi = result.agi;
+                    current.credits = result.credits;
+                    current.deductions = result.deductions;
+                    current.income = result.income;
+                    current.date = UTC(result.year);
+                    const { amount, sources, taxable, deductable } = inStream.withdraw(current.tax, incomeTax.id, this.states!);
+                    addSubSources(allSources, sources);
+                    this.addTimeLine('pay', period.start, incomeTax, { amount, result });
+                    current.tax = $$(current.tax - amount);
+                }
             }
         }
         for (const [id, amount] of entries(allSources)) {

@@ -15,7 +15,7 @@ import { classChecks, entries, isMonetary, Throw } from "../utils";
 import { $$, $0, $max, $min, isString, Money } from "../tagged";
 import { Monetary } from "./monetary";
 import { CalendarStep } from "../calendar";
-import { Sources, PayableType, Stepper  } from "../types";
+import { Category, Sources, PayableType, Stepper } from "../types";
 
 
 export const addSubSources = (sources: Sources, subsources: Sources) => {
@@ -110,6 +110,9 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
 
     withdraw(value: Money, id: Id<PayableType>, state: ItemStates): WithdrawalEvent {
         const sources: Sources = {};
+        let taxable = $0;
+        let deductable = $0;
+        const isTaxable = (item: ItemImpl<Type>) => !item.hasCategory('nontaxable' as Category)
         const alloc = (id: Id<IncomeSourceType>, amount: Money) => sources[id] = $$((sources[id] ?? $0) + amount);
         const withdrawFrom = (raw_amt: Money, spec: IncomeStreamBoundSpec): Money => {
             if (isString(spec)) {
@@ -126,8 +129,15 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                         if (item.type === 'liability') {
                             // Really should flip the sign on liabilities and expenses.
                             current.value = $$(current.value + amt);
+                            if (isTaxable(item)) {
+                                const status = current as ItemState<'liability'>;
+                                deductable = $$(deductable + status.interest);
+                            }
                         } else {
                             current.value = $$(current.value - amt);
+                            if (isTaxable(item)) {
+                                taxable = $$(taxable + amt);
+                            }
                         }
                         alloc(item.id, amt);
                         return amt;
@@ -163,7 +173,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
             }
             throw new Error(`Unknown spec: ${spec}`);
         }
-        return {id, amount: withdrawFrom(value, this.spec), sources};
+        return {id, amount: withdrawFrom(value, this.spec), sources, taxable, deductable};
     }
 
     *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'incomeStream'> {
