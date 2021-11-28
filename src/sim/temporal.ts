@@ -133,4 +133,6 @@ export class Temporal<T extends TemporalItem<Type>> {
     [Symbol.iterator]() {
         return this.items[Symbol.iterator]();
     }
+
+    [Symbol.toStringTag] = 'Temporal';
 }
