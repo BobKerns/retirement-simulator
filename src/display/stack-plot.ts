@@ -13,7 +13,8 @@ import { isFunction, Throw } from "../utils";
 import { Name } from '../types';
 import { Formatter, Fmt } from "./format";
 import { Channel, Offset } from "./plot";
-import { isString } from "../tagged";
+import { as, isString, Integer } from "../tagged";
+import { Curve } from "./plot";
 
 type LabelFormatter = (x: string) => string;
 
@@ -31,6 +32,10 @@ export interface StackPlotOptions {
     width: number;
     xformat?: Formatter;
     labelFormat: LabelFormatter;
+
+    window?: Integer;
+
+    curve?: Curve;
 }
 
 /**
@@ -45,7 +50,10 @@ export const stackPlot = (
 ) => {
     const { caption, y = "value", x = "date", z = 'id', fill = z, offset = null, title = "prettyName", tickFormat = "",
         colors, years = 25, xformat = Fmt.month,
-        labelFormat = x => x } = options;
+        labelFormat = (x: any) => (typeof title === 'string' ? x?.[title] : title instanceof Function ? title(x) : x) ?? x,
+        window = as(1),
+        curve = 'catmull-rom'
+    } = options;
     const value = isFunction(y)
         ? (s: any) => y(s)
         : isString(y)
@@ -82,9 +90,11 @@ ${O.Plot.plot({
         marks: [
             O.Plot.areaY(
                 series,
-                O.Plot.stackY({
-                    x, y, z, fill, title, offset
-                })
+                O.Plot.stackY(O.Plot.windowY({
+                    x, y, z, fill, title, offset,
+                    k: window,
+                    curve
+                }))
             )
         ]
     })}`)

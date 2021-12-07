@@ -4,6 +4,8 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
+import { Integer } from "../tagged";
+
 /**
  * Typings for ObservableHQ Plot
  *
@@ -52,7 +54,9 @@ export interface Scale {
     transform?: Function;
 }
 
-export type Offset = 'expand' | 'normalize' | 'center' | 'silhouette' | 'whiggle' | null;;
+export type Offset = 'expand' | 'normalize' | 'center' | 'silhouette' | 'whiggle' | null;
+
+export type Curve ='linear' | 'step' | 'step-after' | 'step-before' | 'basis' | 'cardinal' | 'catmull-rom' | 'monotone-x' | 'natural';
 
 export interface PlotOptions {
     marks?: Mark[];
@@ -77,6 +81,12 @@ export interface PlotOptions {
     "margin-bottom"?: Pixels;
     title?: Channel;
     offset?: Offset;
+
+    /**
+     * Window width
+     */
+    k?: Integer;
+    curve?: Curve;
 }
 
 export interface Plot {
@@ -94,6 +104,8 @@ export interface Plot {
     stackX(options: PlotOptions): PlotOptions;
     stackY(options: PlotOptions): PlotOptions;
 
+    windowX(options: PlotOptions): PlotOptions;
+    windowY(options: PlotOptions): PlotOptions;
     // Many more
 
 }
