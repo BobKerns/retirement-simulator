@@ -5,7 +5,7 @@
  */
 
 import { UTC } from "../calendar";
-import { asAge, iAge, $$, asTaxRate, asYear, $0, toIAge, IAge } from "../tagged";
+import { asAge, iAge, $$, asTaxRate, asYear, $0, IAge } from "../tagged";
 import { IFPerson } from "../types";
 import { Throw } from "../utils";
 import { lookupTax, TaxYearTables } from "./tax-util";

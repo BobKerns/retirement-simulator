@@ -5,11 +5,10 @@
  */
 
 import { Throw } from "../utils";
-import { asAge, $$, asTaxRate, asYear, $0, toIAge, IAge } from "../tagged";
+import { asAge, $$, asTaxRate, asYear, $0, iAge, IAge } from "../tagged";
 import { lookupTax, TaxYearTable, TaxYearTables } from "./tax-util";
 import { IFPerson } from "../types";
 import { UTC } from '../calendar';
-import { iAge } from "..";
 
 export const FEDERAL_TAX: TaxYearTables = {
     2021: {
