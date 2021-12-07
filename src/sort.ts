@@ -85,7 +85,9 @@ const byName =  sortBy('name');
 
 const byType =  sortBy('type');
 
-const byStart =  sortBy('start');
+const byStart = sortBy('start');
+
+const byDate = sortBy('date');
 
 const bySort = sortBy('sort');
 
@@ -106,6 +108,7 @@ export const Sort = {
     byType: composeSorts<Named>(byType, byName),
     byStart: composeSorts<any>(byStart, byType, byName),
     bySort: composeSorts<IItem>(bySort, byType, byName),
+    byDate: composeSorts<any>(byDate, bySort, byType, byName),
     null: nullCMP,
     natural: naturalCMP
 };
