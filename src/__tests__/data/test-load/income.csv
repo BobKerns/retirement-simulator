@@ -1,2 +1,2 @@
-Name,PrettyName,Start,End,Value,Notes
-pay,Pay Check,,,11000
+Name,PrettyName,Start,End,Value,PaymentPeriod,Notes
+pay,Pay Check,,,21000,month
