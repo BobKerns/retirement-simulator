@@ -149,6 +149,8 @@ export class Sim {
             const current = (this.states?.[expense.id]?.current) as ItemState<'expense'> | undefined;
             if (current && current.value) {
                 const { amount, sources , taxable, deductable} = inStream.withdraw(current.value, expense.id, this.states!);
+                allDeductions = $$(allDeductions + deductable);
+                allTaxable = $$(allTaxable + taxable);
                 addSubSources(allSources, sources);
                 this.addTimeLine('pay', period.start, expense, { amount });
                 current.value = $$(current.value - amount);
@@ -168,8 +170,8 @@ export class Sim {
                     current.tax = result.tax;
                     current.agi = result.agi;
                     current.credits = result.credits;
-                    current.deductions = result.deductions;
-                    current.income = result.income;
+                    current.deductions = allDeductions;
+                    current.income = allTaxable;
                     current.date = UTC(result.year);
                     const { amount, sources, taxable, deductable } = inStream.withdraw(current.tax, incomeTax.id, this.states!);
                     addSubSources(allSources, sources);

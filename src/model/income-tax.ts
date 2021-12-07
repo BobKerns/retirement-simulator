@@ -6,12 +6,11 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { StateCode, lookupTax, TAX_TABLES, TaxResult, TaxData, TaxStatus } from "../tax";
-import { IFScenario, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, IncomeStreamName } from "../types";
+import { StateCode, TAX_TABLES, TaxResult, TaxData, TaxStatus } from "../tax";
+import { IFScenario, IFPerson, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, IncomeStreamName } from "../types";
 import { classChecks, Throw } from "../utils";
 import { CalendarStep, UTC } from "../calendar";
-import { $0, iAge, IAge, Year } from '../tagged';
-import { IFPerson } from "../types";
+import { $$, $0, $div, $mul, iAge, IAge, Year } from '../tagged';
 
 /**
  * A tax on income, state or federal.
@@ -55,19 +54,20 @@ export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
             const taxtables = TAX_TABLES[this.state] ?? Throw(`No tax table for ${this.state}`);
             const table = taxtables[taxtables.default];
             const data: TaxData = {
-                year: value.year,
+                year: next.year,
                 income: {
-                    regular: value.income,
+                    regular: $mul(next.income, 12),
                     capitalGains: $0,
                     socialSecurity: $0
                 },
-                deductions: value.deductions,
-                credits: value.credits,
+                deductions: $mul(next.deductions, 12),
+                credits: $mul(next.credits, 12),
                 status: this.filingStatus,
                 spouse1,
                 spouse2
             };
             value = table.calculate(data);
+            value = {...value, income: $div(value.income, 12)}
             step = next.step;
             date = next.date;
         }
