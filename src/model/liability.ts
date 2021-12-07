@@ -41,12 +41,14 @@ export class Liability extends Monetary<'liability'> implements ILiability {
         let value = $0;
         let date = start.start;
         let rate = convertInterestPerPeriod(this.rate, asCalendarUnit(this.rateType), CalendarUnit.month);
+                let started = false;
         while (true) {
             const active = date >= this.start;
-            if (date.getTime() === this.start.getTime()) {
+            if (!started && active) {
                 value = this.value;
+                started = true;
             }
-            if (value <= 0) return;
+            if (started && value <= 0) return;
             const interest: Money = $$(rate * value);
             const payment = $min(value + interest, this.payment ?? $0);
             const principal = $$(payment - interest);

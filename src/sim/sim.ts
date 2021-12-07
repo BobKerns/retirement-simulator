@@ -208,7 +208,9 @@ export class Sim {
                         itemState.generator = null;
                         this.addTimeLine('terminate', step.start, item, {})
                         itemState.status = 'terminated';
-                    } else if (nitem !== item) {
+                    } else if (!nitem) {
+                        // Not ready
+                    } else if (nitem && nitem !== item) {
                         // The item has stepped to a new set of values.
                         // Reinitialize
                         itemState.item = nitem;
