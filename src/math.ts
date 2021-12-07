@@ -271,3 +271,17 @@ const makeIsum = () => {
  * Sum the {@link Integer} arguments as an {@link Integer}
  */
 export const isum = makeIsum();
+
+/**
+ * Simple sum of numbers. Errors on values not coercable to numbers.
+ * @param n
+ * @returns
+ */
+export const sum = (...n: number[]) => n.reduce((acc, i) => acc + asNumber(i), 0);
+
+export const _add = <T extends number>(a: T, b: T) => (a + b) as T;
+export const _sub = <T extends number>(a: T, b: T) => (a - b) as T;
+
+export const _mul = <T extends number>(a: T, b: T) => (a * b) as T;
+
+export const _div = <T extends number>(a: T, b: T) => (a / b) as T

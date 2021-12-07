@@ -162,6 +162,9 @@ export const { is: isProbability, as: asProbability, to: toProbability } = numbe
 export type Integer = Tagged<'Integer'>;
 export const {is: isInteger, as: asInteger, to: toInteger} = numberRange('Integer', {mod: 1});
 
+export const _1 = 1 as Integer;
+export const _0 = 0 as Integer;
+
 /**
  * An integer between 0 and 255, inclusive.
  */
@@ -207,6 +210,13 @@ export const $min = (...n: number[]): Money => $$(min(...n));
  * Zero {@link Money}.
  */
 export const $0 = $$(0);
+
+export const $add = (a: Money, b: Money) => (a + b) as Money;
+export const $sub = (a: Money, b: Money) => (a - b) as Money;
+
+export const $mul = (a: Money, b: number) => (a * b) as Money;
+
+export const $div = (a: Money, b: number) => (a / b) as Money;
 
 /**
  * Interest/growth rate as a fraction (not percent).
