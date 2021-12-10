@@ -119,7 +119,7 @@ export const converters: Converters = {
  */
 export const convert = <T extends Type>(row: InputRow) => {
     const result: Initable<AnyRow> = {};
-    const upcase =  (l: string) => l.substr(0, 1).toUpperCase() + l.substr(1) as keyof InputRow;
+    const upcase =  (l: string) => l.substring(0, 1).toUpperCase() + l.substring(1) as keyof InputRow;
     for (const k in converters) {
         const l = upcase(k);
         try {
@@ -152,6 +152,6 @@ export const convert = <T extends Type>(row: InputRow) => {
             }
         }
     };
-    checkRequired(TYPES[result.type!].required);
+    checkRequired(TYPES[result.type!]?.required ?? Throw(`Unknwon type ${result.type}`));
     return result as AnyRow;
 };
