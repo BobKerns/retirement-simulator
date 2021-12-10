@@ -15,6 +15,7 @@ export * from './calendar';
 export * from './construct';
 export * from './display';
 export * from './enums';
+export * as G from 'genutils';
 export * from "./io";
 export * from './math';
 export * from "./model";

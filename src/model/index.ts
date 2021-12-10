@@ -24,4 +24,3 @@ export * from './scenario';
 export * from './scenario-base';
 export * from './snapshot';
 export * from './state-mixin';
-export * as G from 'genutils';

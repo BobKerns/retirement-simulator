@@ -10,13 +10,13 @@
  * @module
  */
 
-import { Monetary } from "./monetary";
 import { StateMixin } from "./state-mixin";
 import { Rate, Money, $$, $0 } from "../tagged";
 import { IAsset, IFScenario, ItemImpl, ItemState, RowType, SeriesName, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
+import { Account } from "./account";
 
 /**
  * An item with a monetary value. If _growth_ is supplied and not equal to `1.0`, the asset value
@@ -28,7 +28,7 @@ import { convertInterestPerPeriod } from "../sim/interest";
  * * {@link rateType}
  * * {@link paymentPeriod}
  */
-export class Asset extends Monetary<'asset'> implements IAsset, ItemImpl<'asset'> {
+export class Asset extends Account<'asset'> implements IAsset, ItemImpl<'asset'> {
     rate: Rate;
     rateType: CalendarUnit | SeriesName;
     paymentPeriod: CalendarUnit;

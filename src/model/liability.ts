@@ -5,12 +5,12 @@
  */
 
 import { ExpenseName, IFScenario, ILiability, ItemImpl, ItemState, RowType, SeriesName, SimContext, Stepper, Type } from "../types";
-import { Monetary } from "./monetary";
 import { $$, $0, $max, $min, Money, Rate } from "../tagged";
 import { StateMixin } from "./state-mixin";
 import { classChecks } from "../utils";
 import { asCalendarUnit, CalendarStep, CalendarUnit } from "../calendar";
 import { convertInterestPerPeriod } from "../sim/interest";
+import { Account } from "./account";
 
 /**
  * A liability (generally, a loan or mortgage).
@@ -22,7 +22,7 @@ import { convertInterestPerPeriod } from "../sim/interest";
  * * {@link paymentPeriod}
  * * {@link paymentPeriod}
  */
-export class Liability extends Monetary<'liability'> implements ILiability {
+export class Liability extends Account<'liability'> implements ILiability {
     rate: Rate;
     rateType: CalendarUnit | SeriesName;
     payment?: Money;
