@@ -6,8 +6,8 @@
 
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
-import { IFScenario, IIncome, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
-import { classChecks } from "../utils";
+import { IFScenario, IIncome, ItemImpl, ItemState, RowType, SimContext, Stepper, TransferName, Type } from "../types";
+import { classChecks, Throw } from "../utils";
 import { CalendarStep } from "../calendar";
 import { $$, $0, Money } from "../tagged";
 
@@ -19,8 +19,10 @@ import { $$, $0, Money } from "../tagged";
  * * {@link value}
  */
 export class Income extends CashFlow<'income'> implements IIncome {
+    readonly to: TransferName;
     constructor(row: RowType<'income'>, scenario: IFScenario) {
         super(row, scenario);
+        this.to = row.to ?? Throw(`To: field must be specified for income.`);
     }
 
     *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'income'> {

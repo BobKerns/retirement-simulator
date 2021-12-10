@@ -6,7 +6,7 @@
 
 import { Item } from "./item";
 import {
-    IFAsset, IFExpense, IFIncome, IFIncomeStream,
+    IFAsset, IFExpense, IFIncome, IFTransfer,
     IFIncomeTax, IFLiability, IFPerson, IFScenario, IFText,
     IItem,
     IScenarioBase, ItemImpl, ItemTableType, Name, NamedIndex, RowType, Type
@@ -57,9 +57,9 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
      */
     abstract tax_list: IFIncomeTax[];
     /**
-     * A list of {@link IncomeStream}. See also {@link incomeStreams}.
+     * A list of {@link Transfer}. See also {@link transfers}.
      */
-    abstract incomeStream_list: IFIncomeStream[];
+    abstract transfer_list: IFTransfer[];
 
     /**
      * List of text messages
@@ -90,10 +90,10 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
     abstract incomes: NamedIndex<IFIncome>;
 
     /**
-     * A lookup table of {@link IncomeStream} for convenient lookup by name.
-     * See also {@link incomeStream_list}.
+     * A lookup table of {@link Transfer} for convenient lookup by name.
+     * See also {@link transfer_list}.
      */
-    abstract incomeStreams: NamedIndex<IFIncomeStream>;
+    abstract transfers: NamedIndex<IFTransfer>;
 
     /**
      * A lookup table of {@link Expense} for convenient lookup by name.
@@ -162,7 +162,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
             this.income_list,
             this.expense_list,
             this.tax_list,
-            this.incomeStream_list,
+            this.transfer_list,
             this.text_list
         );
     }
@@ -193,7 +193,7 @@ abstract class ScenarioBaseSimple extends Item<'scenario'> implements IScenarioB
         switch (type) {
             case 'asset': return this.asset_list as unknown as R;
             case 'expense': return this.expense_list as unknown as R;
-            case 'incomeStream': return this.incomeStream_list as unknown as R;
+            case 'transfer': return this.transfer_list as unknown as R;
             case 'incomeTax': return this.tax_list as unknown as R;
             case 'income': return this.income_list as unknown as R;
             case 'liability': return this.liability_list as unknown as R;

@@ -14,7 +14,7 @@ export enum Types {
     liability = 'liability',
     income = 'income',
     expense = 'expense',
-    incomeStream = 'incomeStream',
+    transfer = 'transfer',
     incomeTax = 'incomeTax',
     person = 'person',
     text = 'text',

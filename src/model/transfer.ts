@@ -8,7 +8,7 @@ import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
 import {
     Constraint, IFScenario, Id,
-    IncomeSourceType, IIncomeStream, IncomeStreamBoundSpec, IncomeStreamId, IncomeStreamName, IncomeStreamSpec,
+    SourceType, ITransfer, TransferBoundSpec, TransferId, TransferName, TransferSpec,
     ItemImpl, ItemState, ItemStates, MonetaryType, RowType, SimContext, Type, WithdrawalEvent, Writeable
     } from "../types";
 import { classChecks, entries, isMonetary, Throw } from "../utils";
@@ -27,14 +27,14 @@ export const addSubSources = (sources: Sources, subsources: Sources) => {
 /**
  * A composite stream of money used to pay expenses (or potentially, to contribute to assets, NYI).
  */
-export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStream {
+export class Transfer extends CashFlow<'transfer'> implements ITransfer {
 
-    #rawSpec: IncomeStreamSpec;
-    #boundSpec?: IncomeStreamBoundSpec;
+    #rawSpec: TransferSpec;
+    #boundSpec?: TransferBoundSpec;
 
-    constructor(row: RowType<'incomeStream'>, scenario: IFScenario) {
+    constructor(row: RowType<'transfer'>, scenario: IFScenario) {
         super(row, scenario);
-        this.#rawSpec = IncomeStream.parse(row.spec);
+        this.#rawSpec = Transfer.parse(row.spec);
     }
 
     /**
@@ -43,7 +43,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
      * @param name
      * @returns
      */
-    static parse(spec: string | IncomeStreamSpec, name?: IncomeStreamName): IncomeStreamSpec {
+    static parse(spec: string | TransferSpec, name?: TransferName): TransferSpec {
         if (typeof spec === 'string') {
             // Fix curly-quotes
             const nspec = spec.replace(/[“”]/g, '"');
@@ -51,7 +51,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 try {
                     return JSON.parse(nspec);
                 } catch (e: any) {
-                    throw new Error(`Error parsing incomeStream ${name ?? `unknown`}: ${e.message}`);
+                    throw new Error(`Error parsing transfer ${name ?? `unknown`}: ${e.message}`);
                 }
             }
         }
@@ -63,30 +63,30 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
      * @param spec
      * @returns
      */
-    get spec(): IncomeStreamBoundSpec {
+    get spec(): TransferBoundSpec {
         return this.#boundSpec ?? (this.#boundSpec = this.bind(this.#rawSpec));
     }
 
     /**
      * @internal
      * @param spec
-     * @returns an IncomeStreamSpec with all the references resolved to IDs and the weights/constraints canonicalized.
+     * @returns an {@link TransferSpec} with all the references resolved to IDs and the weights/constraints canonicalized.
      */
-    bind(spec: IncomeStreamSpec): IncomeStreamBoundSpec {
+    bind(spec: TransferSpec): TransferBoundSpec {
         const id = (spec: string) =>
             spec.startsWith('@')
-                ? this.scenario.incomeStreams[spec.substring(1)].id as IncomeStreamId
-                ?? Throw(`There is no IncomeStream named ${spec.substring(1)}`)
+                ? this.scenario.transfers[spec.substring(1)].id as TransferId
+                ?? Throw(`There is no Transfer named ${spec.substring(1)}`)
                 : (
                     this.scenario.incomes[spec]
                     ?? this.scenario.assets[spec]
                     ?? this.scenario.liabilities[spec]
-                )?.id as IncomeStreamId
+                )?.id as TransferId
                 ?? Throw(`There is no income, asset, or liability named "${spec}"`);
         if (isString(spec)) {
             if (spec.startsWith('@')) {
                 const name = spec.substring(1);
-                return this.scenario.incomeStreams[name].id as IncomeStreamId;
+                return this.scenario.transfers[name].id as TransferId;
             }
             return id(spec);
         } else if (Array.isArray(spec)) {
@@ -104,7 +104,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
             }
             return result;
         } else {
-            throw new Error(`Unknown income stream spec: ${spec}`);
+            throw new Error(`Unknown transfer spec: ${spec}`);
         }
     }
 
@@ -113,12 +113,12 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         let taxable = $0;
         let deductable = $0;
         const isTaxable = (item: ItemImpl<Type>) => !item.hasCategory('nontaxable' as Category)
-        const alloc = (id: Id<IncomeSourceType>, amount: Money) => sources[id] = $$((sources[id] ?? $0) + amount);
-        const withdrawFrom = (raw_amt: Money, spec: IncomeStreamBoundSpec): Money => {
+        const alloc = (id: Id<SourceType>, amount: Money) => sources[id] = $$((sources[id] ?? $0) + amount);
+        const withdrawFrom = (raw_amt: Money, spec: TransferBoundSpec): Money => {
             if (isString(spec)) {
                 const current = state[spec]?.current;
                 if (current) {
-                    if (isIncomeStream(current.item)) {
+                    if (isTransfer(current.item)) {
                         const { amount, sources: subSources } = current.item.withdraw(raw_amt, id, state);
                         addSubSources(sources, subSources);
                         return amount;
@@ -167,7 +167,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
                 // Then distribute by weight.
                 let total = 0;
                 for (const k in spec) {
-                    total += withdrawFrom($$(raw_amt * shares[k].weight), k as IncomeStreamId);
+                    total += withdrawFrom($$(raw_amt * shares[k].weight), k as TransferId);
                 }
                 return $$(total);
             }
@@ -176,7 +176,7 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
         return {id, amount: withdrawFrom(value, this.spec), sources, taxable, deductable};
     }
 
-    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'incomeStream'> {
+    *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'transfer'> {
         while (true) {
             const next = yield {};
         }
@@ -190,10 +190,10 @@ export class IncomeStream extends CashFlow<'incomeStream'> implements IIncomeStr
  */
 export const isMonetaryState = <T extends MonetaryType>(a: any): a is Writeable<Monetary<T>> => a.item && isMonetary(a);
 
-export const isIncomeSource = <T extends IncomeSourceType>(a: any): a is Writeable<ItemState<'asset'  | 'liability' | 'income'>> => a.item && (a.item.type === 'asset' || a.item.type === 'liability' || a.item.type === 'income');
+export const isIncomeSource = <T extends SourceType>(a: any): a is Writeable<ItemState<'asset'  | 'liability' | 'income'>> => a.item && (a.item.type === 'asset' || a.item.type === 'liability' || a.item.type === 'income');
 
-export class IncomeStreamState extends StateMixin(IncomeStream) {
-    constructor(row: ItemImpl<'incomeStream'>, scenario: IFScenario, state: ItemState<'incomeStream'>) {
+export class TransferState extends StateMixin(Transfer) {
+    constructor(row: ItemImpl<'transfer'>, scenario: IFScenario, state: ItemState<'transfer'>) {
         super(row, scenario, state);
     }
     /**
@@ -202,8 +202,8 @@ export class IncomeStreamState extends StateMixin(IncomeStream) {
      * @returns
      */
 
-    parse(spec: string | IncomeStreamSpec): IncomeStreamSpec {
-        return spec as IncomeStreamSpec;
+    parse(spec: string | TransferSpec): TransferSpec {
+        return spec as TransferSpec;
     }
 }
-export const [isIncomeStream, toIncomeStream, asIncomeStream] = classChecks(IncomeStream);
+export const [isTransfer, toTransfer, asTransfer] = classChecks(Transfer);

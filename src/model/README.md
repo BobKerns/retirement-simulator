@@ -4,7 +4,7 @@ Our simulation operates on one or more scenarios. Each scenario contains informa
 how [[Income]] and [[Expense|Expenses]]]] vary with time (cash flow), and what [[Asset|Assets]]
 and [[Liabilities]] we have available (net worth).
 
-These are connected via [[IncomeStream|IncomeStreams]], which represent strategies for moving
+These are connected via [[Transfer|Transfers]], which represent strategies for moving
 funds between destinations.
 
 In addition, a scenario contains information about the [[Person|People]] involved,
@@ -39,14 +39,14 @@ flowchart LR
             Expense
             IncomeTax[/IncomeTax\]
         end
-        IncomeStream -.->|withdraw| IncomeStream
-        IncomeStream <-.-|deposit| IncomeStream
-        Asset -->|withdraw| IncomeStream
-        IncomeStream -->|deposit| Asset
-        Liability -->|borrow| IncomeStream
-        IncomeStream -->|pay| Liability
-        Income ==>|withdraw| IncomeStream
-        IncomeStream>IncomeStream] ==>|pay| Expense & IncomeTax
+        Transfer -.->|withdraw| Transfer
+        Transfer <-.-|deposit| Transfer
+        Asset -->|withdraw| Transfer
+        Transfer -->|deposit| Asset
+        Liability -->|borrow| Transfer
+        Transfer -->|pay| Liability
+        Income ==>|withdraw| Transfer
+        Transfer>Transfer] ==>|pay| Expense & IncomeTax
     end
   end
   IncomeTax & Expense ==> E((Outside))
@@ -55,7 +55,7 @@ style Income fill:#8f8,color:#00f
 style Liability fill:#f79,color:#00f
 style Expense fill:#f79,color:#00f
 style IncomeTax fill:#f4c,color:#00f
-style IncomeStream fill:#ff8,color:#00f
+style Transfer fill:#ff8,color:#00f
 style I fill:#ef2,color:#000
 style E fill:#fd2,color:#000
 style Person fill:#fd6,color:#00f
@@ -65,7 +65,7 @@ click Asset "../classes/model_asset.Asset.html" "Asset class"
 click Liability "../classes/model_liability.Liability.html" "Liability class"
 click Income "../classes/model_income.Income.html" "Income class"
 click Expense "../classes/model_expense.Expense.html" "Expense class"
-click IncomeStream "../classes/model_income_stream.IncomeStream.html" "IncomeStream class"
+click Transfer "../classes/model_transfer.Transfer.html" "Transfer class"
 click IncomeTax "../classes/model_income_tax.IncomeTax.html" "IncomeTax class"
 click Person "../classes/model_person.Person.html" "Person class"
 click Text "../classes/model_text.TextItem.html" "TextItem class"
@@ -105,7 +105,7 @@ classDef edgeLabel color:#000,background:#fed
 * [[Asset]], something that we own. This can be something that can be potentially sold, such as a house or car, or an investment.
 * [[Liability]], something that we need to pay in the future or over time. This can be loan, or
   a committed expense, such as needed maintenance.
-* [[IncomeStream]], a plan combining [[Income]] and drawing down [[Asset|Assets]],
+* [[Transfer]], a plan combining [[Income]] and drawing down [[Asset|Assets]],
   to supply funds to meet [[Expense|Expenses]].
 * [[IncomeTax]], information to estimate income-based taxes that will need to be paid.
 * [[TextItem]], arbitrary user-supplied text to be used where needed.

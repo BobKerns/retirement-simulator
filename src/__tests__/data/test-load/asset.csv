@@ -1,2 +1,2 @@
-Name,PrettyName,Start,End,Value,Rate,RateType,Payment,PaymentPeriod,Notes
-car,MY CAR!,,,1000,-20,month,,month,Quickly losing its value.
+Name,PrettyName,Start,End,Value,Rate,RateType,Payment,PaymentPeriod,To,Notes
+car,MY CAR!,,,1000,-20,month,,month,,Quickly losing its value.

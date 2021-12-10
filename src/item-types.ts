@@ -25,11 +25,11 @@ export const TYPES: {[k in Type]: any} = {
     income: {
         required: ['name', 'value']
     },
-    incomeStream: {
+    transfer: {
         required: ['name', 'spec']
     },
     incomeTax: {
-        required: ['name', 'state', 'filingStatus', 'fromStream']
+        required: ['name', 'state', 'filingStatus', 'from']
     },
     liability: {
         required: ['name', 'value']

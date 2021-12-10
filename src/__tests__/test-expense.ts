@@ -14,7 +14,7 @@ const construct = (row: any) => bareConstruct(row, row[0].type, [], asYear(2021)
 
 describe("Expense", () => {
     const scenario = new Scenario(scenario_1, dataset, as(2030));
-    test("Create", () => expect(new Expense(expense_1, scenario).fromStream).toEqual(expense_1.fromStream));
+    test("Create", () => expect(new Expense(expense_1, scenario).from).toEqual(expense_1.from));
     test("Construct", () => expect(construct([expense_1]).categories).toEqual(['fred']));
     test("Default scenario", () => expect(construct([expense_1]).scenarios).toEqual(['Default']));
 })

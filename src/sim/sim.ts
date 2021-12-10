@@ -16,7 +16,7 @@ import { END, START } from "../time";
 import { calendarRange, CalendarStep, UTC } from "../calendar";
 import { addSubSources, Scenario, ScenarioBase, Snapshot } from "../model";
 import { $$, $0 } from "../tagged";
-import { ActionData, ActionItem, IItem, ItemImpl, ItemState, ItemStates, Sources, StateItem, Type, IncomeSourceType, TimeLineAction, TimeLineItem } from "../types";
+import { ActionData, ActionItem, IItem, ItemImpl, ItemState, ItemStates, Sources, StateItem, Type, SourceType, TimeLineAction, TimeLineItem } from "../types";
 import { entries, Throw } from "../utils";
 import { SimContext } from "..";
 
@@ -144,11 +144,11 @@ export class Sim {
         let allTaxable = $0;
         let allDeductions = $0;
         for (const expense of this.scenario.expense_list) {
-            const inStream = this.scenario.incomeStreams[expense.fromStream]
-                ?? Throw(`There is no IncomeStream named ${expense.fromStream}`);
+            const transfer = this.scenario.transfers[expense.from]
+                ?? Throw(`There is no Transfer named ${expense.from}`);
             const current = (this.states?.[expense.id]?.current) as ItemState<'expense'> | undefined;
             if (current && current.value) {
-                const { amount, sources , taxable, deductable} = inStream.withdraw(current.value, expense.id, this.states!);
+                const { amount, sources , taxable, deductable} = transfer.withdraw(current.value, expense.id, this.states!);
                 allDeductions = $$(allDeductions + deductable);
                 allTaxable = $$(allTaxable + taxable);
                 addSubSources(allSources, sources);
@@ -157,8 +157,8 @@ export class Sim {
             }
         }
         for (const incomeTax of this.scenario.tax_list) {
-            const inStream = this.scenario.incomeStreams[incomeTax.fromStream]
-                ?? Throw(`There is no IncomeStream named ${incomeTax.fromStream}`);
+            const transfer = this.scenario.transfers[incomeTax.from]
+                ?? Throw(`There is no Transfer named ${incomeTax.from}`);
             const itemState = (this.states?.[incomeTax.id]) as StateItem<'incomeTax'> | undefined;
             if (itemState) {
             let {current, generator} = itemState
@@ -173,7 +173,7 @@ export class Sim {
                     current.deductions = allDeductions;
                     current.income = allTaxable;
                     current.date = UTC(result.year);
-                    const { amount, sources, taxable, deductable } = inStream.withdraw(current.tax, incomeTax.id, this.states!);
+                    const { amount, sources, taxable, deductable } = transfer.withdraw(current.tax, incomeTax.id, this.states!);
                     addSubSources(allSources, sources);
                     this.addTimeLine('pay', period.start, incomeTax, { amount, result });
                     current.tax = $$(current.tax - amount);
@@ -184,7 +184,7 @@ export class Sim {
             if (amount) {
                 this.addTimeLine(
                     'withdraw', period.start,
-                    this.states?.[id].item as IItem<IncomeSourceType>,
+                    this.states?.[id].item as IItem<SourceType>,
                     { amount }
                 );
             }

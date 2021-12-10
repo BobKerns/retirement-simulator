@@ -6,5 +6,5 @@ expense,expense.csv
 asset,asset.csv
 liability,liability.csv
 incomeTax,income_tax.csv
-incomeStream,income_stream.csv
+transfer,transfer.csv
 text,text.csv

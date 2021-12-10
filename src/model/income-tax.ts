@@ -7,7 +7,7 @@
 import { CashFlow } from "./cashflow";
 import { StateMixin } from "./state-mixin";
 import { StateCode, TAX_TABLES, TaxResult, TaxData, TaxStatus } from "../tax";
-import { IFScenario, IFPerson, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, IncomeStreamName } from "../types";
+import { IFScenario, IFPerson, IIncomeTax, ItemImpl, ItemState, RowType, SimContext, Stepper, TransferName } from "../types";
 import { classChecks, Throw } from "../utils";
 import { CalendarStep, UTC } from "../calendar";
 import { $$, $0, $div, $mul, iAge, IAge, Year } from '../tagged';
@@ -17,12 +17,12 @@ import { $$, $0, $div, $mul, iAge, IAge, Year } from '../tagged';
  */
 export class IncomeTax extends CashFlow<'incomeTax'> implements IIncomeTax {
     readonly state: StateCode;
-    readonly fromStream: IncomeStreamName;
+    readonly from: TransferName;
     readonly filingStatus: TaxStatus;
     constructor(row: RowType<'incomeTax'>, scenario: IFScenario) {
         super(row, scenario);
         this.state = row.state;
-        this.fromStream = row.fromStream;
+        this.from = row.from;
         this.filingStatus = row.filingStatus;
     }
 

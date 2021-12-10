@@ -33,7 +33,7 @@ export const expense_1: IFExpense = id({
     name: 'Expense',
     type: 'expense' as const,
     start: START,
-    fromStream: 'from',
+    from: 'from',
     sort: 1,
     paymentPeriod: 'month',
     value: $$(100.00),

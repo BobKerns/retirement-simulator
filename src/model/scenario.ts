@@ -12,7 +12,7 @@ import {
     IItem, Name, NamedIndex, Type,
     RowType, ItemType,
     Category, IFLiability, IFAsset, IFIncome,
-    IFExpense, IFIncomeTax, IFIncomeStream, IFPerson,
+    IFExpense, IFIncomeTax, IFTransfer, IFPerson,
     IFText,
     IFScenario,
     SimContext,
@@ -43,14 +43,14 @@ export class Scenario extends ScenarioBase implements IFScenario {
     income_list: IFIncome[];
     expense_list: IFExpense[];
     tax_list: IFIncomeTax[];
-    incomeStream_list: IFIncomeStream[];
+    transfer_list: IFTransfer[];
     text_list: IFText[];
 
     readonly people: NamedIndex<IFPerson>;
     assets: NamedIndex<IFAsset>;
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;
-    incomeStreams: NamedIndex<IFIncomeStream>;
+    transfers: NamedIndex<IFTransfer>;
     expenses: NamedIndex<IFExpense>;
     taxes: NamedIndex<IFIncomeTax>;
     texts: NamedIndex<IFText>;
@@ -121,8 +121,8 @@ export class Scenario extends ScenarioBase implements IFScenario {
         this.incomes = indexByName(this.income_list);
         this.tax_list = this.#construct_items("incomeTax");
         this.taxes = indexByName(this.tax_list);
-        this.incomeStream_list = this.#construct_items("incomeStream");
-        this.incomeStreams = indexByName(this.incomeStream_list);
+        this.transfer_list = this.#construct_items("transfer");
+        this.transfers = indexByName(this.transfer_list);
         this.text_list = this.#construct_items("text");
         this.texts = indexByName(this.text_list);
 
@@ -140,11 +140,11 @@ export class Scenario extends ScenarioBase implements IFScenario {
         scan(this.liability_list);
         scan(this.income_list);
         scan(this.tax_list);
-        scan(this.incomeStream_list);
+        scan(this.transfer_list);
        this. allItems = {
             asset: this.assets,
             expense: this.expenses,
-            incomeStream: this.incomeStreams,
+            transfer: this.transfers,
             incomeTax: this.taxes,
             income: this.incomes,
             liability: this.liabilities,

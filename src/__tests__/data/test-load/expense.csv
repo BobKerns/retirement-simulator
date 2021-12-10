@@ -1,2 +1,2 @@
-Name,PrettyName,Start,End,PaymentPeriod,Value
-car,MY CAR!,,,month,12250.0
+Name,PrettyName,Start,End,PaymentPeriod,From,Value
+car,MY CAR!,,,month,,12250.0

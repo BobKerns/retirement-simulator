@@ -7,12 +7,12 @@
 import { AssetState } from "./asset";
 import { ExpenseState } from "./expense";
 import { IncomeState } from "./income";
-import { IncomeStreamState } from "./income-stream";
+import { TransferState } from "./transfer";
 import { IncomeTaxState } from "./income-tax";
 import { LiabilityState } from "./liability";
 import { AllItems, ScenarioBase } from "./scenario-base";
 import { TextItemState } from "./text";
-import { IFAsset, IFExpense, IFIncome, IFIncomeStream,
+import { IFAsset, IFExpense, IFIncome, IFTransfer,
         IFIncomeTax, IFLiability, IFPerson, IFScenario,
         IFText, ItemImpl, ItemState, ItemStates,
         ItemTypeOf, NamedIndex, SimContext, Type
@@ -39,7 +39,7 @@ export class Snapshot extends ScenarioBase {
     income_list: IFIncome[];
     expense_list: IFExpense[];
     tax_list: IFIncomeTax[];
-    incomeStream_list: IFIncomeStream[];
+    transfer_list: IFTransfer[];
     text_list: IFText[];
 
     #people: NamedIndex<IFPerson>;
@@ -48,7 +48,7 @@ export class Snapshot extends ScenarioBase {
     liabilities: NamedIndex<IFLiability>;
     incomes: NamedIndex<IFIncome>;
     expenses: NamedIndex<IFExpense>;
-    incomeStreams: NamedIndex<IFIncomeStream>;
+    transfers: NamedIndex<IFTransfer>;
     taxes: NamedIndex<IFIncomeTax>;
     texts: NamedIndex<IFText>;
 
@@ -72,7 +72,7 @@ export class Snapshot extends ScenarioBase {
         this.income_list = scenario.income_list.flatMap(active).map(([a, n]) => new IncomeState(a, scenario, n));
         this.expense_list = scenario.expense_list.flatMap(active).map(([a, n]) => new ExpenseState(a, scenario, n));
         this.tax_list = scenario.tax_list.flatMap(active).map(([a, n]) => new IncomeTaxState(a, scenario, n));
-        this.incomeStream_list = scenario.incomeStream_list.flatMap(active).map(([a, n]) => new IncomeStreamState(a, scenario, n));
+        this.transfer_list = scenario.transfer_list.flatMap(active).map(([a, n]) => new TransferState(a, scenario, n));
         this.text_list = scenario.text_list.flatMap(active).map(([a, n]) => new TextItemState(a, scenario, n))
         this.#person_list = scenario.person_list.flatMap(active).map(([a, n]) => new PersonState(a, scenario, n));
         this.assets = indexByName(this.asset_list);
@@ -80,14 +80,14 @@ export class Snapshot extends ScenarioBase {
         this.incomes = indexByName(this.income_list);
         this.expenses = indexByName(this.expense_list);
         this.taxes = indexByName(this.tax_list);
-        this.incomeStreams = indexByName(this.incomeStream_list);
+        this.transfers = indexByName(this.transfer_list);
         this.texts = indexByName(this.text_list);
         this.#people = indexByName(this.#person_list);
 
        this. allItems = {
             asset: this.assets,
             expense: this.expenses,
-            incomeStream: this.incomeStreams,
+            transfer: this.transfers,
             incomeTax: this.taxes,
             income: this.incomes,
             liability: this.liabilities,

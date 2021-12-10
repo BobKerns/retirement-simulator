@@ -19,7 +19,7 @@ export type AssetName = Name;
 export type IncomeName = Name;
 export type LiabilityName = Name;
 export type ExpenseName = Name;
-export type IncomeStreamName = Name;
+export type TransferName = Name;
 export type ScenarioName = Name;
 export type SeriesName = Name;
 
@@ -47,9 +47,9 @@ export interface NamedIndex<T extends Named> {
 }
 
 export type BalanceType = 'asset' | 'liability';
-export type CashFlowType = 'income' | 'expense' | 'incomeStream' | 'incomeTax';
+export type CashFlowType = 'income' | 'expense' | 'transfer' | 'incomeTax';
 export type MonetaryType = BalanceType | CashFlowType;
-export type IncomeSourceType = BalanceType | 'income';
+export type SourceType = BalanceType | 'income';
 
 export type PayableType = 'expense' | 'liability' | 'incomeTax';
 export type Type = `${Types}`;
@@ -77,14 +77,14 @@ interface ItemImplFieldDefs {
         readonly income_list: IFIncome[];
         readonly expense_list: IFExpense[];
         readonly tax_list: IFIncomeTax[];
-        readonly incomeStream_list: IFIncomeStream[];
+        readonly transfer_list: IFTransfer[];
         readonly text_list: IFText[];
 
         readonly people: NamedIndex<IFPerson>;
         readonly assets: NamedIndex<IFAsset>;
         readonly liabilities: NamedIndex<IFLiability>;
         readonly incomes: NamedIndex<IFIncome>;
-        readonly incomeStreams: NamedIndex<IFIncomeStream>;
+        readonly transfers: NamedIndex<IFTransfer>;
         readonly expenses: NamedIndex<IFExpense>;
         readonly taxes: NamedIndex<IFIncomeTax>;
         readonly texts: NamedIndex<IFText>;
@@ -114,7 +114,7 @@ interface ItemImplMethodDefs {
         findText(name: Name): string;
     };
 
-    incomeStream: {
+    transfer: {
         withdraw(value: Money, purpose: string, states: ItemStates): WithdrawalEvent;
     };
 }
@@ -153,7 +153,7 @@ type RowTypes = {
     expense: IExpense;
     person: IPerson;
     text: IText;
-    incomeStream: IIncomeStream;
+    transfer: ITransfer;
     incomeTax: IIncomeTax;
     scenario: IScenario;
 };
@@ -220,7 +220,7 @@ export type StepperState<T extends Type = Type> = {
         survival: Probability;
         expected: number;
     };
-    incomeStream: {};
+    transfer: {};
     incomeTax: TaxResult;
     text: {
         text: string;
@@ -341,13 +341,15 @@ export interface ILiability extends IBalanceItem<'liability'> {
 /**
  * Income, either ongoing or one-time.
  */
-export interface IIncome extends ICashFlowItem<'income'> {}
+export interface IIncome extends ICashFlowItem<'income'> {
+    readonly to: TransferName;
+}
 
 /**
  * An expense, either ongoing or one-time.
  */
 export interface IExpense extends ICashFlowItem<'expense'> {
-    readonly fromStream: IncomeStreamName;
+    readonly from: TransferName;
 }
 
 /**
@@ -361,7 +363,7 @@ export interface IIncomeTax extends ICashFlowItem<'incomeTax'> {
     readonly state: StateCode;
 
     // The source of funds for payments.
-    readonly fromStream: IncomeStreamName;
+    readonly from: TransferName;
     // Filing status
     readonly filingStatus: TaxStatus;
 }
@@ -401,7 +403,7 @@ export type Reference<Str extends string> = `@${Str}`;
 export type Weight = number;
 
 /**
- * An object in an {@link IncomeStreamSpec} represents a set of constraints. On input,
+ * An object in an {@link TransferSpec} represents a set of constraints. On input,
  * a single number is equivalent to a {@link Constraint} with only {@link Constraint.weight|weight}
  * specified.
  */
@@ -412,7 +414,7 @@ export interface Constraint {
 }
 
 export type Sources = {
-    [k in Id<IncomeSourceType>]?: Money;
+    [k in Id<SourceType>]?: Money;
 };
 
 export interface WithdrawalEvent {
@@ -424,22 +426,22 @@ export interface WithdrawalEvent {
 }
 
 /**
- * Specs are prrovided as JSON. This describes the input form. See {@link IncomeStreamBoundSpec}
+ * Specs are prrovided as JSON. This describes the input form. See {@link TransferBoundSpec}
  * for the bound form.
  */
-export type IncomeStreamSpec = IncomeName | AssetName | LiabilityName
-    | Reference<IncomeStreamName>
-    | Array<IncomeStreamSpec>
-    | {[k in Reference<IncomeName|AssetName|LiabilityName|IncomeStreamName>]: Weight | Constraint};
+export type TransferSpec = IncomeName | AssetName | LiabilityName
+    | Reference<TransferName>
+    | Array<TransferSpec>
+    | {[k in Reference<IncomeName|AssetName|LiabilityName|TransferName>]: Weight | Constraint};
 
-export type IncomeStreamId = `income/${IncomeName}` | `asset/${AssetName}` | `liability/${LiabilityName}` | `incomeStream/${IncomeStreamName}`;
+export type TransferId = `income/${IncomeName}` | `asset/${AssetName}` | `liability/${LiabilityName}` | `transfer/${TransferName}`;
 
-export type IncomeStreamBoundSpec = IncomeStreamId
-    | Array<IncomeStreamBoundSpec>
-    | {[K in IncomeStreamId]: Constraint};
+export type TransferBoundSpec = TransferId
+    | Array<TransferBoundSpec>
+    | {[K in TransferId]: Constraint};
 
-export interface IIncomeStream extends ICashFlowItem<'incomeStream'> {
-    readonly spec: IncomeStreamSpec;
+export interface ITransfer extends ICashFlowItem<'transfer'> {
+    readonly spec: TransferSpec;
 }
 
 type OmitKeys = 'id' | 'type' | 'name' ;
@@ -448,7 +450,7 @@ export type AnyRow = Partial<Omit<IAsset, OmitKeys>>
     & Partial<Omit<ILiability, OmitKeys>>
     & Partial<Omit<IExpense, OmitKeys>>
     & Partial<Omit<IIncome, OmitKeys>>
-    & Partial<Omit<IIncomeStream, OmitKeys>>
+    & Partial<Omit<ITransfer, OmitKeys>>
     & Partial<Omit<IIncomeTax, OmitKeys>>
     & Partial<Omit<IText, OmitKeys>>
     & Partial<Omit<IPerson, OmitKeys>>
@@ -539,7 +541,7 @@ export type IFAsset = ItemImpl<'asset'>;
 export type IFLiability = ItemImpl<'liability'>;
 export type IFIncome = ItemImpl<'income'>
 export type IFExpense = ItemImpl<'expense'>;
-export type IFIncomeStream = ItemImpl<'incomeStream'>;
+export type IFTransfer = ItemImpl<'transfer'>;
 export type IFIncomeTax = ItemImpl<'incomeTax'>;
 export type IFPerson = ItemImpl<'person'>;
 export type IFText = ItemImpl<'text'>;

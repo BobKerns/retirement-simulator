@@ -34,8 +34,9 @@ you from modeling it as an income stream adding to the asset.
 
 ### Other
 
-* [[IncomeStream]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]
+* [[Transfer]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]
 * [[IncomeTax]] a tax based on income. Other taxes are an [[Expense]].
+* [[Person]] A person, primarily used for taxes and age computations
 * [[Scenario]] a particular configuration of the above
 * [[Snapshot]] the state of a scenario at a point in time.
 
@@ -48,8 +49,9 @@ as a class instance.
 * [[ILiability]]
 * [[IExpense]]
 * [[IIncome]]
-* [[IIncomeStream]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]
+* [[ITransfer]] connects sources ([[Income]] or withdrawal from [[Asset]]) to [[Expense]]
 * [[IIncomeTax]] a tax based on income. Other taxes are an [[Expense]].
+* [[IPerson]] A person, primarily used for taxes and age computations
 * [[IScenario]] a particular configuration of the above
 * [[ISnapshot]] the state of a scenario at a point in time.
 

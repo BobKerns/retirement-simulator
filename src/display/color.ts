@@ -160,7 +160,7 @@ export const compute_colors =
                 ...s.expense_list.map((d) => d.id),
                 ...s.liability_list.map((d) => d.id),
                 ...s.tax_list.map((d) => d.id),
-                ...s.incomeStream_list.map((d) => d.id),
+                ...s.transfer_list.map((d) => d.id),
                 ...s.person_list.map(d => d.id)
             ]));
 

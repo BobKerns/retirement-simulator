@@ -4,7 +4,7 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import { IExpense, IFScenario, IncomeStreamName, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
+import { IExpense, IFScenario, TransferName, ItemImpl, ItemState, RowType, SimContext, Stepper, Type } from "../types";
 import { CashFlow } from "./cashflow";
 import { classChecks, Throw } from "../utils";
 import { StateMixin } from "./state-mixin";
@@ -15,18 +15,18 @@ import { $$, $0 } from "../tagged";
 /**
  * A flow of money out.
  *
- * The `fromStream` parameter must be specified; it is the other end of the flow, where the money to
- * pay the expense comes from (an {@link IncomeStream}).
+ * The `from` parameter must be specified; it is the other end of the flow, where the money to
+ * pay the expense comes from (a {@link Transfer}).
  *
  * **Key fields:**
  * * {@link value}
- * * {@link fromStream}
+ * * {@link from}
  */
 export class Expense extends CashFlow<'expense'> implements IExpense {
-    fromStream: IncomeStreamName;
+    from: TransferName;
     constructor(row: RowType<'expense'>, scenario: IFScenario) {
         super(row, scenario);
-        this.fromStream = row.fromStream ?? Throw(`fromStream must be specified for ${this.name}.`);
+        this.from = row.from ?? Throw(`from must be specified for ${this.name}.`);
     }
     *stepper<T extends Type>(start: CalendarStep, ctx: SimContext): Stepper<'expense'> {
         let amt = convertPeriods(this.value, this.paymentPeriod, CalendarUnit.month);

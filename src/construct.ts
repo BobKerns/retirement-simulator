@@ -5,7 +5,7 @@
  */
 
 import { Type, RowType, ItemType, ItemImpl } from './types';
-import { Asset, Expense, Liability, Income, IncomeStream, IncomeTax, Person, TextItem, Scenario } from './model';
+import { Asset, Expense, Liability, Income, Transfer, IncomeTax, Person, TextItem, Scenario } from './model';
 import { assertRow } from './utils';
 import { Year } from './tagged';
 import { Temporal } from './sim/temporal';
@@ -30,8 +30,8 @@ export const construct = <T extends Type>(items: Array<RowType<T>>, type: T, dat
                 return (i: RowType<T>) => new Liability(assertRow(i, 'liability'), scenario);
             case "income":
                 return (i: RowType<T>) => new Income(assertRow(i, 'income'), scenario);
-            case "incomeStream":
-                return (i: RowType<T>) => new IncomeStream(assertRow(i, 'incomeStream'), scenario);
+            case "transfer":
+                return (i: RowType<T>) => new Transfer(assertRow(i, 'transfer'), scenario);
             case "incomeTax":
                 return (i: RowType<T>) => new IncomeTax(assertRow(i, 'incomeTax'), scenario);
             case "person":

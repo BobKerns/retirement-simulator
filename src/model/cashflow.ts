@@ -16,7 +16,7 @@ export abstract class CashFlow<T extends CashFlowType> extends Monetary<T> imple
     paymentPeriod: CalendarUnit;
     constructor(row: RowType<T>, scenario: IFScenario) {
         super(row, scenario);
-        const noPaymentPeriod = (this.end || this.type === 'incomeStream' || this.type === 'incomeTax');
+        const noPaymentPeriod = (this.end || this.type === 'transfer' || this.type === 'incomeTax');
         this.paymentPeriod = row.paymentPeriod ?? (noPaymentPeriod ? CalendarUnit.month : Throw(`Missing payment period in ${this.id}`));
     }
 }
