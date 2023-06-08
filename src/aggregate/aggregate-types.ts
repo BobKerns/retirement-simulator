@@ -15,7 +15,11 @@ import { SortFn } from "../types";
 import type { Merge } from './merge';
 
 /**
- * For aggregation, k
+ * A function that merges a series of items into a single result.
+ *
+ * @type K the type of the keys partitioning the aggregated results
+ * @type I the type of value extracted to be passed to the {@link MergeFn}
+ * @type R the type of the aggregated results.
  */
 export type MergeFn<K, I extends Record<keyof any, any>, R> = (key: K) => Merge<K, I, R>;
 /**
@@ -43,7 +47,7 @@ export type ValueFn<T, K> = ExtractorFn<T, K>;
  * @type K the type of the keys partitioning the aggregated results
  * @type V the type of value extracted to be passed to the {@link MergeFn}
  */
-export interface AggregationSpec<T extends Record<keyof any, any>, R extends any, K, V> {
+export interface AggregationSpec<T extends Record<keyof any, any>, R extends any, K, V extends T> {
     /**
      * Function to extract the aggregation key, or the name of a field. Defaults to the identity function.
      */

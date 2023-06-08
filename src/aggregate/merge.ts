@@ -12,13 +12,17 @@
 
 /**
  * {@link Merge} operator instance base class
+ *
+ * @type K the type of the keys partitioning the aggregated results
+ * @type V the type of value extracted to be passed to the {@link MergeFn}
+ * @type R the type of the aggregated results.
  */
 export abstract class Merge<K, V, R> {
     readonly key: K;
     constructor(key: K) {
         this.key = key;
     }
-    
+
     /**
      * Add an item to be merged.
      * @param item Item to be added

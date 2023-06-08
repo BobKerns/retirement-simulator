@@ -10,8 +10,6 @@
  * @module
  */
 
-
-
 import {default as HeapIn} from 'heap';
 import {Sync} from 'genutils';
 import type { MonetaryType, IMonetaryItem, NamedIndex, Type, RowType, IMonetary, AnyNamed, Named, Name, Id } from './types';

@@ -33,7 +33,7 @@ export const extractor = <T, V>(k: keyof T | ExtractorFn<T, V>): ExtractorFn<T, 
  * @param spec Specification for the aggregation to be performed.
  * @returns
  */
-export const aggregate = <T, R, K = T, V = T>(spec: AggregationSpec<T, R, K, V>) => {
+export const aggregate = <T extends Record<string|number|symbol, any>, R, K = T, V extends T = T>(spec: AggregationSpec<T, R, K, V>) => {
     const { key = identity, value = identity, compare = naturalCMP, merge } = spec;
     const keyFn: ExtractorFn<T, K> = extractor(key);
     const valueFn: ExtractorFn<T, V> = extractor(value);
