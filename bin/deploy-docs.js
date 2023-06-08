@@ -26,15 +26,16 @@
  * @module
  */
 
-const pkg = require('../package.json');
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 const github = process.env['GITHUB_WORKSPACE'];
 const PROJECT = 'retirement-simulator';
 
 const VERSION = pkg.version;
 const TAG = github ? `v${VERSION}` : 'local';
 
-const fs = require('fs/promises');
-const util = require('util');
+import * as fs from 'fs/promises';
 const copyFile = fs.copyFile;
 const readdir = fs.readdir;
 const mkdir = async d => {
@@ -54,25 +55,22 @@ const mkdir = async d => {
 const readFile = async f => fs.readFile(f, 'utf8');
 const writeFile = async (f, data) => fs.writeFile(f, data, 'utf8');
 
-const path = require('path');
-const join = path.join;
-const resolve = path.resolve;
-const dirname = path.dirname;
-const basename = path.basename;
+import {join, resolve, dirname, basename} from 'path';
 
-const child_process = require('child_process');
-const execFile = util.promisify(child_process.execFile);
+import {promisify} from 'util';
+import * as child_process from 'child_process';
+import { spawnSync } from 'child_process';
+const execFile = promisify(child_process.execFile);
 
-const hljs = require('highlight.js');
-
-const fetchPkg = import('node-fetch');
+import * as hljs from 'highlight.js';
+import * as fetchPkg from 'node-fetch';
 const fetch = async (...args) => (await fetchPkg).default(...args);
 
 /**
  * The root of our repo
  * @type {string}
  */
-const ROOT = join(process.mainModule.path, '..');
+const ROOT = join(import.meta.url, '../..').replace(/^file:/, '');
 
 // Point this to where we checked out the gh-pages branch.
 const DOCS = join(ROOT, 'build/gh-pages');
@@ -98,7 +96,8 @@ const exec = mkexec(DOCS);
 const rootExec = mkexec(ROOT);
 const rootExecRead = mkexecRead(ROOT);
 
-const marked = require('marked').marked;
+import {marked} from 'marked';
+
 marked.setOptions({
     renderer: new marked.Renderer(),
     highlight: function(code, language) {
@@ -184,18 +183,23 @@ const thisRelease = async(tag) =>
             [0] || Throw(`No release tagged ${tag} found.`)
         : {name: 'Local Build', body: 'Local build'} // fake release
 
+const git = '/opt/local/bin/git'
+
+process.env.path = `${process.env.path}:/opt/local/bin`;
+
 const hasDocdest = async () => {
-    const worktrees = await rootExecRead('git', 'worktree', 'list', '--porcelain');
+    const worktrees = await rootExecRead(git, 'worktree', 'list', '--porcelain');
     return /\/build\/gh-pages/m.test(worktrees);
 };
 
 const run = async () => {
-    await rootExec('git', 'remote', '-v');
-    await rootExec('git', 'fetch', 'origin', 'gh-pages');
+    await rootExec(git, 'remote', '-v');
+    await rootExec(git, 'fetch', 'origin', 'gh-pages');
+
     if (await hasDocdest()) {
-        await rootExec('git', 'worktree', 'remove', '--force', 'build/gh-pages');
+        await rootExec(git, 'worktree', 'remove', '--force', 'build/gh-pages');
     }
-    await rootExec('git', 'worktree', 'add', 'build/gh-pages', 'refs/remotes/origin/gh-pages');
+    await rootExec(git, 'worktree', 'add', 'build/gh-pages', 'refs/remotes/origin/gh-pages');
     const source = join(ROOT, 'build', 'docs');
     const docs = join(DOCS, 'docs');
     const target = join(docs, TAG);
@@ -257,14 +261,14 @@ ${release.body || ''}
     await copyTree(source, target);
     // Only check in as part of the packaging workflow.
     if (github) {
-        await exec('git', 'config', 'user.email', '1154903+BobKerns@users.noreply.github.com');
-        await exec('git', 'config', 'user.name', 'ReleaseBot');
-        await exec('git', 'add', 'index.html');
-        await exec('git', 'add', target);
-        await exec('git', 'add', 'docs/index.html');
-        await exec('git', 'add', 'docs/CHANGELOG.html');
-        await exec('git', 'commit', '-m', `Deploy documentation for ${TAG}.`);
-        await exec('git', 'push', 'origin', 'HEAD:gh-pages');
+        await exec(git, 'config', 'user.email', '1154903+BobKerns@users.noreply.github.com');
+        await exec(git, 'config', 'user.name', 'ReleaseBot');
+        await exec(git, 'add', 'index.html');
+        await exec(git, 'add', target);
+        await exec(git, 'add', 'docs/index.html');
+        await exec(git, 'add', 'docs/CHANGELOG.html');
+        await exec(git, 'commit', '-m', `Deploy documentation for ${TAG}.`);
+        await exec(git, 'push', 'origin', 'HEAD:gh-pages');
     }
 }
 run().catch(e => {

@@ -1,5 +1,4 @@
 /**
- * @module NpmTemplate
  * Copyright 2021 by Bob Kerns. Licensed under MIT license.
  */
 
@@ -10,13 +9,14 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import {OutputOptions, RollupOptions, Plugin} from "rollup";
+import {OutputOptions, RollupOptions} from "rollup";
 import {chain as flatMap} from 'ramda';
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace';
 
 import {relative} from 'path';
 import child_process from 'child_process';
+import {readFileSync} from 'fs';
 
 const mode = process.env.NODE_ENV ?? 'development';
 // noinspection JSUnusedLocalSymbols
@@ -37,8 +37,8 @@ interface Package {
     browser?: string;
     [K: string]: any;
 }
-const pkg: Package  = require('../package.json');
 
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8')) as Package;
 /**
  * Mapping of module names to variable names for UMD modules.
  */
@@ -147,7 +147,7 @@ const replaceVersion = () =>
 /**
  * The complete rollup options we use.
  */
-const options: RollupOptions = {
+export const options: RollupOptions = {
     input:'./build/src/index.js',
     output: outputs(pkg),
     external: checkExternal,

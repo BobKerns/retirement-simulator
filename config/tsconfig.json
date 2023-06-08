@@ -3,19 +3,19 @@
   "extends": "../tsconfig",
 
    // Project layout. Changes not recommended.
-  "include": ["*.ts", "**/*.ts"],
+  "include": ["./*.ts", "../package.json"],
   "exclude": ["../build", "../lib", "../node_modules"],
 
   "compilerOptions": {
     // Module and Node interoperability section. Do not change.
-    "module": "commonjs",
+    "module": "ES2022",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
 
     // Project layout. Changes not recommended.
-    "outDir":"../build/config",
-    "rootDir": ".",
+    "outDir":"../build",
+    "rootDir": "..",
 
      // Generation of .d.ts files. and debugging source maps.
     "composite": true,
