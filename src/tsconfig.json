@@ -19,6 +19,7 @@
     "incremental": true,
     "tsBuildInfoFile": "../build/.tsbuild-info-src",
     "outDir": "../build/src",
-    "rootDir": "."
+    "rootDir": ".",
+    "forceConsistentCasingInFileNames": true
   }
 }
