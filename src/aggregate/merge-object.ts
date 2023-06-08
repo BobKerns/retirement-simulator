@@ -48,7 +48,7 @@ export enum UnequalAction { END_ON_FIRST, END_ON_LAST, ERROR};
 class MergeObject<
         K,
         V extends Record<keyof any, any>,
-        I extends Record<keyof V, any>,
+        I extends V,
         R extends Record<keyof I, any>
     > extends Merge<K, V, R> {
 

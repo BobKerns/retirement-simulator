@@ -9,8 +9,6 @@
 
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import {terser} from 'rollup-plugin-terser';
-import visualizerNoName, {VisualizerOptions} from 'rollup-plugin-visualizer';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import {OutputOptions, RollupOptions, Plugin} from "rollup";
 import {chain as flatMap} from 'ramda';
@@ -19,18 +17,6 @@ import replace from '@rollup/plugin-replace';
 
 import {relative} from 'path';
 import child_process from 'child_process';
-
-/**
- * The visualizer plugin fails to set the plugin name. We wrap it to remedy that.
- * @param opts
- */
-const visualizer = (opts?: Partial<VisualizerOptions>) => {
-    const noname: Partial<Plugin> = visualizerNoName(opts);
-    return {
-        name: "Visualizer",
-        ...noname
-    };
-}
 
 const mode = process.env.NODE_ENV ?? 'development';
 // noinspection JSUnusedLocalSymbols
@@ -181,15 +167,6 @@ const options: RollupOptions = {
             }),
         commonjs({
             extensions: [".js", ".ts"]
-        }),
-        ...(!dev && !DISABLE_TERSER) ? [
-            terser({
-            module: true
-        })
-        ] : [],
-        visualizer({
-            filename: "build/build-stats.html",
-            title: "Build Stats"
         })
     ]
 };
