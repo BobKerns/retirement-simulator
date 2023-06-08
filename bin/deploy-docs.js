@@ -183,7 +183,7 @@ const thisRelease = async(tag) =>
             [0] || Throw(`No release tagged ${tag} found.`)
         : {name: 'Local Build', body: 'Local build'} // fake release
 
-const git = '/opt/local/bin/git'
+const git = 'git'
 
 process.env.path = `${process.env.path}:/opt/local/bin`;
 
