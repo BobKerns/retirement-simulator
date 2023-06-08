@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../retirement-template"
+		},
+		{
+			"path": "../../../retirement-data"
+		}
+	],
+    "settings": {
+        "jest.disabledWorkspaceFolders": [
+            "retirement-template",
+            "retirement-data"
+        ]
+    }
+}
