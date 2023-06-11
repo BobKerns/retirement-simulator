@@ -20,6 +20,12 @@ log
 stdout
 stderr
 *.orig
+.cache/
+.local/
+.npm/
+.pnpm-store/
+LOGS/
+.bash_history
 
 public/bundle.*
 .env
