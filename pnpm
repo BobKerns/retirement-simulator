@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+docker run -it --rm \
+    -v "$PWD":/app \
+    -v "$PWD"/LOGS:/LOGS \
+    -e USER_ID="$(id -u)" \
+    -e GROUP_ID="$(id -g)" \
+    pnpm:latest \
+    "$@"
