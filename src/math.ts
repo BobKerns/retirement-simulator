@@ -194,8 +194,12 @@ const chooseIs = <T extends string>({ min, max, mod, minEx, maxEx }: NumberDomai
  */
 export const numberRange = <T extends string>(tag: T, range: NumberDomain): DomainFns<T, number> => {
     const is = chooseIs<T>(range);
-    const as = (n: number): Tagged<T> =>
-        is(n) ? n : Throw(`${n} is not a valid ${tag}.`);
+    const as = (n: number): Tagged<T> => {
+        if (is(n)) {
+            return n
+        }
+        return Throw(`${n} is not a valid ${tag}.`);
+    }
     const to = (n: any) =>
         isNumber(n) ? as(n) : as(Number(n));
     return { is, as, to };
