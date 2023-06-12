@@ -10,6 +10,23 @@ export GROUP_ID="${GROUP_ID:?"GROUP_ID must be set to the www group's gid"}"
 
 prog="${1:-pnpm}"
 shift
+case "$1" in
+    bash)
+        prog="$1"
+        shift
+        ;;
+    update-dependencies|up)
+         jq -r '((.dependencies // {}| keys), (.devDependencies // {} | keys)) | .[]' \
+            package.json \
+          | {
+            while read -r P; do
+                echo "Installing $P"
+                pnpm install "$P@latest"
+            done
+          }
+          exit 0
+        ;;
+esac
 if [ "$1" == 'bash' ]; then
     prog="$1"
     shift
