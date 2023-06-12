@@ -43,7 +43,7 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf-8')) as Package;
  * Mapping of module names to variable names for UMD modules.
  */
 const globals: {[k: string]: string} = {
-    d3: 'd3',
+ //   d3: 'd3',
     'plot': 'Plot'
 };
 
