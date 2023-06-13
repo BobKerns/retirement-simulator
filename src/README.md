@@ -58,5 +58,5 @@ as a class instance.
 ## Other Facilities
 
 * [[color]] Provides a stable set of colors for graphing.
-* Interpolated [[actuary]] data [[SS_2017]].
+* Interpolated [[actuary]] data [[SS_2020_2023]].
 * [[calendar]] provides utilities for working with time in relevant ways.

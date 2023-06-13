@@ -4,14 +4,32 @@
  * Github: https://github.com/BobKerns/retirement-simulator
  */
 
-import SS_2017_raw from '../data/SS_2017.json';
-import { as, asProbability, Probability } from '../tagged';
+import SS_2019_TR_2022_raw from '../data/SS_2019_TR_2022.json';
+import { as, asProbability, Probability, Year } from '../tagged';
 import { floor } from '../math';
 import { calculate_age } from '../calendar';
 import { IFPerson, IPerson, Sex } from '../types';
 import { START, END } from '../time';
 import { range } from 'genutils';
 
+export type ActuaryTable = {
+    /**
+     * The year of the table.
+     */
+    readonly year: Year,
+    /**
+     * The year of the Trustee Report containing the table.
+     */
+    readonly tr_year: Year
+    /**
+     * The table name.
+     */
+    readonly name: string,
+    /**
+     * The table data.
+     */
+    readonly data: Array<ActuaryAnnualData>
+}
 
 export type ActuaryDatum = {
     /**
@@ -42,7 +60,7 @@ export type ActuaryAnnualData = {
  *
  * Source: [Actuarial Life Table](https://www.ssa.gov/oact/STATS/table4c6.html) ([Archive](https://web.archive.org/web/20210719152530/https://www.ssa.gov/oact/STATS/table4c6.html))
  */
-export const SS_2017: Array<ActuaryAnnualData> = SS_2017_raw as Array<ActuaryAnnualData>;
+export const SS_2020_TR_2023: ActuaryTable = SS_2019_TR_2022_raw as unknown as ActuaryTable;
 
 /**
  * Obtain actuarial data for a person on a particular date.
@@ -66,10 +84,10 @@ export function actuary(spouseOrAge: IPerson | number, dateOrSex: Date | Sex): A
         const idx = floor(spouseOrAge);
         const frac = spouseOrAge - idx;
         const sex = dateOrSex as Sex;
-        const base = SS_2017[idx]?.[sex];
+        const base = SS_2020_TR_2023.data[idx]?.[sex];
         if (!base) return eol;
         if (frac <= 0.003) return base;
-        const next = SS_2017[idx + 1]?.[sex];
+        const next = SS_2020_TR_2023.data[idx + 1]?.[sex];
         if (!next) return eol;
         const interpolate = (a: number, b: number, frac: number) => (a * (1 - frac) + b * frac);
         return {

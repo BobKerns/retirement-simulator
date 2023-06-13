@@ -11,7 +11,7 @@ import { calculate_age, CalendarStep, END_YEAR, TODAY, YEAR } from "../calendar"
 import { IFPerson, IFScenario, ItemImpl, ItemState, RowType, Sex, SimContext, Stepper, Type } from "../types";
 import { classChecks } from "../utils";
 import { range } from "genutils";
-import { actuary, compute_probabilities, SS_2017 } from "../sim/actuary";
+import { actuary, compute_probabilities, SS_2020_TR_2023 } from "../sim/actuary";
 import { StateMixin } from "./state-mixin";
 
 /**
@@ -34,9 +34,9 @@ export class Person extends Item<'person'> implements IFPerson {
         this.birth = row.birth;
         this.sex = row.sex;
         const age = floor(this.age(TODAY));
-        this.expectency = SS_2017[age]?.[this.sex].years;
+        this.expectency = SS_2020_TR_2023.data[age]?.[this.sex].years;
         this.expectencies = range(0, END_YEAR - YEAR + 1)
-                .map((y) => SS_2017[asIAge(age + y)]?.[this.sex].years)
+            .map((y) => SS_2020_TR_2023.data[asIAge(age + y)]?.[this.sex].years)
                 .asArray()
     }
 
